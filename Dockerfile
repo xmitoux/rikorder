@@ -6,7 +6,7 @@ EXPOSE 3001
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g pnpm
+RUN npm install -g pnpm && pnpm add -g pnpm@9.4.0
 
 ##### dev #####
 FROM dev-base as dev
