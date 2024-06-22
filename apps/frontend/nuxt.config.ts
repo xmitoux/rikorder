@@ -10,6 +10,8 @@ const modules = [
 export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
+    // https://ja.vitejs.dev/config/server-options
+    host: '0.0.0.0',
     port: 3001,
   },
   modules,
