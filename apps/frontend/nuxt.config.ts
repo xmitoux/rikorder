@@ -10,7 +10,7 @@ const modules = [
 export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
-      port: 3001
+    port: 3001,
   },
   modules,
   eslint: {
@@ -18,4 +18,4 @@ export default defineNuxtConfig({
       stylistic: true,
     },
   },
-})
+});

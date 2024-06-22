@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const hoge = 'hello'
+const hoge = 'hello';
 </script>
 
 <template>
