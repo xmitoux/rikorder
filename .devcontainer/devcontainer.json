@@ -1,6 +1,6 @@
 {
   "name": "Rikorder Dev Container",
-  "dockerComposeFile": "./compose.yaml",
+  "dockerComposeFile": "../compose.yaml",
   "service": "rikorder_app",
   "workspaceFolder": "/app",
   "customizations": {

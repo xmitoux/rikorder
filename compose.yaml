@@ -1,7 +1,7 @@
 services:
   rikorder_app:
     build:
-      context: ../
+      context: .
       dockerfile: ./Dockerfile
       target: dev
     environment:
