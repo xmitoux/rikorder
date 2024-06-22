@@ -1,0 +1,17 @@
+{
+  "name": "Rikorder Dev Container",
+  "dockerComposeFile": "./compose.yaml",
+  "service": "rikorder_app",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "vue.volar",
+        "ms-azuretools.vscode-docker",
+        "prisma.prisma"
+      ]
+    }
+  },
+  "postCreateCommand": "pnpm install"
+}
