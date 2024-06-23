@@ -1,3 +1,3 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from '@prisma/client';
 
-export interface RikoImageCreateDto extends Prisma.RikoImageCreateInput {};
+export interface RikoImageCreateDto extends Prisma.RikoImageCreateInput {}
