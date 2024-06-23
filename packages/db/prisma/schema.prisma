@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model RikoImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  uploadedAt DateTime @map("uploaded_at")
+
+  @@map("riko_images")
+}
