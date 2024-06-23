@@ -11,6 +11,7 @@ import stylistic from '@stylistic/eslint-plugin';
 export const customEslintRules = {
   rules: {
     'array-callback-return': ['error', { checkForEach: true }],
+    'curly': 'error',
     'import/order': 'off',
     'no-console': 'error',
     '@typescript-eslint/no-extraneous-class': 'off',
@@ -98,6 +99,23 @@ const configStylistic = stylistic.configs.customize({
   semi: true,
 });
 
+const customStylisticRules = {
+  rules: {
+    '@stylistic/array-bracket-newline': ["error", "consistent"],
+    '@stylistic/array-element-newline': ["error", "consistent"],
+    '@stylistic/function-call-argument-newline': ["error", "consistent"],
+    '@stylistic/function-call-spacing': ["error", "never"],
+    '@stylistic/function-paren-newline': ["error", "consistent"],
+    '@stylistic/no-extra-semi': "error",
+    '@stylistic/no-mixed-operators': "error",
+    '@stylistic/nonblock-statement-body-position': ["error", "below"],
+    '@stylistic/object-curly-newline': ["error", { consistent: true }],
+    '@stylistic/object-curly-spacing': ["error", "always"],
+    '@stylistic/semi-style': ["error", "last"],
+    '@stylistic/switch-colon-spacing': "error",
+  }
+}
+
 export const eslintConfigNuxt = [
   customEslintRules,
   customIgnores,
@@ -106,6 +124,7 @@ export const eslintConfigNuxt = [
   configPerfectionist,
   configOnlyWarn,
   configStylistic,
+  customStylisticRules,
 ];
 
 /**
