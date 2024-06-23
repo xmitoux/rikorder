@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 
+import { IdParam } from '~/common/dto/id-param';
+
 import { RikoImageCreateDto } from './dto/riko_image.dto';
 import { UpdateRikoImageDto } from './dto/update-riko_image.dto';
 import { RikoImageEntity } from './entities/riko_image.entity';
@@ -22,8 +24,8 @@ export class RikoImagesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rikoImagesService.findOne(+id);
+  async findOne(@Param() { id }: IdParam): Promise<RikoImageEntity> {
+    return new RikoImageEntity(await this.rikoImagesService.findOne(id));
   }
 
   @Patch(':id')

@@ -21,8 +21,12 @@ export class RikoImagesService {
     return this.prisma.rikoImage.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} rikoImage`;
+  findOne(id: number): Promise<RikoImage> {
+    return this.prisma.rikoImage.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
   }
 
   update(id: number, updateRikoImageDto: UpdateRikoImageDto) {
