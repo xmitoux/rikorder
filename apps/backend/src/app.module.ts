@@ -4,7 +4,7 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RikoImagesModule } from './riko_images/riko_images.module';
+import { RikoImagesModule } from './modules/riko_images/riko_images.module';
 
 const pinoHttp = {
   level: process.env.PINO_LOG_LEVEL || 'trace',
