@@ -1,20 +1,24 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { RikoImagesService } from './riko_images.service';
-import { CreateRikoImageDto } from './dto/create-riko_image.dto';
-import { UpdateRikoImageDto } from './dto/update-riko_image.dto';
 
-@Controller('riko-images')
+import { RikoImageCreateDto } from './dto/riko_image.dto';
+import { UpdateRikoImageDto } from './dto/update-riko_image.dto';
+import { RikoImageEntity } from './entities/riko_image.entity';
+import { RikoImagesService } from './riko_images.service';
+
+@Controller('/api/riko-images')
 export class RikoImagesController {
   constructor(private readonly rikoImagesService: RikoImagesService) {}
 
   @Post()
-  create(@Body() createRikoImageDto: CreateRikoImageDto) {
-    return this.rikoImagesService.create(createRikoImageDto);
+  async create(@Body() createRikoImageDto: RikoImageCreateDto): Promise<RikoImageEntity> {
+    return new RikoImageEntity(await this.rikoImagesService.create(createRikoImageDto));
   }
 
   @Get()
-  findAll() {
-    return this.rikoImagesService.findAll();
+  async findAll(): Promise<RikoImageEntity[]> {
+    const rikoImages = await this.rikoImagesService.findAll();
+
+    return rikoImages.map(data => new RikoImageEntity(data));
   }
 
   @Get(':id')
