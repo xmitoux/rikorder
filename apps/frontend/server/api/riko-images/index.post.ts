@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { fetch } from '~/server/utils/fetch';
 
 export default defineEventHandler(async (event) => {

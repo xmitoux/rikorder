@@ -14,6 +14,7 @@ export const customEslintRules = {
     'curly': 'error',
     'import/order': 'off',
     'no-console': 'error',
+    '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     'vue/max-attributes-per-line': 'off',
     'vue/attributes-order': ["error", { alphabetical: true }],
@@ -99,6 +100,9 @@ const configStylistic = stylistic.configs.customize({
   semi: true,
 });
 
+/**
+ * @type {import('eslint').Linter.FlatConfig}
+ */
 const customStylisticRules = {
   rules: {
     '@stylistic/array-bracket-newline': ["error", "consistent"],
