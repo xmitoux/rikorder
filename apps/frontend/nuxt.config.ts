@@ -4,6 +4,7 @@ const devModules = process.env.NODE_ENV === 'development'
   : [];
 
 const modules = [
+  'nuxt-quasar-ui',
   ...devModules,
 ];
 
