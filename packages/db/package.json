@@ -7,12 +7,11 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm dlx prisma migrate deploy && tsc",
     "prisma:dev": "dotenv -e ../../.env -- prisma",
     "db:generate": "prisma generate",
     "db:push": "pnpm prisma:dev db push --skip-generate",
     "db:mg": "pnpm prisma:dev migrate dev",
-    "db:deploy": "pnpm dlx prisma generate && pnpm dlx prisma migrate deploy && pnpm build",
     "lint": "eslint \"**/*.ts\" --fix"
   },
   "dependencies": {
