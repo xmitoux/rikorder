@@ -16,12 +16,12 @@
     "lint": "eslint \"**/*.ts\" --fix"
   },
   "dependencies": {
-    "@prisma/client": "^5.15.0"
+    "@prisma/client": "5.15.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "eslint": "^9.5.0",
-    "prisma": "^5.15.0",
+    "prisma": "5.15.0",
     "typescript": "^5.5.2"
   }
 }
