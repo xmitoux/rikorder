@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     port: 3001,
   },
   modules,
+  // @ts-ignore
   eslint: {
     config: {
       stylistic: true,
