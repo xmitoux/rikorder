@@ -142,6 +142,9 @@ importers:
       '@prisma/client':
         specifier: 5.15.0
         version: 5.15.0(prisma@5.15.0)
+      typescript:
+        specifier: ^5.5.2
+        version: 5.5.2
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -152,9 +155,6 @@ importers:
       prisma:
         specifier: 5.15.0
         version: 5.15.0
-      typescript:
-        specifier: ^5.5.2
-        version: 5.5.2
 
   packages/eslint-config:
     devDependencies:
