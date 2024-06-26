@@ -5,7 +5,7 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "render:deploy": "pnpm install --frozen-lockfile && pnpm -F db build && pnpm -F backend build",
+    "deploy:render": "pnpm install --frozen-lockfile && pnpm -F db build && pnpm -F backend build",
     "deploy:vercel": "pnpm install --frozen-lockfile && pnpm -F db build && pnpm -F frontend build"
   },
   "devDependencies": {
