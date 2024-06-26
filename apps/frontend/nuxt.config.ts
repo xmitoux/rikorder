@@ -27,4 +27,10 @@ export default defineNuxtConfig({
       baseURL: process.env.BASE_API_URL,
     },
   },
+  nitro: {
+    preset: 'vercel',
+    output: {
+      dir: '../../.vercel/output',
+    },
+  },
 });
