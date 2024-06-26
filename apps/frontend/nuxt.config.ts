@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     port: 3001,
   },
   modules,
+  // @ts-ignore
   eslint: {
     config: {
       stylistic: true,
@@ -24,6 +25,12 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseURL: process.env.BASE_API_URL,
+    },
+  },
+  nitro: {
+    preset: 'vercel',
+    output: {
+      dir: '../../.vercel/output',
     },
   },
 });

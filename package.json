@@ -4,7 +4,9 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "deploy:render": "pnpm install --frozen-lockfile && pnpm -F db build && pnpm -F backend build",
+    "deploy:vercel": "pnpm install --frozen-lockfile && pnpm -F db build && pnpm -F frontend build"
   },
   "devDependencies": {
     "dotenv-cli": "^7.4.2",
