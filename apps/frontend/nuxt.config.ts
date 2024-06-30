@@ -94,4 +94,12 @@ export default defineNuxtConfig({
   },
   // @ts-ignore
   pwa,
+  quasar: {
+    extras: {
+      fontIcons: [
+        'mdi-v7',
+      ],
+    },
+    iconSet: 'mdi-v7',
+  },
 });
