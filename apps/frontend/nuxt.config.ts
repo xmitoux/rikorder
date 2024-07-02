@@ -86,6 +86,8 @@ export default defineNuxtConfig({
       link: [
         { href: `/favicon.ico`, rel: 'icon', sizes: '64x64' },
         { href: `/apple-touch-icon-180x180.png`, rel: 'apple-touch-icon' },
+        // Kosugi Maru font 読み込み
+        { href: 'https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap', rel: 'stylesheet' },
       ],
       meta: [
         { content: '#326CB3', name: 'theme-color' },

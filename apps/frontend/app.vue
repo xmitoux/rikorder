@@ -13,3 +13,7 @@ const NuxtPwaManifest = process.env.NODE_ENV === 'production'
     </NuxtLayout>
   </div>
 </template>
+
+<style lang="scss">
+@use "~/assets/scss/main.scss";
+</style>
