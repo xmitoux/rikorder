@@ -40,7 +40,7 @@ updateSelectedMenu(route.path);
   <q-layout view="hHh LpR fFf">
     <q-header class="bg-pink-2 text-white">
       <q-toolbar>
-        <q-toolbar-title>
+        <q-toolbar-title class="text-center">
           {{ headerTitle }}
         </q-toolbar-title>
       </q-toolbar>
@@ -50,7 +50,7 @@ updateSelectedMenu(route.path);
       <slot />
     </q-page-container>
 
-    <q-footer class="bg-pink-2 text-white">
+    <q-footer class="bg-pink-2 text-white footer">
       <q-toolbar>
         <template v-for="(menu, index) in menus" :key="menu.name">
           <q-icon
@@ -66,3 +66,11 @@ updateSelectedMenu(route.path);
     </q-footer>
   </q-layout>
 </template>
+
+<style lang="scss" scoped>
+@use "~/assets/scss/_variables.scss" as var;
+
+.footer {
+  height: var.$app-footer-height;
+}
+</style>
