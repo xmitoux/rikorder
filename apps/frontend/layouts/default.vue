@@ -40,9 +40,11 @@ updateSelectedMenu(route.path);
   <q-layout view="hHh LpR fFf">
     <q-header class="bg-pink-2 text-dark">
       <q-toolbar>
-        <q-toolbar-title class="text-center">
+        <q-toolbar-title class="text-center q-ml-xl q-pr-none">
           {{ headerTitle }}
         </q-toolbar-title>
+
+        <q-btn color="white" flat icon="mdi-image-search" :ripple="false" round />
       </q-toolbar>
     </q-header>
 
