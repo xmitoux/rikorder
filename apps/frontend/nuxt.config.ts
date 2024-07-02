@@ -90,7 +90,8 @@ export default defineNuxtConfig({
         { href: 'https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap', rel: 'stylesheet' },
       ],
       meta: [
-        { content: '#326CB3', name: 'theme-color' },
+        // PWAの表示領域より上の部分の色
+        { content: '#F8BBD0', name: 'theme-color' },
       ],
     },
   },
