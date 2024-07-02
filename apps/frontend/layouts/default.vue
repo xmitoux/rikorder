@@ -38,7 +38,7 @@ updateSelectedMenu(route.path);
 
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header class="bg-pink-2 text-white">
+    <q-header class="bg-pink-2 text-dark">
       <q-toolbar>
         <q-toolbar-title class="text-center">
           {{ headerTitle }}
@@ -47,7 +47,9 @@ updateSelectedMenu(route.path);
     </q-header>
 
     <q-page-container>
-      <slot />
+      <q-page class="q-pa-lg">
+        <slot />
+      </q-page>
     </q-page-container>
 
     <q-footer class="bg-pink-2 text-white footer">
