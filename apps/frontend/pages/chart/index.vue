@@ -4,8 +4,9 @@
 
 <template>
   <div>
-    ホーム画面
+    集計画面
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>
