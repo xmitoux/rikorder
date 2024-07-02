@@ -7,6 +7,13 @@ const NuxtPwaManifest = process.env.NODE_ENV === 'production'
 <template>
   <div>
     <component :is="NuxtPwaManifest" />
-    <NuxtPage />
+
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
+
+<style lang="scss">
+@use "~/assets/scss/main.scss";
+</style>
