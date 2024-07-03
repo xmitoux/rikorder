@@ -105,5 +105,6 @@ export default defineNuxtConfig({
       ],
     },
     iconSet: 'mdi-v7',
+    sassVariables: true,
   },
 });

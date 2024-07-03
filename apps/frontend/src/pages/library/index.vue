@@ -1,12 +1,17 @@
 <script setup lang="ts">
-
 </script>
 
 <template>
   <div>
-    ライブラリ画面
+    <ToggleButton
+      label1="画像" label2="タグ"
+      mdi1="mdi-image-outline" mdi2="mdi-tag-outline"
+    />
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.border {
+  border: 1px solid $dark
+}
 </style>
