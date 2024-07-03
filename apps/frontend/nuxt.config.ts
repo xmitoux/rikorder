@@ -81,6 +81,7 @@ export default defineNuxtConfig({
       dir: '../../.vercel/output',
     },
   },
+  srcDir: 'src/',
   app: {
     head: {
       link: [
