@@ -18,6 +18,7 @@ export const customEslintRules = {
     '@typescript-eslint/no-extraneous-class': 'off',
     'vue/max-attributes-per-line': 'off',
     'vue/attributes-order': ["error", { alphabetical: true }],
+    "vue/multi-word-component-names": 'off'
   },
 };
 
