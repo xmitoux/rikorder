@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { data: rikoImages, status } = findRikoImagesApi();
 </script>
 
 <template>
@@ -19,6 +20,8 @@
         <q-btn color="dark" flat icon="mdi-plus" round />
       </div>
     </div>
+
+    <RikoImageList v-if="status === 'success'" :images="rikoImages!" />
   </div>
 </template>
 
