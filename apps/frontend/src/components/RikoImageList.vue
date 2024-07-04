@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { RikoImageEntityResponse } from '@repo/db';
+
 const props = defineProps<{
-  images: { id: number; url: string }[];
+  images: RikoImageEntityResponse[];
 }>();
 
 const emit = defineEmits<{
@@ -9,8 +11,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="row text-center">
-    <div v-for="image in props.images" :key="image.id" class="col-6">
+  <div class="row q-col-gutter-md text-center">
+    <div v-for="image in props.images" :key="image.id" class="col-6 col-md-4 col-lg-3">
       <q-img
         class="image-container q-mt-md"
         spinner-color="pink-2"
