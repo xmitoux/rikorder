@@ -94,7 +94,9 @@ export default defineNuxtConfig({
         // PWAの表示領域より上の部分の色
         { content: '#F8BBD0', name: 'theme-color' },
       ],
+
     },
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
   // @ts-ignore
   pwa,
