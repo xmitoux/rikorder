@@ -98,6 +98,10 @@ export default defineNuxtConfig({
     },
     pageTransition: { name: 'page', mode: 'out-in' },
   },
+  components: [
+    '~/components',
+    { path: '~/components/ui-parts', prefix: 'UI' },
+  ],
   // @ts-ignore
   pwa,
   quasar: {
