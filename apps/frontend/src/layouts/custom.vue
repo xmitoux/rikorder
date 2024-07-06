@@ -14,7 +14,7 @@
     </q-header>
 
     <q-page-container>
-      <q-page class="q-pa-lg">
+      <q-page class="q-pa-lg bg-white">
         <slot />
       </q-page>
     </q-page-container>

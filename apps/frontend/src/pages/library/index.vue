@@ -1,6 +1,8 @@
 <!-- 🖼️梨子ちゃんライブラリ トップ画面 -->
 <script setup lang="ts">
 const { data: rikoImages, status } = findRikoImagesApi();
+
+const showCreateForm = ref(false);
 </script>
 
 <template>
@@ -18,11 +20,12 @@ const { data: rikoImages, status } = findRikoImagesApi();
       </div>
 
       <div class="col-1 text-center q-px-xs">
-        <q-btn color="dark" flat icon="mdi-plus" round @click="navigateTo('/library/create')" />
+        <q-btn color="dark" flat icon="mdi-plus" round @click="showCreateForm = true" />
       </div>
     </div>
 
     <RikoImageList v-if="status === 'success'" :images="rikoImages!" />
+    <RikoLibraryCreateForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
   </div>
 </template>
 
