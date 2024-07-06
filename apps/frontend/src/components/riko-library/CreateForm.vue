@@ -16,11 +16,20 @@ const selctedModes = ref<RikordMode[]>([]);
 const isFavorite = ref(false);
 
 const onClickOk = () => {
+  resetForm();
+
   // TODO: データを返す
   emit('ok');
 };
+
 const onClickCancel = () => {
+  resetForm();
   emit('cancel');
+};
+
+const resetForm = () => {
+  selctedModes.value = [];
+  isFavorite.value = false;
 };
 </script>
 
