@@ -1,9 +1,5 @@
 <!-- 🖼️梨子ちゃんライブラリ 画像登録画面 -->
 <script setup lang="ts">
-definePageMeta({
-  layout: false,
-});
-
 const emit = defineEmits(['ok', 'cancel']);
 
 defineProps<{
