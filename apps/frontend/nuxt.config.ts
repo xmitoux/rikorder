@@ -94,7 +94,19 @@ export default defineNuxtConfig({
         // PWAの表示領域より上の部分の色
         { content: '#F8BBD0', name: 'theme-color' },
       ],
+
     },
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
+  components: [
+    '~/components',
+    { path: '~/components/ui-parts', prefix: 'UI' },
+  ],
+  imports: {
+    dirs: [
+      'composables',
+      'composables/**',
+    ],
   },
   // @ts-ignore
   pwa,

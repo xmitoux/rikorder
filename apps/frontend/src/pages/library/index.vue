@@ -1,12 +1,15 @@
+<!-- 🖼️梨子ちゃんライブラリ トップ画面 -->
 <script setup lang="ts">
 const { data: rikoImages, status } = findRikoImagesApi();
+
+const showCreateForm = ref(false);
 </script>
 
 <template>
   <div>
     <div class="row justify-end">
       <div class="col-8">
-        <ToggleButton
+        <UIButtonToggle
           label1="画像" label2="タグ"
           mdi1="mdi-image-outline" mdi2="mdi-tag-outline"
         />
@@ -17,11 +20,12 @@ const { data: rikoImages, status } = findRikoImagesApi();
       </div>
 
       <div class="col-1 text-center q-px-xs">
-        <q-btn color="dark" flat icon="mdi-plus" round />
+        <q-btn color="dark" flat icon="mdi-plus" round @click="showCreateForm = true" />
       </div>
     </div>
 
     <RikoImageList v-if="status === 'success'" :images="rikoImages!" />
+    <RikoLibraryCreateForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
   </div>
 </template>
 
