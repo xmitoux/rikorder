@@ -62,8 +62,8 @@ const onClickCancel = () => {
       </div>
 
       <template #footer>
-        <ButtonCancel class="q-mr-sm" @click="onClickCancel" />
-        <ButtonOk class="q-mr-sm" label="登録する" @click="onClickOk" />
+        <UIButtonCancel class="q-mr-sm" @click="onClickCancel" />
+        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk" />
       </template>
     </NuxtLayout>
   </q-dialog>

@@ -9,7 +9,7 @@ const showCreateForm = ref(false);
   <div>
     <div class="row justify-end">
       <div class="col-8">
-        <ToggleButton
+        <UIButtonToggle
           label1="画像" label2="タグ"
           mdi1="mdi-image-outline" mdi2="mdi-tag-outline"
         />
