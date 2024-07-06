@@ -5,7 +5,7 @@
   <q-layout view="hHh LpR fFf">
     <q-header class="bg-pink-2 text-dark">
       <q-toolbar>
-        <q-toolbar-title class="text-center q-ml-xl q-pr-none">
+        <q-toolbar-title class="text-center ">
           <slot name="header">
             ヘッダータイトル
           </slot>
