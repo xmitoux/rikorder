@@ -1,3 +1,4 @@
+<!-- 🖼️梨子ちゃんライブラリ トップ画面 -->
 <script setup lang="ts">
 const { data: rikoImages, status } = findRikoImagesApi();
 </script>
@@ -17,7 +18,7 @@ const { data: rikoImages, status } = findRikoImagesApi();
       </div>
 
       <div class="col-1 text-center q-px-xs">
-        <q-btn color="dark" flat icon="mdi-plus" round />
+        <q-btn color="dark" flat icon="mdi-plus" round @click="navigateTo('/library/create')" />
       </div>
     </div>
 
