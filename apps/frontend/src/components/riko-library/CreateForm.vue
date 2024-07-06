@@ -55,19 +55,19 @@ const resetForm = () => {
 
       <!-- モード選択 -->
       <div class="q-ml-sm q-mb-lg">
-        <UISectionLabel class="q-mb-md" label="Rikordモード" />
+        <UISectionLabel class="q-mb-sm" label="Rikordモード" />
 
         <div class="q-gutter-lg">
-          <q-checkbox v-model="selctedModes" color="pink-2" label="View" val="View" />
-          <q-checkbox v-model="selctedModes" color="pink-2" label="Solo" val="Solo" />
-          <q-checkbox v-model="selctedModes" color="pink-2" label="Multi" val="Multi" />
+          <q-checkbox v-model="selctedModes" class="text-subtitle1" color="pink-2" label="View" val="View" />
+          <q-checkbox v-model="selctedModes" class="text-subtitle1" color="pink-2" label="Solo" val="Solo" />
+          <q-checkbox v-model="selctedModes" class="text-subtitle1" color="pink-2" label="Multi" val="Multi" />
         </div>
       </div>
 
       <!-- お気に入り -->
       <div class="q-ml-sm q-mb-lg">
-        <UISectionLabel class="q-mb-md" label="お気に入り" />
-        <q-toggle v-model="isFavorite" checked-icon="mdi-star" color="pink-2" keep-color />
+        <UISectionLabel class="q-mb-sm" label="お気に入り" />
+        <q-toggle v-model="isFavorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
       </div>
 
       <template #footer>
