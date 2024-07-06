@@ -1,32 +1,22 @@
 <!-- 🖼️梨子ちゃんライブラリ 画像登録画面 -->
 <script setup lang="ts">
-const emit = defineEmits(['ok', 'cancel']);
-
 defineProps<{
   show: boolean;
 }>();
 
-type RikordMode = 'View' | 'Solo' | 'Multi';
-const selctedModes = ref<RikordMode[]>([]);
+const emit = defineEmits(['ok', 'cancel']);
 
-const isFavorite = ref(false);
-
-const onClickOk = () => {
-  resetForm();
-
-  // TODO: データを返す
-  emit('ok');
-};
-
-const onClickCancel = () => {
-  resetForm();
-  emit('cancel');
-};
-
-const resetForm = () => {
-  selctedModes.value = [];
-  isFavorite.value = false;
-};
+const {
+  fileInput,
+  selectedFile,
+  selectFile,
+  imagePreview,
+  onFileSelected,
+  selctedModes,
+  isFavorite,
+  onClickOk,
+  onClickCancel,
+} = useCreateForm();
 </script>
 
 <template>
@@ -46,7 +36,15 @@ const resetForm = () => {
       <div class="q-ml-sm q-mb-lg">
         <UISectionLabel class="q-mb-md" label="画像" />
 
-        <q-btn class="q-ml-sm" color="pink-2" label="選択" :ripple="{ color: 'pink' }" size="md" text-color="dark" unelevated />
+        <q-btn
+          class="q-ml-sm" color="pink-2" label="選択" :ripple="{ color: 'pink' }" size="md" text-color="dark" unelevated
+          @click="selectFile"
+        />
+        <input ref="fileInput" class="hidden" type="file" @change="onFileSelected">
+
+        <div class="q-px-sm q-mt-sm">
+          <q-img v-if="imagePreview" fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="imagePreview" />
+        </div>
       </div>
 
       <!-- モード選択 -->
@@ -67,8 +65,8 @@ const resetForm = () => {
       </div>
 
       <template #footer>
-        <UIButtonCancel class="q-mr-sm" @click="onClickCancel" />
-        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk" />
+        <UIButtonCancel class="q-mr-sm" @click="onClickCancel(() => emit('cancel'))" />
+        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk(() => emit('ok'))" />
       </template>
     </NuxtLayout>
   </q-dialog>

@@ -102,6 +102,12 @@ export default defineNuxtConfig({
     '~/components',
     { path: '~/components/ui-parts', prefix: 'UI' },
   ],
+  imports: {
+    dirs: [
+      'composables',
+      'composables/**',
+    ],
+  },
   // @ts-ignore
   pwa,
   quasar: {
