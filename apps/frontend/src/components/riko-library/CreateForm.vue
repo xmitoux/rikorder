@@ -1,5 +1,23 @@
 <!-- 🖼️梨子ちゃんライブラリ 画像登録画面 -->
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
+
+const alert = () => {
+  $q.dialog({
+    title: '設定内容エラー',
+    message: '使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。',
+    ok: {
+      color: 'pink-2',
+      textColor: 'dark',
+      rounded: true,
+      unelevated: true,
+    },
+    html: true,
+  });
+};
+
 defineProps<{
   show: boolean;
 }>();
@@ -53,7 +71,7 @@ const {
           </q-card-section>
 
           <q-card-section>
-        <UISectionLabel class="q-mb-sm" label="お気に入り" />
+            <UISectionLabel class="q-mb-sm" label="お気に入り" />
             <q-toggle v-model="currentSetting.favorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
           </q-card-section>
         </q-card>
@@ -61,7 +79,7 @@ const {
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="onClickCancel(() => emit('cancel'))" />
-        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk(() => emit('ok'))" />
+        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk(() => emit('ok'), alert)" />
       </template>
     </NuxtLayout>
   </q-dialog>

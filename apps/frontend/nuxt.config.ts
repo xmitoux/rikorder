@@ -111,6 +111,9 @@ export default defineNuxtConfig({
   // @ts-ignore
   pwa,
   quasar: {
+    plugins: [
+      'Dialog',
+    ],
     extras: {
       fontIcons: [
         'mdi-v7',
