@@ -7,26 +7,14 @@ defineProps<{
 const emit = defineEmits(['ok', 'cancel']);
 
 const {
-  fileInput,
-  selectedFile,
-  selectFile,
-  imagePreview,
-  onFileSelected,
-  selctedModes,
-  isFavorite,
-  onClickOk,
-  onClickCancel,
+  fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
+  selctedModes, isFavorite,
+  onClickOk, onClickCancel,
 } = useCreateForm();
 </script>
 
 <template>
-  <q-dialog
-    maximized
-    :model-value="show"
-    persistent
-    transition-hide="slide-right"
-    transition-show="slide-left"
-  >
+  <q-dialog maximized :model-value="show" persistent transition-hide="slide-right" transition-show="slide-left">
     <NuxtLayout name="custom">
       <template #header>
         画像登録
