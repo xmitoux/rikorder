@@ -1,4 +1,3 @@
-export const useCreateForm = () => {
   const fileInput = ref<HTMLInputElement | null>(null);
 
   const selectFile = () => fileInput.value?.click();
@@ -23,9 +22,26 @@ export const useCreateForm = () => {
   };
 
   type RikordMode = 'View' | 'Solo' | 'Multi';
-  const selctedModes = ref<RikordMode[]>([]);
 
-  const isFavorite = ref(false);
+type RikoImageSetting = { favorite: boolean; use: boolean };
+type RikoImageSettings = { [K in RikordMode]: RikoImageSetting };
+
+const defaultSetting: RikoImageSetting = { favorite: false, use: false };
+
+/** モードごとの設定 */
+const rikordImageSettings = ref<RikoImageSettings>({
+  View: { ...defaultSetting },
+  Solo: { ...defaultSetting },
+  Multi: { ...defaultSetting },
+});
+
+/** 現在のモードタブの設定 */
+const currentSetting = ref<RikoImageSetting>({ ...defaultSetting });
+
+const onToggle = (rikordMode: string) => {
+  // 切り替えたモードタブの設定を取得する
+  currentSetting.value = rikordImageSettings.value[rikordMode as RikordMode];
+};
 
   const onClickOk = (emit: () => void) => {
     resetForm();
@@ -42,20 +58,16 @@ export const useCreateForm = () => {
   const resetForm = () => {
     selectedFile.value = null;
     imagePreview.value = null;
-    selctedModes.value = [];
-    isFavorite.value = false;
-  };
 
+  for (const rikordMode of Object.keys(rikordImageSettings.value)) {
+    rikordImageSettings.value[rikordMode as RikordMode] = { ...defaultSetting };
+  }
+};
+
+export const useCreateForm = () => {
   return {
-    fileInput,
-    selectFile,
-    selectedFile,
-    imagePreview,
-    onFileSelected,
-    selctedModes,
-    isFavorite,
-    onClickOk,
-    onClickCancel,
-    resetForm,
+    fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
+    rikordImageSettings, currentSetting, onToggle,
+    onClickOk, onClickCancel,
   };
 };

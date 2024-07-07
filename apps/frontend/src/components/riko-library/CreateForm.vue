@@ -8,7 +8,7 @@ const emit = defineEmits(['ok', 'cancel']);
 
 const {
   fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
-  selctedModes, isFavorite,
+  rikordImageSettings, currentSetting, onToggle,
   onClickOk, onClickCancel,
 } = useCreateForm();
 </script>
@@ -35,21 +35,28 @@ const {
         </div>
       </div>
 
-      <!-- モード選択 -->
-      <div class="q-ml-sm q-mb-lg">
-        <UISectionLabel class="q-mb-sm" label="Rikordモード" />
+      <div class="q-mx-sm q-mb-lg">
+        <UISectionLabel class="q-mb-md" label="Rikordモード別設定" />
 
-        <div class="q-gutter-lg">
-          <q-checkbox v-model="selctedModes" class="text-subtitle1" color="pink-2" label="View" val="View" />
-          <q-checkbox v-model="selctedModes" class="text-subtitle1" color="pink-2" label="Solo" val="Solo" />
-          <q-checkbox v-model="selctedModes" class="text-subtitle1" color="pink-2" label="Multi" val="Multi" />
-        </div>
-      </div>
+        <q-card bordered flat>
+          <q-card-section class="q-pb-none">
+            <UIButtonToggle
+              label1="View" label2="Solo" label3="Multi"
+              mdi1="mdi-image-search" mdi2="mdi-thumb-up-outline" mdi3="mdi-heart-outline"
+              @change="onToggle"
+            />
+          </q-card-section>
 
-      <!-- お気に入り -->
-      <div class="q-ml-sm q-mb-lg">
+          <q-card-section class="q-pb-none">
+            <UISectionLabel class="q-mb-sm" label="使用する" />
+            <q-toggle v-model="currentSetting.use" checked-icon="mdi-check" color="pink-2" keep-color size="lg" />
+          </q-card-section>
+
+          <q-card-section>
         <UISectionLabel class="q-mb-sm" label="お気に入り" />
-        <q-toggle v-model="isFavorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
+            <q-toggle v-model="currentSetting.favorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
+          </q-card-section>
+        </q-card>
       </div>
 
       <template #footer>
