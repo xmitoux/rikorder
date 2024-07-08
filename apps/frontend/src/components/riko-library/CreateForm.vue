@@ -25,8 +25,8 @@ defineProps<{
 const emit = defineEmits(['ok', 'cancel']);
 
 const {
-  fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
-  rikordImageSettings, currentSetting, onToggle,
+  fileInput, selectFile, imagePreview, onFileSelected,
+  currentSetting, onToggle,
   onClickOk, onClickCancel,
 } = useCreateForm();
 </script>

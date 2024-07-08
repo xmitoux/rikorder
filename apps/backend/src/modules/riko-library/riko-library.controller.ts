@@ -1,5 +1,6 @@
 import { Controller, Post, Body, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 import { CreateRikoImageWithSettingsDto } from './dto/riko-library.dto';
 import { RikoImageEntity } from './entities/riko-library.entity';
@@ -13,8 +14,8 @@ export class RikoLibraryController {
   @UseInterceptors(FileInterceptor('file'))
   async createRikoImageWithSettings(
     @UploadedFile() file: Express.Multer.File,
-    @Body() createRikoImageDto: CreateRikoImageWithSettingsDto,
+    @Body() createRikoImageWithSettingsDto: CreateRikoImageWithSettingsDto,
   ): Promise<RikoImageEntity> {
-    return new RikoImageEntity(await this.rikoImagesService.createRikoImageWithSettings(file, createRikoImageDto.settings));
+    return new RikoImageEntity(await this.rikoImagesService.createRikoImageWithSettings(file, createRikoImageWithSettingsDto.settings));
   }
 }

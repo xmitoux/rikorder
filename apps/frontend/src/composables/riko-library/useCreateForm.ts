@@ -1,3 +1,5 @@
+import type { CreateRikoImageSettingDto } from '@repo/db';
+
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const selectFile = () => fileInput.value?.click();
@@ -43,7 +45,7 @@ const onToggle = (rikordMode: string) => {
   currentSetting.value = rikordImageSettings.value[rikordMode as RikordMode];
 };
 
-const onClickOk = (emit: () => void, alert: () => void) => {
+const onClickOk = async (emit: () => void, alert: () => void) => {
   // 各モードの使用設定フラグが全てfalseかチェック
   const nothingUse = Object.keys(rikordImageSettings.value)
     .map(rikordMode => rikordImageSettings.value[rikordMode as RikordMode].use)
@@ -54,8 +56,34 @@ const onClickOk = (emit: () => void, alert: () => void) => {
     return;
   }
 
+  if (!await submitForm()) {
+    return;
+  }
+
   resetForm();
   emit();
+};
+
+const submitForm = async (): Promise<boolean> => {
+  if (!selectedFile.value) {
+    return false;
+  }
+
+  const settings: CreateRikoImageSettingDto = { rikordModeId: 1, isFavorite: true };
+
+  const formData = new FormData();
+  formData.append('settings', JSON.stringify([settings]));
+  formData.append('file', selectedFile.value);
+
+  try {
+    await createRikoImageWithSettingsApi(formData);
+  }
+  catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+
+  return true;
 };
 
 const onClickCancel = (emit: () => void) => {

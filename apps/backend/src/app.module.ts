@@ -20,7 +20,7 @@ const pinoHttp = {
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule.forRoot({ pinoHttp }),
     RikoImagesModule,
     RikoLibraryModule,
