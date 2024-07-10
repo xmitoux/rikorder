@@ -38,17 +38,24 @@ export class RikoLibraryService {
   }
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
-    const { data, error } = await this.supabaseService
+    // アップロード処理
+    const { data: pathData, error: uploadError } = await this.supabaseService
       .getClient()
       .storage.from('riko-images')
       .upload(`${Date.now()}_${file.originalname}`, file.buffer, {
         contentType: file.mimetype,
       });
 
-    if (error) {
-      throw new Error(`Failed to upload image: ${error.message}`);
+    if (uploadError) {
+      throw new Error(`Failed to upload image: ${uploadError.message}`);
     }
 
-    return data.path;
+    // アップロードしたパスからURLを取得
+    const { data: urlData } = this.supabaseService
+      .getClient()
+      .storage.from('riko-images')
+      .getPublicUrl(pathData.path);
+
+    return urlData.publicUrl;
   }
 }
