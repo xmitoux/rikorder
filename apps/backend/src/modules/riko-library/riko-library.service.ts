@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { RikoImage } from '@repo/db/dist';
 
@@ -12,10 +13,17 @@ export class RikoLibraryService {
   constructor(
     private prisma: PrismaService,
     private supabaseService: SupabaseService,
+    private configService: ConfigService,
   ) {}
 
   async createRikoImageWithSettings(file: Express.Multer.File, settings: CreateRikoImageSettingDto[]): Promise<RikoImage> {
-    const imageUrl = await this.uploadImage(file);
+    const supabaseStorage = this.configService.get<string>('SUPABASE_STORAGE');
+    if (!supabaseStorage) {
+      throw new Error('Supabase用の環境変数が設定されていません。'
+        + '<SUPABASE_STORAGE>を確認してください。');
+    }
+
+    const imageUrl = await this.uploadImage(supabaseStorage, file);
 
     return this.prisma.$transaction(async (prisma) => {
       const rikoImage = await prisma.rikoImage.create({
@@ -37,11 +45,11 @@ export class RikoLibraryService {
     });
   }
 
-  async uploadImage(file: Express.Multer.File): Promise<string> {
+  async uploadImage(supabaseStorage: string, file: Express.Multer.File): Promise<string> {
     // アップロード処理
     const { data: pathData, error: uploadError } = await this.supabaseService
       .getClient()
-      .storage.from('riko-images')
+      .storage.from(supabaseStorage)
       .upload(`${Date.now()}_${file.originalname}`, file.buffer, {
         contentType: file.mimetype,
       });
@@ -53,7 +61,7 @@ export class RikoLibraryService {
     // アップロードしたパスからURLを取得
     const { data: urlData } = this.supabaseService
       .getClient()
-      .storage.from('riko-images')
+      .storage.from(supabaseStorage)
       .getPublicUrl(pathData.path);
 
     return urlData.publicUrl;
