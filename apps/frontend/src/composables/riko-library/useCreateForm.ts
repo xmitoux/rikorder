@@ -47,7 +47,12 @@ const onToggle = (rikordMode: string) => {
   currentSetting.value = rikordImageSettings.value[rikordMode as RikordMode];
 };
 
-const onClickOk = async (emit: () => void, alert: (message: string) => void, notifyErrors: (errors: string[]) => void) => {
+const onClickOk = async (
+  emit: () => void,
+  alert: (message: string) => void,
+  notifyErrors: (errors: string[]) => void,
+  success: (message: string) => void,
+) => {
   if (!selectedFile.value) {
     alert('画像を選択してください。');
     return;
@@ -69,6 +74,7 @@ const onClickOk = async (emit: () => void, alert: (message: string) => void, not
     return;
   }
 
+  success('画像を登録しました。');
   resetForm();
   emit();
 };

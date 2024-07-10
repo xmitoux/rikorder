@@ -2,8 +2,21 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 
+defineProps<{
+  show: boolean;
+}>();
+
+const emit = defineEmits(['ok', 'cancel']);
+
+const {
+  fileInput, selectFile, imagePreview, onFileSelected,
+  currentSetting, onToggle,
+  onClickOk, onClickCancel,
+} = useCreateForm();
+
 const $q = useQuasar();
 
+/* ↓ Quasarプラグインがcomposable内に実装できないのでこちらで実装 */
 const alert = (message: string) => {
   $q.dialog({
     title: '画像登録エラー',
@@ -14,7 +27,7 @@ const alert = (message: string) => {
       rounded: true,
       unelevated: true,
     },
-    html: true,
+    html: true, // <br>を入れるためhtml
   });
 };
 
@@ -29,17 +42,24 @@ const notifyErrors = (errors: string[]) => {
   }
 };
 
-defineProps<{
-  show: boolean;
-}>();
+const success = (message: string) => {
+  $q.notify({
+    type: 'positive',
+    message,
+    position: 'top',
+    timeout: 2000,
+  });
+};
+/* ↑ */
 
-const emit = defineEmits(['ok', 'cancel']);
-
-const {
-  fileInput, selectFile, imagePreview, onFileSelected,
-  currentSetting, onToggle,
-  onClickOk, onClickCancel,
-} = useCreateForm();
+const onClickSubmit = () => {
+  onClickOk(
+    () => emit('ok'),
+    alert,
+    notifyErrors,
+    success,
+  );
+};
 </script>
 
 <template>
@@ -90,7 +110,7 @@ const {
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="onClickCancel(() => emit('cancel'))" />
-        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk(() => emit('ok'), alert, notifyErrors)" />
+        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickSubmit()" />
       </template>
     </NuxtLayout>
   </q-dialog>
