@@ -8,9 +8,31 @@ datasource db {
 }
 
 model RikoImage {
-  id         Int      @id @default(autoincrement())
+  id         Int                @id @default(autoincrement())
   url        String
-  uploadedAt DateTime @map("uploaded_at")
+  uploadedAt DateTime           @map("uploaded_at")
+  settings   RikoImageSetting[]
 
   @@map("riko_images")
+}
+
+model RikordMode {
+  id          Int                @id
+  modeName    String             @map("mode_name")
+  monthlyGoal Int                @map("monthly_goal")
+  settings    RikoImageSetting[]
+
+  @@map("rikord_modes")
+}
+
+model RikoImageSetting {
+  id           Int        @id @default(autoincrement())
+  rikoImageId  Int        @map("riko_image_id")
+  rikoImage    RikoImage  @relation(fields: [rikoImageId], references: [id])
+  rikordModeId Int        @map("rikord_mode_id")
+  rikordMode   RikordMode @relation(fields: [rikordModeId], references: [id])
+  isFavorite   Boolean    @map("is_favorite")
+
+  @@unique([rikoImageId, rikordModeId])
+  @@map("riko_image_settings")
 }
