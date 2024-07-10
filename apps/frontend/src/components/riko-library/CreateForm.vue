@@ -4,10 +4,10 @@ import { useQuasar } from 'quasar';
 
 const $q = useQuasar();
 
-const alert = () => {
+const alert = (message: string) => {
   $q.dialog({
-    title: '設定内容エラー',
-    message: '使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。',
+    title: '画像登録エラー',
+    message,
     ok: {
       color: 'pink-2',
       textColor: 'dark',
@@ -16,6 +16,17 @@ const alert = () => {
     },
     html: true,
   });
+};
+
+const notifyErrors = (errors: string[]) => {
+  for (const error of errors) {
+    $q.notify({
+      type: 'negative',
+      message: error,
+      timeout: 0,
+      actions: [{ icon: 'mdi-close', color: 'white', round: true }],
+    });
+  }
 };
 
 defineProps<{
@@ -79,7 +90,7 @@ const {
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="onClickCancel(() => emit('cancel'))" />
-        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk(() => emit('ok'), alert)" />
+        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickOk(() => emit('ok'), alert, notifyErrors)" />
       </template>
     </NuxtLayout>
   </q-dialog>

@@ -1,3 +1,5 @@
+import { FetchError } from 'ofetch';
+
 import type { CreateRikoImageSettingDto } from '@repo/db';
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -45,18 +47,25 @@ const onToggle = (rikordMode: string) => {
   currentSetting.value = rikordImageSettings.value[rikordMode as RikordMode];
 };
 
-const onClickOk = async (emit: () => void, alert: () => void) => {
+const onClickOk = async (emit: () => void, alert: (message: string) => void, notifyErrors: (errors: string[]) => void) => {
+  if (!selectedFile.value) {
+    alert('画像を選択してください。');
+    return;
+  }
+
   // 各モードの使用設定フラグが全てfalseかチェック
   const nothingUse = Object.keys(rikordImageSettings.value)
     .map(rikordMode => rikordImageSettings.value[rikordMode as RikordMode].use)
     .every(use => !use);
 
   if (nothingUse) {
-    alert();
+    alert('使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。');
     return;
   }
 
-  if (!await submitForm()) {
+  const result = await submitForm();
+  if (result !== true) {
+    notifyErrors(result);
     return;
   }
 
@@ -64,23 +73,32 @@ const onClickOk = async (emit: () => void, alert: () => void) => {
   emit();
 };
 
-const submitForm = async (): Promise<boolean> => {
-  if (!selectedFile.value) {
-    return false;
-  }
-
-  const settings: CreateRikoImageSettingDto = { rikordModeId: 1, isFavorite: true };
+const submitForm = async (): Promise<true | string[]> => {
+  const settingsFormData: CreateRikoImageSettingDto[] = [];
+  const { View, Solo, Multi } = rikordImageSettings.value;
+  View.use && settingsFormData.push({ rikordModeId: 1, isFavorite: View.favorite });
+  Solo.use && settingsFormData.push({ rikordModeId: 2, isFavorite: Solo.favorite });
+  Multi.use && settingsFormData.push({ rikordModeId: 3, isFavorite: Multi.favorite });
 
   const formData = new FormData();
-  formData.append('settings', JSON.stringify([settings]));
-  formData.append('file', selectedFile.value);
+  formData.append('settings', JSON.stringify(settingsFormData));
+  formData.append('file', selectedFile.value!);
 
   try {
     await createRikoImageWithSettingsApi(formData);
   }
   catch (error) {
-    console.error('Error:', error);
-    return false;
+    console.error('createRikoImageWithSettingsApi:', { error });
+
+    if (error instanceof FetchError) {
+      if (error.response?._data?.data) {
+        const errorMessages = error.response._data.data.message;
+        return Array.isArray(errorMessages) ? errorMessages : [errorMessages];
+      }
+      else {
+        return ['予期せぬエラー'];
+      }
+    }
   }
 
   return true;
