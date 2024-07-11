@@ -55,7 +55,7 @@ export class RikoLibraryService {
       });
 
     if (uploadError) {
-      throw new Error(`Failed to upload image: ${uploadError.message}`);
+      throw new Error(`Supabase Storage アップロード失敗: ${uploadError.message}`);
     }
 
     // アップロードしたパスからURLを取得

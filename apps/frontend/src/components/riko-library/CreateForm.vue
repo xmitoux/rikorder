@@ -36,6 +36,7 @@ const notifyErrors = (errors: string[]) => {
     $q.notify({
       type: 'negative',
       message: error,
+      position: 'top',
       timeout: 0,
       actions: [{ icon: 'mdi-close', color: 'white', round: true }],
     });
