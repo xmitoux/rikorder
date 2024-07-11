@@ -7,7 +7,9 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "prisma migrate deploy && prisma generate && tsc",
+    "build": "pnpm db:mg && tsc",
+    "build:backend": "prisma migrate deploy && prisma generate && tsc",
+    "build:frontend": "prisma generate && tsc",
     "prisma:dev": "dotenv -e ../../.env -- prisma",
     "db:generate": "prisma generate",
     "db:push": "pnpm prisma:dev db push --skip-generate",
