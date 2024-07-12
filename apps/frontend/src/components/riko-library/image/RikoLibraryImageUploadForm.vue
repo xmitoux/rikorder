@@ -10,7 +10,7 @@ const emit = defineEmits(['ok', 'cancel']);
 
 const {
   fileInput, selectFile, imagePreview, onFileSelected,
-  currentSetting, onToggle,
+  currentSetting, toggleSettingRikordMode,
   onClickOk, onClickCancel,
 } = useRikoLibraryImageUploadForm();
 
@@ -90,11 +90,7 @@ const onClickSubmit = () => {
 
         <q-card bordered flat>
           <q-card-section class="q-pb-none">
-            <UIButtonToggle
-              label1="View" label2="Solo" label3="Multi"
-              mdi1="mdi-image-search" mdi2="mdi-thumb-up-outline" mdi3="mdi-heart-outline"
-              @change="onToggle"
-            />
+            <RikoLibraryRikordModeToggleButton @toggle="toggleSettingRikordMode" />
           </q-card-section>
 
           <q-card-section class="q-pb-none">

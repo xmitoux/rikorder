@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { RIKORD_MODES } from '~/constants/rikord-mode';
+import { RIKORD_MODE_ICONS, RIKORD_MODES } from '~/constants/rikord-mode';
 
 import type { QFabActionProps } from 'quasar';
-
-import type { RikordModeName } from '~/types/rikord-mode';
 
 type Menu = { name: string; icon: string; selectedIcon: string; path: string; selected: boolean };
 
@@ -45,31 +43,27 @@ const store = useRikordModeStore();
 
 const fab = ref(false);
 
-const RIKORD_MODE_ICONS: Record<RikordModeName, string> = {
-  View: 'mdi-image-search',
-  Solo: 'mdi-thumb-up',
-  Multi: 'mdi-heart',
-};
+const fabIcon = computed(() => RIKORD_MODE_ICONS[store.currentRikordMode.modeName]());
 
-const fabIcon = computed(() => RIKORD_MODE_ICONS[store.currentRikordMode.modeName]);
-
-const fabPropsList: QFabActionProps[] = [
-  {
-    icon: RIKORD_MODE_ICONS['View'],
-    label: RIKORD_MODES.View.modeName,
-    onClick: () => store.setCurrentRikordMode('View'),
-  },
-  {
-    icon: RIKORD_MODE_ICONS['Solo'],
-    label: RIKORD_MODES.Solo.modeName,
-    onClick: () => store.setCurrentRikordMode('Solo'),
-  },
-  {
-    icon: RIKORD_MODE_ICONS['Multi'],
-    label: RIKORD_MODES.Multi.modeName,
-    onClick: () => store.setCurrentRikordMode('Multi'),
-  },
-];
+const fabPropsList = computed<QFabActionProps[]>(() => {
+  return [
+    {
+      icon: RIKORD_MODE_ICONS.View(store.currentRikordMode.modeName !== 'View'),
+      label: RIKORD_MODES.View.modeName,
+      onClick: () => store.setCurrentRikordMode('View'),
+    },
+    {
+      icon: RIKORD_MODE_ICONS.Solo(store.currentRikordMode.modeName !== 'Solo'),
+      label: RIKORD_MODES.Solo.modeName,
+      onClick: () => store.setCurrentRikordMode('Solo'),
+    },
+    {
+      icon: RIKORD_MODE_ICONS.Multi(store.currentRikordMode.modeName !== 'Multi'),
+      label: RIKORD_MODES.Multi.modeName,
+      onClick: () => store.setCurrentRikordMode('Multi'),
+    },
+  ];
+});
 </script>
 
 <template>

@@ -13,3 +13,9 @@ export const RIKORD_MODES: Record<RikordModeName, RikordModeInfo> = {
   Solo: { id: RIKORD_MODE_VALUES.Solo, modeName: 'Solo' },
   Multi: { id: RIKORD_MODE_VALUES.Multi, modeName: 'Multi' },
 } as const;
+
+export const RIKORD_MODE_ICONS: Record<RikordModeName, (outline?: boolean) => string> = {
+  View: (outline = false) => outline ? 'mdi-image-search-outline' : 'mdi-image-search',
+  Solo: (outline = false) => outline ? 'mdi-thumb-up-outline' : 'mdi-thumb-up',
+  Multi: (outline = false) => outline ? 'mdi-heart-outline' : 'mdi-heart',
+};
