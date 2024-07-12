@@ -79,6 +79,8 @@ const onClickOk = async (
   emit();
 };
 
+const uploading = ref(false);
+
 const submitForm = async (): Promise<true | string[]> => {
   const settingsFormData: CreateRikoImageSettingDto[] = [];
   const { View, Solo, Multi } = rikoImageSettings.value;
@@ -89,6 +91,8 @@ const submitForm = async (): Promise<true | string[]> => {
   const formData = new FormData();
   formData.append('settings', JSON.stringify(settingsFormData));
   formData.append('file', selectedFile.value!);
+
+  uploading.value = true;
 
   try {
     await createRikoImageWithSettingsApi(formData);
@@ -105,6 +109,9 @@ const submitForm = async (): Promise<true | string[]> => {
         return ['予期せぬエラー'];
       }
     }
+  }
+  finally {
+    uploading.value = false;
   }
 
   return true;
@@ -128,6 +135,6 @@ export const useRikoLibraryImageUploadForm = () => {
   return {
     fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
     rikordImageSettings: rikoImageSettings, currentSetting, toggleSettingRikordMode,
-    onClickOk, onClickCancel,
+    uploading, onClickOk, onClickCancel,
   };
 };

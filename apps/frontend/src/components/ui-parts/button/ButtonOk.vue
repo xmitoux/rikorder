@@ -2,6 +2,7 @@
 <script setup lang="ts">
 type Props = {
   label?: string;
+  loading?: boolean;
 };
 
 withDefaults(defineProps<Props>(), {
@@ -10,7 +11,11 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <q-btn color="pink-2" :label="label" rounded text-color="dark" unelevated />
+  <q-btn color="pink-2" :label="label" :loading="loading" :ripple="{ color: 'white' }" rounded text-color="dark" unelevated>
+    <template #loading>
+      <slot />
+    </template>
+  </q-btn>
 </template>
 
 <style scoped lang="scss">

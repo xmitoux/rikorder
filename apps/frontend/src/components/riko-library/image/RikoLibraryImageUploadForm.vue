@@ -11,7 +11,7 @@ const emit = defineEmits(['ok', 'cancel']);
 const {
   fileInput, selectFile, imagePreview, onFileSelected,
   currentSetting, toggleSettingRikordMode,
-  onClickOk, onClickCancel,
+  uploading, onClickOk, onClickCancel,
 } = useRikoLibraryImageUploadForm();
 
 const $q = useQuasar();
@@ -107,7 +107,10 @@ const onClickSubmit = () => {
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="onClickCancel(() => emit('cancel'))" />
-        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickSubmit()" />
+
+        <UIButtonOk class="q-mr-sm" label="登録する" :loading="uploading" @click="onClickSubmit()">
+          <q-spinner-radio color="white" size="xs" />
+        </UIButtonOk>
       </template>
     </NuxtLayout>
   </q-dialog>
