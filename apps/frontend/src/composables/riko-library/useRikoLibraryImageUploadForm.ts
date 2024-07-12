@@ -124,7 +124,7 @@ const resetForm = () => {
   }
 };
 
-export const useCreateForm = () => {
+export const useRikoLibraryImageUploadForm = () => {
   return {
     fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
     rikordImageSettings, currentSetting, onToggle,

@@ -24,8 +24,8 @@ const showCreateForm = ref(false);
       </div>
     </div>
 
-    <RikoImageList v-if="status === 'success'" :images="rikoImages!" />
-    <RikoLibraryCreateForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
+    <RikoLibraryImageList v-if="status === 'success'" :images="rikoImages!" />
+    <RikoLibraryImageUploadForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
   </div>
 </template>
 

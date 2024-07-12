@@ -12,7 +12,7 @@ const {
   fileInput, selectFile, imagePreview, onFileSelected,
   currentSetting, onToggle,
   onClickOk, onClickCancel,
-} = useCreateForm();
+} = useRikoLibraryImageUploadForm();
 
 const $q = useQuasar();
 
