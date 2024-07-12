@@ -8,7 +8,7 @@ type Menu = { name: MenuName; icon: string; selectedIcon: string; path: string; 
 
 const menus = ref<Menu[]>([
   { name: 'Rikorder', icon: 'mdi-home-outline', selectedIcon: 'mdi-home-heart', path: '/', selected: false },
-  { name: '梨子ちゃんライブラリ', icon: 'mdi-image-multiple-outline', selectedIcon: 'mdi-image-multiple', path: '/library', selected: false },
+  { name: '梨子ちゃんライブラリ', icon: 'mdi-image-multiple-outline', selectedIcon: 'mdi-image-multiple', path: '/riko-library', selected: false },
   { name: 'Rikord一覧', icon: 'mdi-clipboard-text-outline', selectedIcon: 'mdi-clipboard-text', path: '/rikords', selected: false },
   { name: 'ランキング', icon: 'mdi-crown-outline', selectedIcon: 'mdi-crown', path: '/ranking', selected: false },
   { name: '集計', icon: 'mdi-chart-box-outline', selectedIcon: 'mdi-chart-box', path: '/chart', selected: false },
