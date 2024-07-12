@@ -1,5 +1,10 @@
 <script setup lang="ts">
-type Menu = { name: string; icon: string; selectedIcon: string; path: string; selected: boolean };
+import { RIKORD_MODE_ICONS, RIKORD_MODES } from '~/constants/rikord-mode';
+
+import type { QFabActionProps } from 'quasar';
+
+type MenuName = 'Rikorder' | '梨子ちゃんライブラリ' | 'Rikord一覧' | 'ランキング' | '集計' | '設定';
+type Menu = { name: MenuName; icon: string; selectedIcon: string; path: string; selected: boolean };
 
 const menus = ref<Menu[]>([
   { name: 'Rikorder', icon: 'mdi-home-outline', selectedIcon: 'mdi-home-heart', path: '/', selected: false },
@@ -10,7 +15,7 @@ const menus = ref<Menu[]>([
   { name: '設定', icon: 'mdi-cog-outline', selectedIcon: 'mdi-cog', path: '/config', selected: false },
 ]);
 
-const headerTitle = ref('');
+const headerTitle = ref<MenuName | ''>('');
 
 const moveMenu = (selectedMenu: Menu) => {
   headerTitle.value = selectedMenu.name;
@@ -34,17 +39,45 @@ const updateSelectedMenu = (path: string) => {
 // 画面読み込み時に現在のパスに一致するメニューを選択する
 const route = useRoute();
 updateSelectedMenu(route.path);
+
+const store = useRikordModeStore();
+
+const fab = ref(false);
+const fabIcon = computed(() => RIKORD_MODE_ICONS[store.currentRikordMode.modeName]());
+const fabPropsList = computed<QFabActionProps[]>(() => {
+  return [
+    {
+      icon: RIKORD_MODE_ICONS.View(store.currentRikordMode.modeName !== 'View'),
+      label: RIKORD_MODES.View.modeName,
+      onClick: () => store.setCurrentRikordMode('View'),
+    },
+    {
+      icon: RIKORD_MODE_ICONS.Solo(store.currentRikordMode.modeName !== 'Solo'),
+      label: RIKORD_MODES.Solo.modeName,
+      onClick: () => store.setCurrentRikordMode('Solo'),
+    },
+    {
+      icon: RIKORD_MODE_ICONS.Multi(store.currentRikordMode.modeName !== 'Multi'),
+      label: RIKORD_MODES.Multi.modeName,
+      onClick: () => store.setCurrentRikordMode('Multi'),
+    },
+  ];
+});
+
+const isFabHideen = computed(() => headerTitle.value === '梨子ちゃんライブラリ');
 </script>
 
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header class="bg-pink-2 text-dark">
+    <q-header class="bg-pink-2 text-dark header">
       <q-toolbar>
-        <q-toolbar-title class="text-center q-ml-xl q-pr-none">
+        <q-toolbar-title class="text-center q-pr-none" :class="{ 'q-ml-xl': !isFabHideen }">
           {{ headerTitle }}
         </q-toolbar-title>
 
-        <q-btn color="white" flat icon="mdi-image-search" :ripple="false" round />
+        <q-fab v-model="fab" :class="{ hidden: isFabHideen }" color="white" direction="down" external-label flat :icon="fabIcon" label-position="left" padding="0" vertical-actions-align="left">
+          <q-fab-action v-for="fabProps in fabPropsList" v-bind="fabProps" :key="fabProps.label" color="pink-2" external-label label-position="left" unelevated />
+        </q-fab>
       </q-toolbar>
     </q-header>
 
@@ -73,6 +106,10 @@ updateSelectedMenu(route.path);
 
 <style lang="scss" scoped>
 @use "~/assets/scss/_variables.scss" as var;
+
+.header {
+  height: var.$app-header-height;
+}
 
 .footer {
   height: var.$app-footer-height;

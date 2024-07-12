@@ -10,6 +10,7 @@ const prodModules = process.env.NODE_ENV === 'production'
 
 const modules = [
   'nuxt-quasar-ui',
+  '@pinia/nuxt',
   ...devModules,
   ...prodModules,
 ];

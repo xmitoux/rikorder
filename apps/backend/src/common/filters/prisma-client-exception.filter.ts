@@ -28,17 +28,13 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
     const exceptionCode = exception.code;
 
-    if (Object.keys(this.prismaErrorCodes).includes(exceptionCode)) {
-      const statusCode = this.prismaErrorCodes[exceptionCode as keyof typeof this.prismaErrorCodes];
+    const statusCode = Object.keys(this.prismaErrorCodes).includes(exceptionCode)
+      ? this.prismaErrorCodes[exceptionCode as keyof typeof this.prismaErrorCodes]
+      : HttpStatus.INTERNAL_SERVER_ERROR;
 
-      response.status(statusCode).json({
-        message,
-        statusCode,
-      });
-    }
-    else {
-      // default 500 error code
-      super.catch(exception, host);
-    }
+    response.status(statusCode).json({
+      message,
+      statusCode,
+    });
   }
 }

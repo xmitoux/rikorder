@@ -10,9 +10,9 @@ const emit = defineEmits(['ok', 'cancel']);
 
 const {
   fileInput, selectFile, imagePreview, onFileSelected,
-  currentSetting, onToggle,
-  onClickOk, onClickCancel,
-} = useCreateForm();
+  currentSetting, toggleSettingRikordMode,
+  uploading, onClickOk, onClickCancel,
+} = useRikoLibraryImageUploadForm();
 
 const $q = useQuasar();
 
@@ -36,6 +36,7 @@ const notifyErrors = (errors: string[]) => {
     $q.notify({
       type: 'negative',
       message: error,
+      position: 'top',
       timeout: 0,
       actions: [{ icon: 'mdi-close', color: 'white', round: true }],
     });
@@ -89,11 +90,7 @@ const onClickSubmit = () => {
 
         <q-card bordered flat>
           <q-card-section class="q-pb-none">
-            <UIButtonToggle
-              label1="View" label2="Solo" label3="Multi"
-              mdi1="mdi-image-search" mdi2="mdi-thumb-up-outline" mdi3="mdi-heart-outline"
-              @change="onToggle"
-            />
+            <RikoLibraryRikordModeToggleButton @toggle="toggleSettingRikordMode" />
           </q-card-section>
 
           <q-card-section class="q-pb-none">
@@ -110,7 +107,10 @@ const onClickSubmit = () => {
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="onClickCancel(() => emit('cancel'))" />
-        <UIButtonOk class="q-mr-sm" label="登録する" @click="onClickSubmit()" />
+
+        <UIButtonOk class="q-mr-sm" label="登録する" :loading="uploading" @click="onClickSubmit()">
+          <q-spinner-radio color="white" size="xs" />
+        </UIButtonOk>
       </template>
     </NuxtLayout>
   </q-dialog>

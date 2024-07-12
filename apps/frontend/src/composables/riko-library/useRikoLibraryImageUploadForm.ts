@@ -2,6 +2,8 @@ import { FetchError } from 'ofetch';
 
 import type { CreateRikoImageSettingDto } from '@repo/db';
 
+import type { RikordModeName } from '~/types/rikord-mode';
+
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const selectFile = () => fileInput.value?.click();
@@ -25,15 +27,13 @@ const onFileSelected = (event: Event): void => {
   }
 };
 
-type RikordMode = 'View' | 'Solo' | 'Multi';
-
 type RikoImageSetting = { favorite: boolean; use: boolean };
-type RikoImageSettings = { [K in RikordMode]: RikoImageSetting };
+type RikoImageSettings = Record<RikordModeName, RikoImageSetting>;
 
 const defaultSetting: RikoImageSetting = { favorite: false, use: false };
 
 /** モードごとの設定 */
-const rikordImageSettings = ref<RikoImageSettings>({
+const rikoImageSettings = ref<RikoImageSettings>({
   View: { ...defaultSetting },
   Solo: { ...defaultSetting },
   Multi: { ...defaultSetting },
@@ -42,10 +42,10 @@ const rikordImageSettings = ref<RikoImageSettings>({
 /** 現在のモードタブの設定 */
 const currentSetting = ref<RikoImageSetting>({ ...defaultSetting });
 
-const onToggle = (rikordMode: string) => {
+function toggleSettingRikordMode(rikordMode: RikordModeName) {
   // 切り替えたモードタブの設定を取得する
-  currentSetting.value = rikordImageSettings.value[rikordMode as RikordMode];
-};
+  currentSetting.value = rikoImageSettings.value[rikordMode];
+}
 
 const onClickOk = async (
   emit: () => void,
@@ -59,8 +59,8 @@ const onClickOk = async (
   }
 
   // 各モードの使用設定フラグが全てfalseかチェック
-  const nothingUse = Object.keys(rikordImageSettings.value)
-    .map(rikordMode => rikordImageSettings.value[rikordMode as RikordMode].use)
+  const nothingUse = Object.keys(rikoImageSettings.value)
+    .map(rikordMode => rikoImageSettings.value[rikordMode as RikordModeName].use)
     .every(use => !use);
 
   if (nothingUse) {
@@ -79,9 +79,11 @@ const onClickOk = async (
   emit();
 };
 
+const uploading = ref(false);
+
 const submitForm = async (): Promise<true | string[]> => {
   const settingsFormData: CreateRikoImageSettingDto[] = [];
-  const { View, Solo, Multi } = rikordImageSettings.value;
+  const { View, Solo, Multi } = rikoImageSettings.value;
   View.use && settingsFormData.push({ rikordModeId: 1, isFavorite: View.favorite });
   Solo.use && settingsFormData.push({ rikordModeId: 2, isFavorite: Solo.favorite });
   Multi.use && settingsFormData.push({ rikordModeId: 3, isFavorite: Multi.favorite });
@@ -89,6 +91,8 @@ const submitForm = async (): Promise<true | string[]> => {
   const formData = new FormData();
   formData.append('settings', JSON.stringify(settingsFormData));
   formData.append('file', selectedFile.value!);
+
+  uploading.value = true;
 
   try {
     await createRikoImageWithSettingsApi(formData);
@@ -106,6 +110,9 @@ const submitForm = async (): Promise<true | string[]> => {
       }
     }
   }
+  finally {
+    uploading.value = false;
+  }
 
   return true;
 };
@@ -119,15 +126,15 @@ const resetForm = () => {
   selectedFile.value = null;
   imagePreview.value = null;
 
-  for (const rikordMode of Object.keys(rikordImageSettings.value)) {
-    rikordImageSettings.value[rikordMode as RikordMode] = { ...defaultSetting };
+  for (const rikordMode of Object.keys(rikoImageSettings.value)) {
+    rikoImageSettings.value[rikordMode as RikordModeName] = { ...defaultSetting };
   }
 };
 
-export const useCreateForm = () => {
+export const useRikoLibraryImageUploadForm = () => {
   return {
     fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
-    rikordImageSettings, currentSetting, onToggle,
-    onClickOk, onClickCancel,
+    rikordImageSettings: rikoImageSettings, currentSetting, toggleSettingRikordMode,
+    uploading, onClickOk, onClickCancel,
   };
 };
