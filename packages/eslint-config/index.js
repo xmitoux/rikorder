@@ -17,8 +17,9 @@ export const customEslintRules = {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     'vue/max-attributes-per-line': 'off',
-    'vue/attributes-order': ["error", { alphabetical: true }],
-    "vue/multi-word-component-names": 'off'
+    'vue/attributes-order': ['error', { alphabetical: true }],
+    'vue/multi-word-component-names': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
   },
 };
 
@@ -106,19 +107,19 @@ const configStylistic = stylistic.configs.customize({
  */
 const customStylisticRules = {
   rules: {
-    '@stylistic/array-bracket-newline': ["error", "consistent"],
-    '@stylistic/array-element-newline': ["error", "consistent"],
-    '@stylistic/function-call-argument-newline': ["error", "consistent"],
-    '@stylistic/function-call-spacing': ["error", "never"],
-    '@stylistic/function-paren-newline': ["error", "consistent"],
+    '@stylistic/array-bracket-newline': ['error', 'consistent'],
+    '@stylistic/array-element-newline': ['error', 'consistent'],
+    '@stylistic/function-call-argument-newline': ['error', 'consistent'],
+    '@stylistic/function-call-spacing': ['error', 'never'],
+    '@stylistic/function-paren-newline': ['error', 'consistent'],
     '@stylistic/indent': 'error',
-    '@stylistic/no-extra-semi': "error",
-    '@stylistic/no-mixed-operators': "error",
-    '@stylistic/nonblock-statement-body-position': ["error", "below"],
-    '@stylistic/object-curly-newline': ["error", { consistent: true }],
-    '@stylistic/object-curly-spacing': ["error", "always"],
-    '@stylistic/semi-style': ["error", "last"],
-    '@stylistic/switch-colon-spacing': "error",
+    '@stylistic/no-extra-semi': 'error',
+    '@stylistic/no-mixed-operators': 'error',
+    '@stylistic/nonblock-statement-body-position': ['error', 'below'],
+    '@stylistic/object-curly-newline': ['error', { consistent: true }],
+    '@stylistic/object-curly-spacing': ['error', 'always'],
+    '@stylistic/semi-style': ['error', 'last'],
+    '@stylistic/switch-colon-spacing': 'error',
   }
 }
 
