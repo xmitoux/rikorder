@@ -2,6 +2,15 @@
 const slide = ref(1);
 
 const showForm = ref(false);
+const showRikordTimer = ref(false);
+
+function saveRikordTime(time: number) {
+  // TODO: 記録画面を開く
+  console.log(time);
+  showRikordTimer.value = false;
+}
+
+function cancelRikordTimer() { showRikordTimer.value = false; }
 </script>
 
 <template>
@@ -86,12 +95,13 @@ const showForm = ref(false);
     </div>
 
     <div class="column q-px-xl">
-      <UIButtonOk class="q-my-sm" label="今すぐ始める" @click="showForm = true" />
+      <UIButtonOk class="q-my-sm" label="今すぐ始める" @click="showRikordTimer = true" />
       <UIButtonOk class="q-my-sm" label="選んで始める" />
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
     <RikordForm :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
+    <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
   </div>
 </template>
 
