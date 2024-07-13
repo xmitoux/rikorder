@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const slide = ref(1);
+
+const showForm = ref(false);
 </script>
 
 <template>
@@ -82,6 +84,14 @@ const slide = ref(1);
         </q-carousel-slide>
       </q-carousel>
     </div>
+
+    <div class="column q-px-xl">
+      <UIButtonOk class="q-my-sm" label="今すぐ始める" @click="showForm = true" />
+      <UIButtonOk class="q-my-sm" label="選んで始める" />
+      <UIButtonOk class="q-my-sm" label="ランダム" />
+    </div>
+
+    <RikordForm :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
   </div>
 </template>
 
