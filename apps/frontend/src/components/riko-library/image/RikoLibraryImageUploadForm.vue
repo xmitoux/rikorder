@@ -64,7 +64,7 @@ const onClickSubmit = () => {
 </script>
 
 <template>
-  <q-dialog maximized :model-value="show" persistent transition-hide="slide-right" transition-show="slide-left">
+  <q-dialog maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left">
     <NuxtLayout name="custom">
       <template #header>
         画像登録
