@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import type { RikordTimerResult } from '~/types/rikord';
+
 const slide = ref(1);
 
 const showForm = ref(false);
 const showRikordTimer = ref(false);
 
-function saveRikordTime(time: number) {
+function saveRikordTime(rikordTimerResult: RikordTimerResult) {
   // TODO: 記録画面を開く
-  console.log(time);
+  console.log(rikordTimerResult);
   showRikordTimer.value = false;
 }
 

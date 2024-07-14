@@ -1,69 +1,86 @@
+import type { RikordTimerResult } from '~/types/rikord';
+
 type UseRikordTimer = {
-  elapsedTime: ComputedRef<number>;
+  startDatetime: Ref<Date | undefined>;
+  endDatetime: ComputedRef<Date | undefined>;
   start: () => void;
   isPaused: Ref<boolean>;
   pauseResume: () => void;
   reset: () => void;
+  save: () => RikordTimerResult;
 };
 
-const startTime = ref<number | undefined>();
-const pausedTime = ref<number | undefined>();
+const startDatetime = ref<Date | undefined>(undefined);
+const pauseStartTime = ref<number | undefined>(undefined);
 const isPaused = ref(false);
+const totalPausedTime = ref(0);
 
-// 経過時間を計算する算出プロパティ
-const elapsedTime = computed(() => {
-  if (!startTime.value) {
-    return 0;
+const endDatetime: ComputedRef<Date | undefined> = computed(() => {
+  if (!startDatetime.value) {
+    return;
   }
 
-  const endTime = isPaused.value ? pausedTime.value! : Date.now();
-  return Math.floor((endTime - startTime.value) / 1000);
+  const now = new Date();
+  let currentPausedTime = 0;
+  if (isPaused.value && pauseStartTime.value) {
+    currentPausedTime = now.getTime() - pauseStartTime.value;
+  }
+  const elapsedTime = now.getTime() - startDatetime.value.getTime() - totalPausedTime.value - currentPausedTime;
+  return new Date(startDatetime.value.getTime() + elapsedTime);
 });
 
-// タイマーを開始する関数
+/** タイマーを開始する関数 */
 function start() {
-  if (!startTime.value) {
+  if (!startDatetime.value) {
     // 初回開始時
-    startTime.value = Date.now();
+    startDatetime.value = new Date();
   }
   else if (isPaused.value) {
     // 一時停止後の再開時
-    startTime.value += Date.now() - pausedTime.value!;
+    const pauseDuration = Date.now() - (pauseStartTime.value ?? Date.now());
+    totalPausedTime.value += pauseDuration;
     isPaused.value = false;
+    pauseStartTime.value = undefined;
   }
 }
 
-// 一時停止/再開ボタンが押されたときの処理
+/** 一時停止/再開ボタンが押されたときの処理 */
 function pauseResume() { isPaused.value ? resume() : pause(); }
 
-// タイマーを一時停止する関数
+/** タイマーを一時停止する */
 function pause() {
-  if (!isPaused.value) {
-    pausedTime.value = Date.now();
+  if (!isPaused.value && startDatetime.value) {
     isPaused.value = true;
+    pauseStartTime.value = Date.now();
   }
 }
 
-// 一時停止したタイマーを再開する関数
-function resume() {
-  if (isPaused.value) {
-    start();
-  }
-}
+/** 一時停止したタイマーを再開する */
+function resume() { isPaused.value && start(); }
 
-// タイマーをリセットする関数
+/** タイマーをリセットする */
 function reset() {
-  startTime.value = undefined;
-  pausedTime.value = undefined;
+  startDatetime.value = undefined;
+  pauseStartTime.value = undefined;
   isPaused.value = false;
+  totalPausedTime.value = 0;
+}
+
+function save(): RikordTimerResult {
+  return {
+    startDatetime: startDatetime.value,
+    endDatetime: endDatetime.value,
+  };
 }
 
 export const useRikordTimer = (): UseRikordTimer => {
   return {
-    elapsedTime,
+    startDatetime,
+    endDatetime,
     start,
     isPaused,
     pauseResume,
     reset,
+    save,
   };
 };

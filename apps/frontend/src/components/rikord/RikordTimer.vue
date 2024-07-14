@@ -1,18 +1,30 @@
 <script setup lang="ts">
+import type { RikordTimerResult } from '~/types/rikord';
+
 const show = defineModel<boolean>('show', { required: true });
 const invisible = defineModel<boolean>('invisible', { default: false });
 
 const emit = defineEmits<{
-  save: [rikordTime: number];
+  save: [rikordTimerResult: RikordTimerResult];
   cancel: [];
 }>();
 
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
-const { elapsedTime, start, isPaused, pauseResume, reset } = useRikordTimer();
+const {
+  start,
+  isPaused,
+  pauseResume,
+  reset,
+  save,
+} = useRikordTimer();
 
-function onSave() { emit('save', elapsedTime.value); }
+function onSave() {
+  const result = save();
+  emit('save', result);
+}
+
 function onCancel() { emit('cancel'); }
 </script>
 
