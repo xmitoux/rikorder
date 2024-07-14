@@ -1,9 +1,14 @@
 <!-- Rikord記録画面 -->
 <script setup lang="ts">
-withDefaults(defineProps<{
+import { date } from 'quasar';
+
+import type { RikordTimerResult } from '~/types/rikord';
+
+const props = withDefaults(defineProps<{
   show: boolean;
-  headerTitle: string;
-  submitButtonLabel: string;
+  headerTitle?: string;
+  submitButtonLabel?: string;
+  rikordTimerResult?: RikordTimerResult;
 }>(),
 {
   headerTitle: 'Rikord記録',
@@ -11,6 +16,20 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits(['ok', 'cancel']);
+
+const startDatetime = ref('');
+const endDatetime = ref('');
+
+// inputに表示する日時を取得するためprops.resultを監視する
+watchEffect(() => {
+  startDatetime.value = props.rikordTimerResult?.startDatetime
+    ? date.formatDate(props.rikordTimerResult?.startDatetime, 'YYYY-MM-DD HH:mm:ss')
+    : '';
+
+  endDatetime.value = props.rikordTimerResult?.endDatetime
+    ? date.formatDate(props.rikordTimerResult?.endDatetime, 'YYYY-MM-DD HH:mm:ss')
+    : '';
+});
 </script>
 
 <template>
@@ -19,6 +38,22 @@ const emit = defineEmits(['ok', 'cancel']);
       <template #header>
         {{ headerTitle }}
       </template>
+
+      <!-- TODO: 画像選択 -->
+      <div class="q-ml-sm q-mb-lg">
+        <UISectionLabel class="q-mb-md" label="画像" />
+        <!-- TODO: 画像登録(フォームを開く) -->
+      </div>
+
+      <div class="q-ml-sm q-mb-lg">
+        <UISectionLabel class="q-mb-md" label="開始日時" />
+        <UIInputDatetime v-model="startDatetime" class="q-ml-sm q-mr-xl" />
+      </div>
+
+      <div class="q-ml-sm q-mb-lg">
+        <UISectionLabel class="q-mb-md" label="終了日時" />
+        <UIInputDatetime v-model="endDatetime" class="q-ml-sm q-mr-xl" />
+      </div>
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="emit('cancel')" />

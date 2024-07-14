@@ -6,13 +6,19 @@ const slide = ref(1);
 const showForm = ref(false);
 const showRikordTimer = ref(false);
 
-function saveRikordTime(rikordTimerResult: RikordTimerResult) {
-  // TODO: 記録画面を開く
-  console.log(rikordTimerResult);
+function saveRikordTime(result: RikordTimerResult) {
   showRikordTimer.value = false;
+  openRikordForm(result);
 }
 
 function cancelRikordTimer() { showRikordTimer.value = false; }
+
+const rikordTimerResult = ref<RikordTimerResult>({ startDatetime: undefined, endDatetime: undefined });
+
+function openRikordForm(result: RikordTimerResult) {
+  showForm.value = true;
+  rikordTimerResult.value = result;
+}
 </script>
 
 <template>
@@ -33,7 +39,7 @@ function cancelRikordTimer() { showRikordTimer.value = false; }
                 9/19(木) 9:19
               </div>
 
-              <div class="text-subtitle">
+              <div>
                 9時間19分 経過
               </div>
             </q-card-section>
@@ -102,7 +108,7 @@ function cancelRikordTimer() { showRikordTimer.value = false; }
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
-    <RikordForm :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
+    <RikordForm :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
     <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
   </div>
 </template>
