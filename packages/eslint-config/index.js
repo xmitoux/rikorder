@@ -14,6 +14,7 @@ export const customEslintRules = {
     'curly': 'error',
     'import/order': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
+    'object-shorthand': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     'vue/max-attributes-per-line': 'off',
