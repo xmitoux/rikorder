@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsNumber } from 'class-validator';
 
 import type { CreateRikordDto as Dto } from '@repo/db';
 
@@ -12,10 +12,10 @@ export class CreateRikordDto implements Dto {
   rikordModeId: number;
 
   @IsNotEmpty()
-  @IsDateString()
+  @IsISO8601({ strict: true, strictSeparator: true })
   startedAt: string;
 
   @IsNotEmpty()
-  @IsDateString()
+  @IsISO8601({ strict: true, strictSeparator: true })
   finishedAt: string;
 }
