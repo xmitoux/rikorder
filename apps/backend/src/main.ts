@@ -1,5 +1,5 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { NestFactory, HttpAdapterHost, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import * as express from 'express';
 import { Logger } from 'nestjs-pino';
 

@@ -52,44 +52,38 @@ const configPerfectionist = {
   },
   rules: {
     'perfectionist/sort-exports': 'error',
-    'perfectionist/sort-imports': [
-      'error',
-      {
-        type: 'natural',
-        order: 'asc',
-        'custom-groups': {
-          value: {
-            repo: '@repo/**',
-          },
-        },
-        groups: [
-          'builtin',
-          'external',
-          'repo',
-          'internal',
-          'parent',
-          'sibling',
-          'side-effect',
-          'side-effect-style',
-          'index',
-          'object',
-          'style',
-          'type',
-          'builtin-type',
-          'external-type',
-          'internal-type',
-          'parent-type',
-          'sibling-type',
-          'index-type',
-          'unknown',
-        ],
-        'newlines-between': 'always',
-        'internal-pattern': [
-          '@/**',
-          '~/**'
-        ],
-      },
-    ],
+    'perfectionist/sort-imports': ['error', {
+      type: 'natural',
+      'custom-groups': { value: { repo: '@repo/**' }},
+      groups: [
+        'builtin',
+        'external',
+        'repo',
+        'internal',
+        'parent',
+        'sibling',
+        'side-effect',
+        'side-effect-style',
+        'index',
+        'object',
+        'style',
+        'type',
+        'builtin-type',
+        'external-type',
+        'internal-type',
+        'parent-type',
+        'sibling-type',
+        'index-type',
+        'unknown',
+      ],
+      'newlines-between': 'always',
+      'internal-pattern': [
+        '@/**',
+        '~/**'
+      ],
+    }],
+    'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
+    'perfectionist/sort-named-exports': ['error', { type: 'natural' }],
   },
 };
 
