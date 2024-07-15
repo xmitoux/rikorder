@@ -102,8 +102,8 @@ const submitForm = async (): Promise<true | string[]> => {
 
     if (error instanceof FetchError) {
       if (error.response?._data?.data) {
-        const errorMessages = error.response._data.data.message;
-        return Array.isArray(errorMessages) ? errorMessages : [errorMessages];
+        const errorMessages = JSON.parse(error.response._data.data.messages);
+        return errorMessages;
       }
       else {
         return ['予期せぬエラー'];

@@ -12,23 +12,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const statusCode = exception.getStatus();
 
     const errorResponse = exception.getResponse();
-    let validationErrors = [];
+    let validationErrorMessages = '';
 
     if (statusCode === HttpStatus.BAD_REQUEST && typeof errorResponse === 'object' && 'message' in errorResponse) {
       // バリデーションエラーの場合、ログを出力
-      if (Array.isArray(errorResponse.message)) {
-        validationErrors = this.formatValidationErrors(errorResponse.message);
-      }
-
+      const validationErrors = this.formatValidationErrors(Array.isArray(errorResponse.message) ? errorResponse.message : [errorResponse.message]);
+      validationErrorMessages = JSON.stringify(validationErrors);
       this.logger.error(`Validation failed for [${request.method}] ${request.url}`);
-      this.logger.verbose(`[Request] ${JSON.stringify(request.body)} [Message] ${JSON.stringify(validationErrors)}`);
+      this.logger.verbose(`[Request] ${JSON.stringify(request.body)} [ErrorMessages] ${validationErrorMessages}`);
     }
 
     response
       .status(statusCode)
       .json({
         statusCode,
-        message: exception.message,
+        messages: validationErrorMessages,
         timestamp: new Date().toLocaleString('ja-JP'),
         path: request.url,
       });
@@ -38,7 +36,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   private formatValidationErrors(errors: ValidationError[]): any[] {
     return errors.map((error) => {
       if (typeof error === 'string') {
-        return { message: error };
+        return error;
       }
 
       if (typeof error === 'object' && error.constraints) {
