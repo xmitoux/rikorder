@@ -13,6 +13,7 @@ model RikoImage {
   url        String
   uploadedAt DateTime           @map("uploaded_at")
   settings   RikoImageSetting[]
+  rikords    Rikord[]
 
   @@map("riko_images")
 }
@@ -22,6 +23,7 @@ model RikordMode {
   modeName    String             @map("mode_name")
   monthlyGoal Int                @map("monthly_goal")
   settings    RikoImageSetting[]
+  rikords     Rikord[]
 
   @@map("rikord_modes")
 }
@@ -36,4 +38,19 @@ model RikoImageSetting {
 
   @@unique([rikoImageId, rikordModeId])
   @@map("riko_image_settings")
+}
+
+model Rikord {
+  id           Int        @id @default(autoincrement())
+  rikoImageId  Int        @map("riko_image_id")
+  rikoImage    RikoImage  @relation(fields: [rikoImageId], references: [id])
+  rikordModeId Int        @map("rikord_mode_id")
+  rikordMode   RikordMode @relation(fields: [rikordModeId], references: [id])
+  startedAt    DateTime   @map("started_at")
+  finishedAt   DateTime   @map("finished_at")
+  duration     Int
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@map("rikords")
 }
