@@ -40,6 +40,17 @@ function selectRikoImage(selectedImage: RikoImageEntityResponse) {
   showImageSelector.value = false;
 }
 
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+function confirmCancel() {
+  $q.dialog(dialogConfig({
+    title: '終了確認',
+    message: '記録せずにホーム画面へ戻ります。<br>よろしいですか？',
+    cancel: true,
+  }))
+    .onOk(() => cancelRikord());
+}
+
 function cancelRikord() {
   selectedRikoImage.value = undefined;
   emit('cancel');
@@ -83,7 +94,7 @@ function cancelRikord() {
       </div>
 
       <template #footer>
-        <UIButtonCancel class="q-mr-sm" @click="cancelRikord" />
+        <UIButtonCancel class="q-mr-sm" label="戻る" @click="confirmCancel" />
 
         <UIButtonOk class="q-mr-sm" :label="submitButtonLabel" @click="emit('ok')">
           <q-spinner-radio color="white" size="xs" />
