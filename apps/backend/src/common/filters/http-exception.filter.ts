@@ -26,7 +26,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       .status(statusCode)
       .json({
         statusCode,
-        messages: validationErrorMessages,
+        message: validationErrorMessages,
         timestamp: new Date().toLocaleString('ja-JP'),
         path: request.url,
       });

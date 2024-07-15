@@ -22,6 +22,7 @@ const emit = defineEmits(['ok', 'cancel']);
 const {
   selectedRikoImage, startDatetime, endDatetime,
   validate, createRikord, createLoading,
+  resetForm,
 } = useRikordForm();
 
 // inputに表示する日時を取得するためprops.resultを監視する
@@ -49,11 +50,12 @@ function confirmCancel() {
 }
 
 function cancelRikord() {
-  selectedRikoImage.value = undefined;
+  resetForm();
   emit('cancel');
 }
 
 const store = useRikordModeStore();
+const { notifyConfig } = useQuasarNotify();
 
 async function submitRikord() {
   const validationResult = validate();
@@ -63,10 +65,14 @@ async function submitRikord() {
   }
 
   const result = await createRikord(store.currentRikordMode.id);
-  if (result !== true) {
+  if (!result) {
+    $q.dialog(dialogConfig({ title: '記録失敗', message: 'エラーが発生しました。' }));
     return;
   }
 
+  $q.notify(notifyConfig('positive', { message: 'Rikordを記録しました！' }));
+
+  resetForm();
   emit('ok');
 }
 </script>
