@@ -40,7 +40,7 @@ const rikoImageSettings = ref<RikoImageSettings>({
 });
 
 /** 現在のモードタブの設定 */
-const currentSetting = ref<RikoImageSetting>({ ...defaultSetting });
+const currentSetting = ref<RikoImageSetting>(rikoImageSettings.value.View);
 
 function toggleSettingRikordMode(rikordMode: RikordModeName) {
   // 切り替えたモードタブの設定を取得する
@@ -129,6 +129,8 @@ const resetForm = () => {
   for (const rikordMode of Object.keys(rikoImageSettings.value)) {
     rikoImageSettings.value[rikordMode as RikordModeName] = { ...defaultSetting };
   }
+
+  currentSetting.value = rikoImageSettings.value.View;
 };
 
 export const useRikoLibraryImageUploadForm = () => {

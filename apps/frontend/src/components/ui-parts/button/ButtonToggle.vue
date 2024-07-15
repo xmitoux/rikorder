@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { QBtnToggle, QBtnToggleProps } from 'quasar';
+import type { QBtnToggleProps } from 'quasar';
 
 const props = defineProps<{
   label1: string; mdi1: string;
@@ -24,10 +24,6 @@ const toggleOptions: QBtnToggleProps['options'] = [
 if (props.label3) {
   toggleOptions.push({ value: props.label3, slot: THREE });
 }
-
-watchEffect(() => {
-  emit('change', toggle.value);
-});
 </script>
 
 <template>
@@ -38,6 +34,7 @@ watchEffect(() => {
     rounded spread
     text-color="dark" toggle-color="pink-2" toggle-text-color="dark"
     unelevated
+    @update:model-value="emit('change', $event)"
   >
     <template #one>
       <div class="row items-center no-wrap">
