@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import { date } from 'quasar';
 
+import type { RikoImageEntityResponse } from '@repo/db';
+
 import type { RikordTimerResult } from '~/types/rikord';
 
 const props = withDefaults(defineProps<{
@@ -30,6 +32,18 @@ watchEffect(() => {
     ? date.formatDate(props.rikordTimerResult?.endDatetime, 'YYYY-MM-DD HH:mm:ss')
     : '';
 });
+
+const showImageSelector = ref(false);
+const selectedRikoImage = ref<RikoImageEntityResponse | undefined>();
+function selectRikoImage(selectedImage: RikoImageEntityResponse) {
+  selectedRikoImage.value = selectedImage;
+  showImageSelector.value = false;
+}
+
+function cancelRikord() {
+  selectedRikoImage.value = undefined;
+  emit('cancel');
+}
 </script>
 
 <template>
@@ -42,6 +56,19 @@ watchEffect(() => {
       <!-- TODO: 画像選択 -->
       <div class="q-ml-sm q-mb-lg">
         <UISectionLabel class="q-mb-md" label="画像" />
+
+        <!-- 画像選択時はサムネ表示 -->
+        <div v-if="selectedRikoImage" class="q-px-sm q-mt-sm">
+          <q-img fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="selectedRikoImage.url" @click="showImageSelector = true" />
+        </div>
+
+        <!-- 画像未選択時は選択ボタン表示 -->
+        <q-btn
+          v-else
+          class="q-ml-sm" color="pink-2" label="選択" :ripple="{ color: 'pink' }" size="md" text-color="dark" unelevated
+          @click="showImageSelector = true"
+        />
+
         <!-- TODO: 画像登録(フォームを開く) -->
       </div>
 
@@ -56,13 +83,15 @@ watchEffect(() => {
       </div>
 
       <template #footer>
-        <UIButtonCancel class="q-mr-sm" @click="emit('cancel')" />
+        <UIButtonCancel class="q-mr-sm" @click="cancelRikord" />
 
         <UIButtonOk class="q-mr-sm" :label="submitButtonLabel" @click="emit('ok')">
           <q-spinner-radio color="white" size="xs" />
         </UIButtonOk>
       </template>
     </NuxtLayout>
+
+    <RikordImageSelector :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
   </q-dialog>
 </template>
 
