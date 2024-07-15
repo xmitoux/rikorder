@@ -3,7 +3,7 @@
 
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header class="bg-pink-2 text-dark">
+    <q-header class="bg-pink-2 text-dark header">
       <q-toolbar>
         <q-toolbar-title class="text-center ">
           <slot name="header">
@@ -31,8 +31,12 @@
 <style lang="scss" scoped>
 @use "~/assets/scss/_variables.scss" as var;
 
+.header {
+  height: var.$app-header-height;
+}
+
 .footer {
   height: var.$app-footer-height;
-  border-top: 1px $dark solid;
+  border-top: 1px $grey solid;
 }
 </style>

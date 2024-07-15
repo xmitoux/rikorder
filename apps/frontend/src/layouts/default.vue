@@ -75,7 +75,7 @@ const isFabHideen = computed(() => headerTitle.value === '梨子ちゃんライ�
           {{ headerTitle }}
         </q-toolbar-title>
 
-        <q-fab v-model="fab" :class="{ hidden: isFabHideen }" color="white" direction="down" external-label flat :icon="fabIcon" label-position="left" padding="0" vertical-actions-align="left">
+        <q-fab v-model="fab" :class="{ hidden: isFabHideen }" color="white" direction="down" external-label flat :icon="fabIcon" padding="0 10px" vertical-actions-align="left">
           <q-fab-action v-for="fabProps in fabPropsList" v-bind="fabProps" :key="fabProps.label" color="pink-2" external-label label-position="left" unelevated />
         </q-fab>
       </q-toolbar>

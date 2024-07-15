@@ -17,8 +17,16 @@ export class RikoImagesService {
     });
   }
 
-  findAll(): Promise<RikoImage[]> {
-    return this.prisma.rikoImage.findMany();
+  findAll(id?: number): Promise<RikoImage[]> {
+    return this.prisma.rikoImage.findMany({
+      where: {
+        settings: {
+          some: {
+            rikordModeId: id,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number): Promise<RikoImage> {

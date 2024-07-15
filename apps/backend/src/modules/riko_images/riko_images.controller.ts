@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { IdParam } from '~/common/dto/id-param';
 
@@ -19,6 +19,13 @@ export class RikoImagesController {
   @Get()
   async findAll(): Promise<RikoImageEntity[]> {
     const rikoImages = await this.rikoImagesService.findAll();
+
+    return rikoImages.map(data => new RikoImageEntity(data));
+  }
+
+  @Get('/find-by-rikord-mode/:id')
+  async findByRikordModeId(@Param() { id: rikordModeId }: IdParam): Promise<RikoImageEntity[]> {
+    const rikoImages = await this.rikoImagesService.findAll(rikordModeId);
 
     return rikoImages.map(data => new RikoImageEntity(data));
   }

@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RikoImagesModule } from './modules/riko_images/riko_images.module';
 import { RikoLibraryModule } from './modules/riko-library/riko-library.module';
+import { RikordsModule } from './modules/rikords/rikords.module';
 
 const pinoHttp = {
   level: process.env.PINO_LOG_LEVEL || 'trace',
@@ -24,6 +25,7 @@ const pinoHttp = {
     LoggerModule.forRoot({ pinoHttp }),
     RikoImagesModule,
     RikoLibraryModule,
+    RikordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

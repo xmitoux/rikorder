@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import type { RikoImageEntityResponse } from '@repo/db';
 
-const props = defineProps<{
+defineProps<{
   images: RikoImageEntityResponse[];
 }>();
 
 const emit = defineEmits<{
-  click: [imageId: number];
+  click: [rikoImage: RikoImageEntityResponse];
 }>();
 </script>
 
 <template>
   <div class="row q-col-gutter-md text-center">
-    <div v-for="image in props.images" :key="image.id" class="col-6 col-md-4 col-lg-3">
+    <div v-for="image in images" :key="image.id" class="col-6 col-md-4 col-lg-3">
       <q-img
         class="image-container q-mt-md"
         spinner-color="pink-2"
         :src="image.url"
-        @click="emit('click', image.id)"
+        @click="emit('click', image)"
       />
     </div>
   </div>
