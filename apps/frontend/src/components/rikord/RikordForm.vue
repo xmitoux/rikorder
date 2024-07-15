@@ -19,8 +19,10 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits(['ok', 'cancel']);
 
-const startDatetime = ref('');
-const endDatetime = ref('');
+const {
+  selectedRikoImage, startDatetime, endDatetime,
+  validate,
+} = useRikordForm();
 
 // inputに表示する日時を取得するためprops.resultを監視する
 watchEffect(() => {
@@ -34,7 +36,6 @@ watchEffect(() => {
 });
 
 const showImageSelector = ref(false);
-const selectedRikoImage = ref<RikoImageEntityResponse | undefined>();
 function selectRikoImage(selectedImage: RikoImageEntityResponse) {
   selectedRikoImage.value = selectedImage;
   showImageSelector.value = false;
@@ -43,17 +44,23 @@ function selectRikoImage(selectedImage: RikoImageEntityResponse) {
 const $q = useQuasar();
 const { dialogConfig } = useQuasarDialog();
 function confirmCancel() {
-  $q.dialog(dialogConfig({
-    title: '終了確認',
-    message: '記録せずにホーム画面へ戻ります。<br>よろしいですか？',
-    cancel: true,
-  }))
+  $q.dialog(dialogConfig({ title: '終了確認', message: '記録せずにホーム画面へ戻ります。<br>よろしいですか？', cancel: true }))
     .onOk(() => cancelRikord());
 }
 
 function cancelRikord() {
   selectedRikoImage.value = undefined;
   emit('cancel');
+}
+
+function submitRikord() {
+  const validationResult = validate();
+  if (validationResult !== true) {
+    $q.dialog(dialogConfig({ title: '記録失敗', message: validationResult }));
+    return;
+  }
+
+  emit('ok');
 }
 </script>
 
@@ -64,7 +71,7 @@ function cancelRikord() {
         {{ headerTitle }}
       </template>
 
-      <!-- TODO: 画像選択 -->
+      <!-- 画像選択 -->
       <div class="q-ml-sm q-mb-lg">
         <UISectionLabel class="q-mb-md" label="画像" />
 
@@ -83,6 +90,7 @@ function cancelRikord() {
         <!-- TODO: 画像登録(フォームを開く) -->
       </div>
 
+      <!-- 日時入力 -->
       <div class="q-ml-sm q-mb-lg">
         <UISectionLabel class="q-mb-md" label="開始日時" />
         <UIInputDatetime v-model="startDatetime" class="q-ml-sm q-mr-xl" />
@@ -96,7 +104,7 @@ function cancelRikord() {
       <template #footer>
         <UIButtonCancel class="q-mr-sm" label="戻る" @click="confirmCancel" />
 
-        <UIButtonOk class="q-mr-sm" :label="submitButtonLabel" @click="emit('ok')">
+        <UIButtonOk class="q-mr-sm" :label="submitButtonLabel" @click="submitRikord">
           <q-spinner-radio color="white" size="xs" />
         </UIButtonOk>
       </template>
