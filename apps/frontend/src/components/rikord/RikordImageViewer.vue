@@ -1,3 +1,4 @@
+<!-- Rikord画像ビューア -->
 <script setup lang="ts">
 import type { RikoImageEntityResponse } from '@repo/db';
 
