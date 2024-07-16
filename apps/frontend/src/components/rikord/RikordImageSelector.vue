@@ -3,15 +3,14 @@ import type { RikoImageEntityResponse } from '@repo/db';
 
 const show = defineModel<boolean>('show', { required: true });
 
+defineProps<{
+  rikoImages: RikoImageEntityResponse[];
+}>();
+
 const emit = defineEmits<{
   select: [rikoImage: RikoImageEntityResponse];
   cancel: [];
 }>();
-
-const store = useRikordModeStore();
-const { currentRikordMode } = storeToRefs(store);
-
-const { data: rikoImages, status } = await findRikoImagesByRikordModeIdApi(currentRikordMode.value.id);
 
 function selectImage(selectedImage: RikoImageEntityResponse) {
   emit('select', selectedImage);
@@ -25,7 +24,7 @@ function selectImage(selectedImage: RikoImageEntityResponse) {
         画像選択
       </template>
 
-      <RikoLibraryImageList v-if="status === 'success'" :images="rikoImages!" @click="selectImage" />
+      <RikoLibraryImageList :images="rikoImages" @click="selectImage" />
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" @click="emit('cancel')" />

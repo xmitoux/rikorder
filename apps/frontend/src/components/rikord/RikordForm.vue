@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<{
   headerTitle?: string;
   submitButtonLabel?: string;
   rikordTimerResult?: RikordTimerResult;
+  rikoImages: RikoImageEntityResponse[];
 }>(),
 {
   headerTitle: 'Rikord記録',
@@ -123,7 +124,7 @@ async function submitRikord() {
       </template>
     </NuxtLayout>
 
-    <RikordImageSelector :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
+    <RikordImageSelector :riko-images="rikoImages" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
   </q-dialog>
 </template>
 
