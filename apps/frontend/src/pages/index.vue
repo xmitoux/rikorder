@@ -23,10 +23,15 @@ function openRikordForm(result: RikordTimerResult) {
 }
 
 const showImageSelector = ref(false);
+const showViewer = ref(false);
 const selectedRikoImage = ref<RikoImageEntityResponse | undefined>();
 function selectRikoImage(selectedImage: RikoImageEntityResponse) {
   selectedRikoImage.value = selectedImage;
   showImageSelector.value = false;
+  showViewer.value = true;
+}
+function saveSelectionRikord(result: RikordTimerResult) {
+  showViewer.value = false;
 }
 </script>
 
@@ -120,6 +125,7 @@ function selectRikoImage(selectedImage: RikoImageEntityResponse) {
     <RikordForm :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
     <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
     <RikordImageSelector :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
+    <RikordImageViewer :show="showViewer" @cancel="showViewer = false" @save="saveSelectionRikord" />
   </div>
 </template>
 
