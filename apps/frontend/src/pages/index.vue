@@ -1,5 +1,20 @@
+<!-- 🏠️ホーム画面 -->
 <script setup lang="ts">
+import type { RikoImageEntityResponse } from '@repo/db';
+
 import type { RikordTimerResult } from '~/types/rikord';
+
+const store = useRikordModeStore();
+const { currentRikordMode } = storeToRefs(store);
+
+const rikoImages = ref<RikoImageEntityResponse[] | null>([]);
+
+watchEffect(async () => {
+  rikoImages.value = await findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
+    console.error('画像選択画面用の画像取得に失敗しました。');
+    return [];
+  });
+});
 
 const slide = ref(1);
 
@@ -18,6 +33,25 @@ const rikordTimerResult = ref<RikordTimerResult>({ startDatetime: undefined, end
 function openRikordForm(result: RikordTimerResult) {
   showForm.value = true;
   rikordTimerResult.value = result;
+}
+
+const showImageSelector = ref(false);
+const showViewer = ref(false);
+const selectedViewImage = ref<RikoImageEntityResponse | undefined>();
+function selectViewImage(selectedImage: RikoImageEntityResponse) {
+  selectedViewImage.value = selectedImage;
+  showImageSelector.value = false;
+  showViewer.value = true;
+}
+function saveSelectionRikord(result: RikordTimerResult) {
+  showViewer.value = false;
+  openRikordForm(result);
+}
+
+function finishRikord() {
+  showForm.value = false;
+  // 選んで始める用の初期選択画像を消去
+  selectedViewImage.value = undefined;
 }
 </script>
 
@@ -104,12 +138,14 @@ function openRikordForm(result: RikordTimerResult) {
 
     <div class="column q-px-xl">
       <UIButtonOk class="q-my-sm" label="今すぐ始める" @click="showRikordTimer = true" />
-      <UIButtonOk class="q-my-sm" label="選んで始める" />
+      <UIButtonOk class="q-my-sm" label="選んで始める" @click="showImageSelector = true" />
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
-    <RikordForm :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
+    <RikordForm :init-riko-image="selectedViewImage" :riko-images="rikoImages!" :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="finishRikord" @ok="finishRikord" />
     <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
+    <RikordImageSelector :riko-images="rikoImages!" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectViewImage" />
+    <RikordImageViewer :riko-image="selectedViewImage!" :show="showViewer" @cancel="showViewer = false" @save="saveSelectionRikord" />
   </div>
 </template>
 
