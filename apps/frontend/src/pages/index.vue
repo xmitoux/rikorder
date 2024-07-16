@@ -125,7 +125,7 @@ function saveSelectionRikord(result: RikordTimerResult) {
     <RikordForm :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
     <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
     <RikordImageSelector :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
-    <RikordImageViewer :show="showViewer" @cancel="showViewer = false" @save="saveSelectionRikord" />
+    <RikordImageViewer :riko-image="selectedRikoImage!" :show="showViewer" @cancel="showViewer = false" @save="saveSelectionRikord" />
   </div>
 </template>
 

@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import type { RikoImageEntityResponse } from '@repo/db';
+
 import type { RikordTimerResult } from '~/types/rikord';
 
 const show = defineModel<boolean>('show', { required: true });
+
+defineProps<{
+  rikoImage: RikoImageEntityResponse;
+}>();
+
 const emit = defineEmits<{
   save: [rikordResult: RikordTimerResult];
   cancel: [];
@@ -29,8 +36,7 @@ const onHide = () => {
 <template>
   <q-dialog v-model="show" maximized persistent transition-hide="jump-right" transition-show="jump-left" @hide="onHide" @show="onShow">
     <div class="bg-white">
-      <!-- TODO: 選んだ画像を表示 -->
-      <q-img class="full-height" src="https://i.idol.st/u/card/art/2x/30Sakurauchi-Riko-Water-Symphony-UR-LpaEgy.png" @click="invisbleRikordTimer = false" />
+      <q-img class="full-height" :src="rikoImage.url" @click="invisbleRikordTimer = false" />
     </div>
 
     <RikordTimer v-model:invisible="invisbleRikordTimer" v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
