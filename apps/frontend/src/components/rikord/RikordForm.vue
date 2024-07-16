@@ -6,12 +6,14 @@ import type { RikoImageEntityResponse } from '@repo/db';
 
 import type { RikordTimerResult } from '~/types/rikord';
 
+const show = defineModel<boolean>('show', { required: true });
+
 const props = withDefaults(defineProps<{
-  show: boolean;
   headerTitle?: string;
   submitButtonLabel?: string;
   rikordTimerResult?: RikordTimerResult;
   rikoImages: RikoImageEntityResponse[];
+  initRikoImage?: RikoImageEntityResponse;
 }>(),
 {
   headerTitle: 'Rikord記録',
@@ -25,6 +27,11 @@ const {
   validate, createRikord, createLoading,
   resetForm,
 } = useRikordForm();
+
+function onShow() {
+  // 初期選択画像があれば設定する
+  selectedRikoImage.value = props.initRikoImage;
+}
 
 // inputに表示する日時を取得するためprops.resultを監視する
 watchEffect(() => {
@@ -79,7 +86,7 @@ async function submitRikord() {
 </script>
 
 <template>
-  <q-dialog maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left">
+  <q-dialog maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left" @show="onShow">
     <NuxtLayout name="custom">
       <template #header>
         {{ headerTitle }}

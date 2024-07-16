@@ -1,3 +1,4 @@
+<!-- 🏠️ホーム画面 -->
 <script setup lang="ts">
 import type { RikoImageEntityResponse } from '@repo/db';
 
@@ -36,14 +37,21 @@ function openRikordForm(result: RikordTimerResult) {
 
 const showImageSelector = ref(false);
 const showViewer = ref(false);
-const selectedRikoImage = ref<RikoImageEntityResponse | undefined>();
-function selectRikoImage(selectedImage: RikoImageEntityResponse) {
-  selectedRikoImage.value = selectedImage;
+const selectedViewImage = ref<RikoImageEntityResponse | undefined>();
+function selectViewImage(selectedImage: RikoImageEntityResponse) {
+  selectedViewImage.value = selectedImage;
   showImageSelector.value = false;
   showViewer.value = true;
 }
 function saveSelectionRikord(result: RikordTimerResult) {
   showViewer.value = false;
+  openRikordForm(result);
+}
+
+function finishRikord() {
+  showForm.value = false;
+  // 選んで始める用の初期選択画像を消去
+  selectedViewImage.value = undefined;
 }
 </script>
 
@@ -134,10 +142,10 @@ function saveSelectionRikord(result: RikordTimerResult) {
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
-    <RikordForm :riko-images="rikoImages!" :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
+    <RikordForm :init-riko-image="selectedViewImage" :riko-images="rikoImages!" :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="finishRikord" @ok="finishRikord" />
     <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
-    <RikordImageSelector :riko-images="rikoImages!" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
-    <RikordImageViewer :riko-image="selectedRikoImage!" :show="showViewer" @cancel="showViewer = false" @save="saveSelectionRikord" />
+    <RikordImageSelector :riko-images="rikoImages!" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectViewImage" />
+    <RikordImageViewer :riko-image="selectedViewImage!" :show="showViewer" @cancel="showViewer = false" @save="saveSelectionRikord" />
   </div>
 </template>
 
