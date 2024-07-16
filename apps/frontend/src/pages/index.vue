@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { RikoImageEntityResponse } from '@repo/db';
+
 import type { RikordTimerResult } from '~/types/rikord';
 
 const slide = ref(1);
@@ -18,6 +20,13 @@ const rikordTimerResult = ref<RikordTimerResult>({ startDatetime: undefined, end
 function openRikordForm(result: RikordTimerResult) {
   showForm.value = true;
   rikordTimerResult.value = result;
+}
+
+const showImageSelector = ref(false);
+const selectedRikoImage = ref<RikoImageEntityResponse | undefined>();
+function selectRikoImage(selectedImage: RikoImageEntityResponse) {
+  selectedRikoImage.value = selectedImage;
+  showImageSelector.value = false;
 }
 </script>
 
@@ -104,12 +113,13 @@ function openRikordForm(result: RikordTimerResult) {
 
     <div class="column q-px-xl">
       <UIButtonOk class="q-my-sm" label="今すぐ始める" @click="showRikordTimer = true" />
-      <UIButtonOk class="q-my-sm" label="選んで始める" />
+      <UIButtonOk class="q-my-sm" label="選んで始める" @click="showImageSelector = true" />
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
     <RikordForm :rikord-timer-result="rikordTimerResult" :show="showForm" @cancel="showForm = false" @ok="showForm = false" />
     <RikordTimer v-model:show="showRikordTimer" @cancel="cancelRikordTimer" @save="saveRikordTime" />
+    <RikordImageSelector :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
   </div>
 </template>
 
