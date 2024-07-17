@@ -3,10 +3,10 @@ import type { RikordTimerResult } from '~/types/rikord';
 type UseRikordTimer = {
   startDatetime: Ref<Date | undefined>;
   endDatetime: ComputedRef<Date | undefined>;
-  start: () => void;
+  startTimer: () => void;
   isPaused: Ref<boolean>;
   pauseResume: () => void;
-  reset: () => void;
+  resetTimer: () => void;
   save: () => RikordTimerResult;
 };
 
@@ -30,7 +30,7 @@ const endDatetime: ComputedRef<Date | undefined> = computed(() => {
 });
 
 /** タイマーを開始する関数 */
-function start() {
+function startTimer() {
   if (!startDatetime.value) {
     // 初回開始時
     startDatetime.value = new Date();
@@ -56,10 +56,10 @@ function pause() {
 }
 
 /** 一時停止したタイマーを再開する */
-function resume() { isPaused.value && start(); }
+function resume() { isPaused.value && startTimer(); }
 
 /** タイマーをリセットする */
-function reset() {
+function resetTimer() {
   startDatetime.value = undefined;
   pauseStartTime.value = undefined;
   isPaused.value = false;
@@ -77,10 +77,10 @@ export const useRikordTimer = (): UseRikordTimer => {
   return {
     startDatetime,
     endDatetime,
-    start,
+    startTimer,
     isPaused,
     pauseResume,
-    reset,
+    resetTimer,
     save,
   };
 };
