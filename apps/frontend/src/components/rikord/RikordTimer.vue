@@ -1,13 +1,21 @@
+<!-- Rikord計測タイマーコンポーネント -->
 <script setup lang="ts">
 import type { RikordTimerResult } from '~/types/rikord';
 
-const invisible = defineModel<boolean>('invisible', { default: false });
-
-const props = defineProps<{ start: boolean }>();
+const props = withDefaults(defineProps<{
+  /** タイマーを起動する */
+  start: boolean;
+  /** 非表示モード(非表示ボタンを出す) */
+  invisible?: boolean;
+}>(), {
+  invisible: false,
+});
 
 const emit = defineEmits<{
   save: [rikordTimerResult: RikordTimerResult];
   cancel: [];
+  /** 非表示イベント(非表示時に発火) */
+  hide: [];
 }>();
 
 const store = useRikordModeStore();
@@ -29,12 +37,10 @@ function onSave() {
 }
 
 function onCancel() { emit('cancel'); }
-
-const invisibled = invisible.value;
 </script>
 
 <template>
-  <q-card :class="{ invisible }" style="width: 80vw">
+  <q-card style="width: 80vw">
     <q-card-section class="text-center">
       <div class="text-h6">
         {{ isPaused ? '一時停止' : `${currentRikordMode.modeName}モードで計測` }}中
@@ -54,7 +60,7 @@ const invisibled = invisible.value;
         <q-btn flat icon="mdi-clock-edit-outline" round @click="onSave" />
         <q-btn flat :icon="isPaused ? 'mdi-play' : 'mdi-pause'" round @click="pauseResume" />
         <q-btn flat icon="mdi-close" round @click="onCancel" />
-        <q-btn v-if="invisibled" flat icon="mdi-eye-off" round @click="invisible = true" />
+        <q-btn v-if="invisible" flat icon="mdi-eye-off" round @click="emit('hide')" />
       </div>
     </q-card-section>
   </q-card>

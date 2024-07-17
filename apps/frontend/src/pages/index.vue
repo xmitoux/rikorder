@@ -2,8 +2,6 @@
 <script setup lang="ts">
 import type { RikoImageEntityResponse } from '@repo/db';
 
-import type { RikordTimerResult } from '~/types/rikord';
-
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
@@ -18,28 +16,8 @@ watchEffect(async () => {
 
 const slide = ref(1);
 
-const showForm = ref(false);
 const quickStart = ref(false);
-
-const rikordTimerResult = ref<RikordTimerResult>({ startDatetime: undefined, endDatetime: undefined });
-
-function openRikordForm(result: RikordTimerResult) {
-  showForm.value = true;
-  rikordTimerResult.value = result;
-}
-
-const showImageSelector = ref(false);
-const showViewer = ref(false);
-const selectedViewImage = ref<RikoImageEntityResponse | undefined>();
-function selectViewImage(selectedImage: RikoImageEntityResponse) {
-  selectedViewImage.value = selectedImage;
-  showImageSelector.value = false;
-  showViewer.value = true;
-}
-function saveSelectionRikord(result: RikordTimerResult) {
-  showViewer.value = false;
-  openRikordForm(result);
-}
+const selectionStart = ref(false);
 </script>
 
 <template>
@@ -125,11 +103,12 @@ function saveSelectionRikord(result: RikordTimerResult) {
 
     <div class="column q-px-xl">
       <UIButtonOk class="q-my-sm" label="今すぐ始める" @click="quickStart = true" />
-      <UIButtonOk class="q-my-sm" label="選んで始める" @click="showImageSelector = true" />
+      <UIButtonOk class="q-my-sm" label="選んで始める" @click="selectionStart = true" />
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
     <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" />
+    <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" />
   </div>
 </template>
 
