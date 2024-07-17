@@ -35,15 +35,29 @@ function onSave() {
   const result = save();
   emit('save', result);
 }
-
-function onCancel() { emit('cancel'); }
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+function confirmCancel() {
+  $q.dialog(dialogConfig({
+    title: '終了確認',
+    message: '記録せずにホーム画面へ戻ります。<br>よろしいですか？',
+    cancel: true,
+  }))
+    .onOk(() => emit('cancel'));
+}
 </script>
 
 <template>
   <q-card style="width: 80vw">
     <q-card-section class="text-center">
-      <div class="text-h6">
-        {{ isPaused ? '一時停止' : `${currentRikordMode.modeName}モードで計測` }}中
+      <div class="row flex-center relative">
+        <div class="text-h6">
+          {{ isPaused ? '一時停止' : `計測中(${currentRikordMode.modeName}モード)` }}
+        </div>
+
+        <div class="hide-button">
+          <q-btn v-if="invisible" flat icon="mdi-eye-off" round @click="emit('hide')" />
+        </div>
       </div>
 
       <template v-if="isPaused">
@@ -59,13 +73,16 @@ function onCancel() { emit('cancel'); }
       <div>
         <q-btn flat icon="mdi-clock-edit-outline" round @click="onSave" />
         <q-btn flat :icon="isPaused ? 'mdi-play' : 'mdi-pause'" round @click="pauseResume" />
-        <q-btn flat icon="mdi-close" round @click="onCancel" />
-        <q-btn v-if="invisible" flat icon="mdi-eye-off" round @click="emit('hide')" />
+        <q-btn flat icon="mdi-close" round @click="confirmCancel" />
       </div>
     </q-card-section>
   </q-card>
 </template>
 
 <style scoped lang="scss">
-
+.hide-button {
+  position: absolute;
+  top: auto;
+  right: 10px;
+}
 </style>

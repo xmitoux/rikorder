@@ -1,3 +1,4 @@
+<!-- 画像選択ダイアログ -->
 <script setup lang="ts">
 import type { RikoImageEntityResponse } from '@repo/db';
 
@@ -27,7 +28,7 @@ function selectImage(selectedImage: RikoImageEntityResponse) {
       <RikoLibraryImageList :images="rikoImages" @click="selectImage" />
 
       <template #footer>
-        <UIButtonCancel class="q-mr-sm" @click="emit('cancel')" />
+        <UIButtonCancel class="q-mr-sm" label="戻る" @click="emit('cancel')" />
       </template>
     </NuxtLayout>
   </q-dialog>
