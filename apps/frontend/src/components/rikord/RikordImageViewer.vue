@@ -28,6 +28,18 @@ function closeViewer() {
   startTimer.value = false;
   showTimer.value = false;
 }
+
+const image = ref();
+const isImageLoaded = ref(false);
+function onImageLoad() {
+  if (image.value) {
+    // 横長画像を自動で中央にスクロールする
+    image.value.scrollLeft = (image.value.scrollWidth - image.value.clientWidth) / 2;
+  }
+
+  // 初期表示で一瞬左端が映るのをフェードインで隠す
+  isImageLoaded.value = true;
+}
 </script>
 
 <template>
@@ -35,8 +47,8 @@ function closeViewer() {
     v-model="showViewer" maximized persistent transition-hide="jump-right" transition-show="jump-left"
     @show="startTimer = true"
   >
-    <div class="bg-white">
-      <q-img class="full-height" :src="rikoImage.url" @click="showTimer = true" />
+    <div ref="image" class="bg-white  overflow-hidden-y hide-scrollbar">
+      <img class="full-height" :class="{ 'fade-in': isImageLoaded }" :src="rikoImage.url" @click="showTimer = true" @load="onImageLoad">
     </div>
 
     <!-- タイマーの表示状態切替のためのダイアログ -->
@@ -51,5 +63,12 @@ function closeViewer() {
 </template>
 
 <style scoped lang="scss">
+.fade-in {
+  animation: fadeIn 0.5s;
+}
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 </style>
