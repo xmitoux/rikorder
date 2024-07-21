@@ -39,11 +39,11 @@ const selectionStart = ref(false);
   <div>
     <!-- 情報エリア -->
     <!-- TODO: コンポーネント化 -->
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-ml-sm">
       <UISectionLabel class="q-mb-md" label="情報" />
 
       <!-- q-cardのborder-radius変更用にdivで囲む -->
-      <div class="q-mb-lg card-border-radius">
+      <div class="q-mb-md card-border-radius">
         <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
           <q-card-section horizontal>
             <q-card-section class="col-6 q-px-sm q-py-sm text-center">
@@ -83,7 +83,7 @@ const selectionStart = ref(false);
     </div>
 
     <!-- お気に入り -->
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-ml-sm q-mb-md">
       <UISectionLabel class="q-mb-md" label="お気に入りで始める" />
       <RikordFavoriteSelector v-if="favoriteRikoImages" :riko-images="favoriteRikoImages" @select="selectFavoriteImage" />
     </div>
