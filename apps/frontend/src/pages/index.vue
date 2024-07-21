@@ -24,6 +24,13 @@ watchEffect(async () => {
   favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
+const favoriteStart = ref(false);
+const selectedFavoriteImage = ref<RikoImageEntityResponse | undefined>();
+function selectFavoriteImage(selectedImage: RikoImageEntityResponse) {
+  selectedFavoriteImage.value = selectedImage;
+  favoriteStart.value = true;
+}
+
 const quickStart = ref(false);
 const selectionStart = ref(false);
 </script>
@@ -78,7 +85,7 @@ const selectionStart = ref(false);
     <!-- お気に入り -->
     <div class="q-ml-sm q-mb-lg">
       <UISectionLabel class="q-mb-md" label="お気に入りで始める" />
-      <RikordFavoriteSelector v-if="favoriteRikoImages" :riko-images="favoriteRikoImages" />
+      <RikordFavoriteSelector v-if="favoriteRikoImages" :riko-images="favoriteRikoImages" @select="selectFavoriteImage" />
     </div>
 
     <div class="column q-px-xl">
@@ -87,6 +94,7 @@ const selectionStart = ref(false);
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
+    <RikordDialogFavoriteStart v-if="selectedFavoriteImage" v-model:show="favoriteStart" :riko-image="selectedFavoriteImage!" />
     <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" />
     <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" />
   </div>
