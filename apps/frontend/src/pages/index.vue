@@ -6,15 +6,30 @@ const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
 const rikoImages = ref<RikoImageEntityResponse[] | null>([]);
+const favoriteRikoImages = ref<RikoImageEntityResponse[]>([]);
 
 watchEffect(async () => {
-  rikoImages.value = await findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
+  const fetchRikoImages = findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
     console.error('画像選択画面用の画像取得に失敗しました。');
     return [];
   });
+
+  const fetchFavoriteRikoImages = findFavoriteRikoImagesApi(currentRikordMode.value.id).catch(() => {
+    console.error('お気に入り画像取得に失敗しました。');
+    return [];
+  });
+
+  const [rikoImagesResult, favoriteRikoImagesResult] = await Promise.all([fetchRikoImages, fetchFavoriteRikoImages]);
+  rikoImages.value = rikoImagesResult;
+  favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
-const slide = ref(1);
+const favoriteStart = ref(false);
+const selectedFavoriteImage = ref<RikoImageEntityResponse | undefined>();
+function selectFavoriteImage(selectedImage: RikoImageEntityResponse) {
+  selectedFavoriteImage.value = selectedImage;
+  favoriteStart.value = true;
+}
 
 const quickStart = ref(false);
 const selectionStart = ref(false);
@@ -24,11 +39,11 @@ const selectionStart = ref(false);
   <div>
     <!-- 情報エリア -->
     <!-- TODO: コンポーネント化 -->
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-ml-sm">
       <UISectionLabel class="q-mb-md" label="情報" />
 
       <!-- q-cardのborder-radius変更用にdivで囲む -->
-      <div class="q-mb-lg card-border-radius">
+      <div class="q-mb-md card-border-radius">
         <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
           <q-card-section horizontal>
             <q-card-section class="col-6 q-px-sm q-py-sm text-center">
@@ -68,37 +83,9 @@ const selectionStart = ref(false);
     </div>
 
     <!-- お気に入り -->
-    <!-- TODO: コンポーネント化 -->
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-ml-sm q-mb-md">
       <UISectionLabel class="q-mb-md" label="お気に入りで始める" />
-
-      <q-carousel
-        v-model="slide"
-        animated
-        class="bg-pink-1 card-border-radius"
-        control-color="white"
-        height="120px"
-        navigation
-        swipeable
-        transition-next="slide-left"
-        transition-prev="slide-right"
-      >
-        <q-carousel-slide class="column no-wrap" :name="1">
-          <div class="row justify-center no-wrap">
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/mountains.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/parallax2.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/quasar.jpg" width="90px" />
-          </div>
-        </q-carousel-slide>
-
-        <q-carousel-slide class="column no-wrap" :name="2">
-          <div class="row justify-center no-wrap">
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/parallax1.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/quasar.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/mountains.jpg" width="90px" />
-          </div>
-        </q-carousel-slide>
-      </q-carousel>
+      <RikordFavoriteSelector v-if="favoriteRikoImages" :riko-images="favoriteRikoImages" @select="selectFavoriteImage" />
     </div>
 
     <div class="column q-px-xl">
@@ -107,6 +94,7 @@ const selectionStart = ref(false);
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
+    <RikordDialogFavoriteStart v-if="selectedFavoriteImage" v-model:show="favoriteStart" :riko-image="selectedFavoriteImage!" />
     <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" />
     <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" />
   </div>

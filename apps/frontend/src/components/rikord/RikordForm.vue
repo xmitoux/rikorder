@@ -12,12 +12,13 @@ const props = withDefaults(defineProps<{
   headerTitle?: string;
   submitButtonLabel?: string;
   rikordTimerResult?: RikordTimerResult;
-  rikoImages: RikoImageEntityResponse[];
+  rikoImages?: RikoImageEntityResponse[];
   initRikoImage?: RikoImageEntityResponse;
 }>(),
 {
   headerTitle: 'Rikord記録',
   submitButtonLabel: '記録する',
+  rikoImages: () => [],
 });
 
 const emit = defineEmits(['ok', 'cancel']);
@@ -98,7 +99,10 @@ async function submitRikord() {
 
         <!-- 画像選択時はサムネ表示 -->
         <div v-if="selectedRikoImage" class="q-px-sm q-mt-sm">
-          <q-img fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="selectedRikoImage.url" @click="showImageSelector = true" />
+          <q-img
+            fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="selectedRikoImage.url"
+            @click="showImageSelector = initRikoImage ? false : true"
+          />
         </div>
 
         <!-- 画像未選択時は選択ボタン表示 -->

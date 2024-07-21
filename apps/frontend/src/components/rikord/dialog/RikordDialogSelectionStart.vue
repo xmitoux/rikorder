@@ -45,7 +45,7 @@ function finishRikord() {
 
     <!-- 記録ダイアログ -->
     <RikordForm
-      v-model:show="showForm" :init-riko-image="selectedViewImage" :riko-images="rikoImages" :rikord-timer-result="timerResult"
+      v-model:show="showForm" :init-riko-image="selectedViewImage" :rikord-timer-result="timerResult"
       @cancel="finishRikord" @ok="finishRikord"
     />
   </div>
