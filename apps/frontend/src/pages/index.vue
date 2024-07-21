@@ -6,12 +6,22 @@ const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
 const rikoImages = ref<RikoImageEntityResponse[] | null>([]);
+const favoriteRikoImages = ref<RikoImageEntityResponse[]>([]);
 
 watchEffect(async () => {
-  rikoImages.value = await findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
+  const fetchRikoImages = findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
     console.error('画像選択画面用の画像取得に失敗しました。');
     return [];
   });
+
+  const fetchFavoriteRikoImages = findFavoriteRikoImagesApi(currentRikordMode.value.id).catch(() => {
+    console.error('お気に入り画像取得に失敗しました。');
+    return [];
+  });
+
+  const [rikoImagesResult, favoriteRikoImagesResult] = await Promise.all([fetchRikoImages, fetchFavoriteRikoImages]);
+  rikoImages.value = rikoImagesResult;
+  favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
 const slide = ref(1);

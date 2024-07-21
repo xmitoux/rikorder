@@ -1,5 +1,3 @@
-import { FetchError } from 'ofetch';
-
 import type { RikoImageEntityResponse } from '@repo/db';
 
 import type { RikordModeIdValue } from '~/types/rikord-mode';
@@ -12,11 +10,18 @@ export const findRikoImagesByRikordModeIdApi = async (rikordModeId: RikordModeId
   const result = await $fetch<RikoImageEntityResponse[]>(`/api/riko-images/find-by-rikord-mode/${rikordModeId}`, { method: 'get' })
     .catch((error) => {
       console.error('findRikoImagesByRikordModeIdApi:', { error });
+      handleError(error);
+      throw error;
+    });
 
-      if (error instanceof FetchError && error.response?._data?.data?.message) {
-        console.error({ errorMessage: error.response?._data?.data?.message });
-      }
+  return result;
+};
 
+export const findFavoriteRikoImagesApi = async (rikordModeId: RikordModeIdValue): Promise<RikoImageEntityResponse[]> => {
+  const result = await $fetch<RikoImageEntityResponse[]>(`/api/riko-images/find-favorite/${rikordModeId}`, { method: 'get' })
+    .catch((error) => {
+      console.error('findFavoriteRikoImagesApi:', { error });
+      handleError(error);
       throw error;
     });
 
