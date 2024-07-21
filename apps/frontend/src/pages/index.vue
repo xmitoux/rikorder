@@ -24,8 +24,6 @@ watchEffect(async () => {
   favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
-const slide = ref(1);
-
 const quickStart = ref(false);
 const selectionStart = ref(false);
 </script>
@@ -78,37 +76,9 @@ const selectionStart = ref(false);
     </div>
 
     <!-- お気に入り -->
-    <!-- TODO: コンポーネント化 -->
     <div class="q-ml-sm q-mb-lg">
       <UISectionLabel class="q-mb-md" label="お気に入りで始める" />
-
-      <q-carousel
-        v-model="slide"
-        animated
-        class="bg-pink-1 card-border-radius"
-        control-color="white"
-        height="120px"
-        navigation
-        swipeable
-        transition-next="slide-left"
-        transition-prev="slide-right"
-      >
-        <q-carousel-slide class="column no-wrap" :name="1">
-          <div class="row justify-center no-wrap">
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/mountains.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/parallax2.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/quasar.jpg" width="90px" />
-          </div>
-        </q-carousel-slide>
-
-        <q-carousel-slide class="column no-wrap" :name="2">
-          <div class="row justify-center no-wrap">
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/parallax1.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/quasar.jpg" width="90px" />
-            <q-img class="rounded-borders col-4 q-mx-sm" :ratio="1" src="https://cdn.quasar.dev/img/mountains.jpg" width="90px" />
-          </div>
-        </q-carousel-slide>
-      </q-carousel>
+      <RikordFavoriteSelector v-if="favoriteRikoImages" :riko-images="favoriteRikoImages" />
     </div>
 
     <div class="column q-px-xl">
