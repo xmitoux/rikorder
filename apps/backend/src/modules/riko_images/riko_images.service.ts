@@ -20,7 +20,7 @@ export class RikoImagesService {
     });
   }
 
-  findFavorite(id?: number): Promise<RikoImage[]> {
+  findFavorites(id?: number): Promise<RikoImage[]> {
     return this.prisma.rikoImage.findMany({
       where: {
         settings: {

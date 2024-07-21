@@ -22,9 +22,9 @@ export class RikoImagesController {
     return rikoImages.map(data => new RikoImageEntity(data));
   }
 
-  @Get('/find-favorite/:id')
-  async findFavorite(@Param() { id: rikordModeId }: IdParam): Promise<RikoImageEntity[]> {
-    const rikoImages = await this.rikoImagesService.findFavorite(rikordModeId);
+  @Get('/find-favorites/:id')
+  async findFavorites(@Param() { id: rikordModeId }: IdParam): Promise<RikoImageEntity[]> {
+    const rikoImages = await this.rikoImagesService.findFavorites(rikordModeId);
 
     return rikoImages.map(data => new RikoImageEntity(data));
   }

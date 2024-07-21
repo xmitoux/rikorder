@@ -18,7 +18,7 @@ export const findRikoImagesByRikordModeIdApi = async (rikordModeId: RikordModeId
 };
 
 export const findFavoriteRikoImagesApi = async (rikordModeId: RikordModeIdValue): Promise<RikoImageEntityResponse[]> => {
-  const result = await $fetch<RikoImageEntityResponse[]>(`/api/riko-images/find-favorite/${rikordModeId}`, { method: 'get' })
+  const result = await $fetch<RikoImageEntityResponse[]>(`/api/riko-images/find-favorites/${rikordModeId}`, { method: 'get' })
     .catch((error) => {
       console.error('findFavoriteRikoImagesApi:', { error });
       handleError(error);
