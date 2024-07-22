@@ -1,8 +1,20 @@
 <!-- 🖼️梨子ちゃんライブラリ トップ画面 -->
 <script setup lang="ts">
+import type { RikoImageEntityResponse } from '@repo/db';
+
+type ButtonToggleLabel = '画像' | 'タグ';
+const label1: ButtonToggleLabel = '画像';
+const label2: ButtonToggleLabel = 'タグ';
+const toggle = ref<ButtonToggleLabel>('画像');
+
 const { data: rikoImages, status } = findRikoImagesApi();
 
 const showCreateForm = ref(false);
+
+function openDetail(rikoImage: RikoImageEntityResponse) {
+  const { id } = rikoImage;
+  navigateTo(`/riko-library/${id}`);
+}
 </script>
 
 <template>
@@ -10,7 +22,8 @@ const showCreateForm = ref(false);
     <div class="row justify-end">
       <div class="col-8">
         <UIButtonToggle
-          label1="画像" label2="タグ"
+          v-model="toggle"
+          :label1="label1" :label2="label2"
           mdi1="mdi-image-outline" mdi2="mdi-tag-outline"
         />
       </div>
@@ -24,7 +37,7 @@ const showCreateForm = ref(false);
       </div>
     </div>
 
-    <RikoLibraryImageList v-if="status === 'success'" :images="rikoImages!" />
+    <RikoLibraryImageList v-if="status === 'success'" :images="rikoImages!" @click="openDetail" />
     <RikoLibraryImageUploadForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
   </div>
 </template>

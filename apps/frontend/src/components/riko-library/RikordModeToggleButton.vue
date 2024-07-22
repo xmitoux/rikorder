@@ -17,6 +17,7 @@ function onToggle(rikordModeLable: string) {
 
 <template>
   <UIButtonToggle
+    v-model="selectedRikordMode"
     :label1="RIKORD_MODES.View.modeName" :label2="RIKORD_MODES.Solo.modeName" :label3="RIKORD_MODES.Multi.modeName"
     :mdi1="RIKORD_MODE_ICONS.View(selectedRikordMode !== 'View')"
     :mdi2="RIKORD_MODE_ICONS.Solo(selectedRikordMode !== 'Solo')"
