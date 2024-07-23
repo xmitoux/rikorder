@@ -11,9 +11,11 @@ const { data: rikoImages, status } = findRikoImagesApi();
 
 const showCreateForm = ref(false);
 
+const selectedRikoImage = ref<RikoImageEntityResponse | undefined>();
+const showDetails = ref(false);
 function openDetail(rikoImage: RikoImageEntityResponse) {
-  const { id } = rikoImage;
-  navigateTo(`/riko-library/${id}`);
+  selectedRikoImage.value = rikoImage;
+  showDetails.value = true;
 }
 </script>
 
@@ -39,6 +41,8 @@ function openDetail(rikoImage: RikoImageEntityResponse) {
 
     <RikoLibraryImageList v-if="status === 'success'" :images="rikoImages!" @click="openDetail" />
     <RikoLibraryImageUploadForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
+
+    <RikoLibraryImageDetailsDialog v-model:show="showDetails" :riko-image="selectedRikoImage!" />
   </div>
 </template>
 
