@@ -47,7 +47,7 @@ function submitUpdate() {}
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" label="戻る" @click="navigateTo('/riko-library')" />
-        <UIButtonOk v-show="!isDetails" class="q-mr-sm" label="更新する" :loading="loading" @click="submitUpdate()">
+        <UIButtonOk v-if="!isDetails" class="q-mr-sm" label="更新する" :loading="loading" @click="submitUpdate()">
           <q-spinner-radio color="white" size="xs" />
         </UIButtonOk>
       </template>
