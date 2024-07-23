@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { RikoImage } from '@repo/db/dist';
+import { RikoImage, RikoImageSettingEntity } from '@repo/db/dist';
 
 import { PrismaService } from '~/common/services/prisma.service';
 import { SupabaseService } from '~/common/services/supabase.service';
@@ -65,5 +65,13 @@ export class RikoLibraryService {
       .getPublicUrl(pathData.path);
 
     return urlData.publicUrl;
+  }
+
+  findByRikoImageId(id: number): Promise<RikoImageSettingEntity[]> {
+    return this.prisma.rikoImageSetting.findMany({
+      where: {
+        rikoImageId: id,
+      },
+    });
   }
 }
