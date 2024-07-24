@@ -4,7 +4,7 @@ import { Express } from 'express';
 
 import { IdParam } from '~/common/dto/id-param';
 
-import { CreateRikoImageWithSettingsDto } from './dto/riko-library.dto';
+import { CreateRikoImageWithSettingsDto, UpsertRikoImageSettingsDto } from './dto/riko-library.dto';
 import { RikoImageEntity, RikoImageSettingEntity } from './entities/riko-library.entity';
 import { RikoLibraryService } from './riko-library.service';
 
@@ -25,5 +25,10 @@ export class RikoLibraryController {
   async findByRikoImageId(@Param() { id: rikoImageId }: IdParam): Promise<RikoImageSettingEntity[]> {
     const rikoImageSettings = await this.rikoLibraryService.findByRikoImageId(rikoImageId);
     return rikoImageSettings.map(data => new RikoImageSettingEntity(data));
+  }
+
+  @Post('/image-settings')
+  async upsertRikoImageSettings(@Body() dto: UpsertRikoImageSettingsDto) {
+    return this.rikoLibraryService.upsert(dto);
   }
 }
