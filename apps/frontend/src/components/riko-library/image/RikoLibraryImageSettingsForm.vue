@@ -1,7 +1,24 @@
+<!-- 🖼️梨子ちゃんライブラリ 画像設定コンポーネント -->
 <script setup lang="ts">
-const {
-  currentSetting, toggleSettingRikordMode,
-} = useRikoLibraryImageUploadForm();
+import type { RikoImageSettingEntityResponse } from '@repo/db';
+
+export type RikoLibraryImageSettingsFormProps = {
+  settings: RikoImageSettingEntityResponse[];
+};
+const props = defineProps<RikoLibraryImageSettingsFormProps>();
+
+const { currentSetting, toggleSettingRikordMode, setSettings, submitUpdate, resetForm } = useRikoLibraryImageUploadForm();
+
+// 親から実行できるように更新処理を公開
+defineExpose({ submitUpdate });
+
+// 渡された画像設定をフォームにセット
+setSettings(props.settings);
+
+onUnmounted(() => {
+  // 画像登録フォームとデータが共有されてしまうのでアンマウント時にリセットする
+  resetForm();
+});
 </script>
 
 <template>

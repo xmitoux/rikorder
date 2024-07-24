@@ -1,7 +1,7 @@
-<!-- 🖼️梨子ちゃんライブラリ 詳細画面ダイアログコンポーネント -->
+<!-- 🖼️梨子ちゃんライブラリ 画像詳細/詳細画面ダイアログ -->
 <script setup lang="ts">
 import ImageDetails from '~/components/riko-library/image/RikoLibraryImageDetails.vue';
-import ImageSettings from '~/components/riko-library/image/RikoLibraryImageSettingsForm.vue';
+import ImageSettings, { type RikoLibraryImageSettingsFormProps } from '~/components/riko-library/image/RikoLibraryImageSettingsForm.vue';
 
 import type { RikoImageEntityResponse, RikoImageSettingEntityResponse } from '@repo/db';
 
@@ -20,18 +20,48 @@ const isDetails = computed(() => toggle.value === '詳細');
 
 const rikoImageSettings = ref<RikoImageSettingEntityResponse[]>([]);
 async function onShow() {
-  rikoImageSettings.value = await findRikoImageSettingsByRikoImageIdApi(props.rikoImage.id);
-  console.log({ 'rikoImageSettings.value': rikoImageSettings.value });
+  // TODO: 画像詳細も一緒にAPIから取得
+  const fetchSettings = findRikoImageSettingsByRikoImageIdApi(props.rikoImage.id);
+  const [settingsResult] = await Promise.all([fetchSettings]);
+  rikoImageSettings.value = settingsResult;
 }
 
+type DynamicComponent = typeof ImageDetails | typeof ImageSettings;
+type DynamicComponentInstance = InstanceType<DynamicComponent>;
+const componentRef = ref<DynamicComponentInstance | undefined>();
+
+type DynamicComponents = {
+  component: DynamicComponent;
+  props: RikoLibraryImageSettingsFormProps;
+};
+const currentComponent = computed<DynamicComponents>(() => ({
+  component: isDetails.value ? ImageDetails : ImageSettings,
+  // TODO: 画像詳細コンポーネントのpropsも指定する
+  props: { settings: rikoImageSettings.value },
+}));
+
 const loading = ref(false);
-function submitUpdate() {}
+async function submitUpdate() {
+  // 動的コンポーネント(画像設定)内の更新処理を実行する
+  if (componentRef.value && 'submitUpdate' in componentRef.value) {
+    loading.value = true;
+    await componentRef.value.submitUpdate(props.rikoImage.id);
+    loading.value = false;
+
+    show.value = false;
+  }
+}
+
+function onHide() {
+  // ダイアログを閉じてもタブ選択状態が保持されるので詳細に戻しておく
+  toggle.value = '詳細';
+}
 </script>
 
 <template>
   <q-dialog
     maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left"
-    @show="onShow"
+    @hide="onHide" @show="onShow"
   >
     <NuxtLayout name="custom">
       <template #header>
@@ -56,7 +86,7 @@ function submitUpdate() {}
         </div>
       </div>
 
-      <component :is="isDetails ? ImageDetails : ImageSettings" />
+      <component :is="currentComponent.component" v-bind="currentComponent.props" ref="componentRef" />
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" label="戻る" @click="show = false" />

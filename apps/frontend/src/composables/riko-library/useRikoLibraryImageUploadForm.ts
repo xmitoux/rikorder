@@ -1,6 +1,8 @@
 import { FetchError } from 'ofetch';
 
-import type { CreateRikoImageSettingDto } from '@repo/db';
+import { RIKORD_MODE_VALUES, RIKORD_MODES } from '~/constants/rikord-mode';
+
+import type { CreateRikoImageSettingDto, RikoImageSettingEntityResponse, UpsertRikoImageSettingDto } from '@repo/db';
 
 import type { RikordModeName } from '~/types/rikord-mode';
 
@@ -133,10 +135,35 @@ const resetForm = () => {
   currentSetting.value = rikoImageSettings.value.View;
 };
 
+/** 画像設定画面でフォームに設定をセットする */
+function setSettings(settings: RikoImageSettingEntityResponse[]) {
+  // 全モードでループして、モードに一致する設定があればフォームに反映する
+  for (const rikordMode of Object.values(RIKORD_MODES)) {
+    const setSetting = settings.find(setting => setting.rikordModeId === rikordMode.id);
+    rikoImageSettings.value[rikordMode.modeName] = setSetting
+      ? { use: true, favorite: setSetting.isFavorite }
+      : { ...defaultSetting };
+  }
+
+  // Viewモードを初期値に設定する
+  currentSetting.value = rikoImageSettings.value.View;
+}
+
+async function submitUpdate(rikoImageId: number) {
+  const settingsDto: UpsertRikoImageSettingDto[] = [];
+  const { View, Solo, Multi } = rikoImageSettings.value;
+  View.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.View, isFavorite: View.favorite });
+  Solo.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.Solo, isFavorite: Solo.favorite });
+  Multi.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.Multi, isFavorite: Multi.favorite });
+
+  await upsertRikoImageSettingsApi({ settings: settingsDto });
+}
+
 export const useRikoLibraryImageUploadForm = () => {
   return {
     fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
     rikordImageSettings: rikoImageSettings, currentSetting, toggleSettingRikordMode,
     uploading, onClickOk, onClickCancel,
+    setSettings, submitUpdate, resetForm,
   };
 };
