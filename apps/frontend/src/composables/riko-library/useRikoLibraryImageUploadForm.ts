@@ -1,6 +1,8 @@
 import { FetchError } from 'ofetch';
 
-import type { CreateRikoImageSettingDto } from '@repo/db';
+import { RIKORD_MODE_VALUES, RIKORD_MODES } from '~/constants/rikord-mode';
+
+import type { CreateRikoImageSettingDto, RikoImageSettingEntityResponse, UpsertRikoImageSettingDto } from '@repo/db';
 
 import type { RikordModeName } from '~/types/rikord-mode';
 
@@ -47,6 +49,15 @@ function toggleSettingRikordMode(rikordMode: RikordModeName) {
   currentSetting.value = rikoImageSettings.value[rikordMode];
 }
 
+/** 各モードの使用設定フラグが1つでもtrueかチェック */
+function validateUse(): boolean {
+  const use = Object.keys(rikoImageSettings.value)
+    .map(rikordMode => rikoImageSettings.value[rikordMode as RikordModeName].use)
+    .some(Boolean);
+
+  return use;
+}
+
 const onClickOk = async (
   emit: () => void,
   alert: (message: string) => void,
@@ -58,12 +69,7 @@ const onClickOk = async (
     return;
   }
 
-  // 各モードの使用設定フラグが全てfalseかチェック
-  const nothingUse = Object.keys(rikoImageSettings.value)
-    .map(rikordMode => rikoImageSettings.value[rikordMode as RikordModeName].use)
-    .every(use => !use);
-
-  if (nothingUse) {
+  if (!validateUse()) {
     alert('使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。');
     return;
   }
@@ -133,10 +139,39 @@ const resetForm = () => {
   currentSetting.value = rikoImageSettings.value.View;
 };
 
+/** 画像設定画面でフォームに設定をセットする */
+function setSettings(settings: RikoImageSettingEntityResponse[]) {
+  // 全モードでループして、モードに一致する設定があればフォームに反映する
+  for (const rikordMode of Object.values(RIKORD_MODES)) {
+    const setSetting = settings.find(setting => setting.rikordModeId === rikordMode.id);
+    rikoImageSettings.value[rikordMode.modeName] = setSetting
+      ? { use: true, favorite: setSetting.isFavorite }
+      : { ...defaultSetting };
+  }
+
+  // Viewモードを初期値に設定する
+  currentSetting.value = rikoImageSettings.value.View;
+}
+
+async function submitUpdate(rikoImageId: number): Promise<boolean | string> {
+  if (!validateUse()) {
+    return '使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。';
+  }
+
+  const settingsDto: UpsertRikoImageSettingDto[] = [];
+  const { View, Solo, Multi } = rikoImageSettings.value;
+  View.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.View, isFavorite: View.favorite });
+  Solo.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.Solo, isFavorite: Solo.favorite });
+  Multi.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.Multi, isFavorite: Multi.favorite });
+
+  return await upsertRikoImageSettingsApi({ settings: settingsDto }).catch(() => false);
+}
+
 export const useRikoLibraryImageUploadForm = () => {
   return {
     fileInput, selectedFile, selectFile, imagePreview, onFileSelected,
     rikordImageSettings: rikoImageSettings, currentSetting, toggleSettingRikordMode,
     uploading, onClickOk, onClickCancel,
+    setSettings, submitUpdate, resetForm,
   };
 };

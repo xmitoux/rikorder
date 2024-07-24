@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { RikoImage } from '@repo/db/dist';
+import { RikoImage, RikoImageSettingEntity } from '@repo/db/dist';
 
 import { PrismaService } from '~/common/services/prisma.service';
 import { SupabaseService } from '~/common/services/supabase.service';
 
-import { CreateRikoImageSettingDto } from './dto/riko-library.dto';
+import { CreateRikoImageSettingDto, UpsertRikoImageSettingsDto } from './dto/riko-library.dto';
 
 @Injectable()
 export class RikoLibraryService {
@@ -65,5 +65,52 @@ export class RikoLibraryService {
       .getPublicUrl(pathData.path);
 
     return urlData.publicUrl;
+  }
+
+  findByRikoImageId(id: number): Promise<RikoImageSettingEntity[]> {
+    return this.prisma.rikoImageSetting.findMany({
+      where: {
+        rikoImageId: id,
+      },
+    });
+  }
+
+  async upsert({ settings }: UpsertRikoImageSettingsDto) {
+    // 受け取ったモード
+    const receivedRikordModeId = settings.map(setting => setting.rikordModeId);
+
+    return this.prisma.$transaction(async (tx) => {
+      // 受け取ったモードをupsert
+      const upsertPromises = settings.map(({ rikoImageId, rikordModeId, isFavorite }) =>
+        tx.rikoImageSetting.upsert({
+          where: {
+            rikoImageId_rikordModeId: {
+              rikoImageId,
+              rikordModeId,
+            },
+          },
+          create: {
+            rikoImageId,
+            rikordModeId,
+            isFavorite,
+          },
+          update: {
+            isFavorite,
+          },
+        }));
+
+      // 受け取らなかったモードは削除
+      const deletePromise = tx.rikoImageSetting.deleteMany({
+        where: {
+          rikoImageId: settings[0].rikoImageId,
+          rikordModeId: {
+            notIn: receivedRikordModeId,
+          },
+        },
+      });
+
+      // 全ての処理を並列で実行
+      await Promise.all([...upsertPromises, deletePromise]);
+    });
   }
 }

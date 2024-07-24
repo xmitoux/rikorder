@@ -1,7 +1,12 @@
 import { Transform, Type, plainToClass } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsBoolean, IsNumber, ValidateNested } from 'class-validator';
 
-import type { CreateRikoImageSettingDto as SettingDto, CreateRikoImageWithSettingsDto as SettingsDto } from '@repo/db';
+import type {
+  CreateRikoImageSettingDto as SettingDto,
+  CreateRikoImageWithSettingsDto as SettingsDto,
+  UpsertRikoImageSettingDto as UpsertSettingDto,
+  UpsertRikoImageSettingsDto as UpsertSettingsDto,
+} from '@repo/db';
 
 export class CreateRikoImageSettingDto implements SettingDto {
   @IsNumber()
@@ -30,4 +35,23 @@ export class CreateRikoImageWithSettingsDto implements SettingsDto {
     return value;
   })
   settings: CreateRikoImageSettingDto[];
+}
+
+export class UpsertRikoImageSettingDto implements UpsertSettingDto {
+  @IsNumber()
+  rikoImageId: number;
+
+  @IsNumber()
+  rikordModeId: number;
+
+  @IsBoolean()
+  isFavorite: boolean;
+}
+
+export class UpsertRikoImageSettingsDto implements UpsertSettingsDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => UpsertRikoImageSettingDto)
+  @ValidateNested({ each: true })
+  settings: UpsertRikoImageSettingDto[];
 }
