@@ -40,14 +40,30 @@ const currentComponent = computed<DynamicComponents>(() => ({
   props: { settings: rikoImageSettings.value },
 }));
 
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+const { notifyConfig } = useQuasarNotify();
 const loading = ref(false);
 async function submitUpdate() {
   // 動的コンポーネント(画像設定)内の更新処理を実行する
   if (componentRef.value && 'submitUpdate' in componentRef.value) {
     loading.value = true;
-    await componentRef.value.submitUpdate(props.rikoImage.id);
-    loading.value = false;
 
+    const result = await componentRef.value.submitUpdate(props.rikoImage.id)
+      .finally(() => loading.value = false);
+
+    if (result !== true) {
+      if (typeof result === 'string') {
+        $q.dialog(dialogConfig({ title: '更新失敗', message: result }));
+      }
+      else {
+        $q.notify(notifyConfig('negative', { message: 'エラーが発生しました。' }));
+      }
+
+      return;
+    }
+
+    $q.notify(notifyConfig('positive', { message: '画像設定を更新しました！' }));
     show.value = false;
   }
 }

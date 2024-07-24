@@ -16,12 +16,12 @@ export async function findRikoImageSettingsByRikoImageIdApi(rikordImageId: numbe
 }
 
 export async function upsertRikoImageSettingsApi(body: UpsertRikoImageSettingsDto) {
-  const result = await $fetch('/api/riko-library/image-settings', { body, method: 'post' })
+  await $fetch('/api/riko-library/image-settings', { body, method: 'post' })
     .catch((error) => {
       console.error('upsertRikoImageSettingsApi:', { error });
       handleError(error);
       throw error;
     });
 
-  return result;
+  return true;
 }

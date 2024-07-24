@@ -49,6 +49,15 @@ function toggleSettingRikordMode(rikordMode: RikordModeName) {
   currentSetting.value = rikoImageSettings.value[rikordMode];
 }
 
+/** 各モードの使用設定フラグが1つでもtrueかチェック */
+function validateUse(): boolean {
+  const use = Object.keys(rikoImageSettings.value)
+    .map(rikordMode => rikoImageSettings.value[rikordMode as RikordModeName].use)
+    .some(Boolean);
+
+  return use;
+}
+
 const onClickOk = async (
   emit: () => void,
   alert: (message: string) => void,
@@ -60,12 +69,7 @@ const onClickOk = async (
     return;
   }
 
-  // 各モードの使用設定フラグが全てfalseかチェック
-  const nothingUse = Object.keys(rikoImageSettings.value)
-    .map(rikordMode => rikoImageSettings.value[rikordMode as RikordModeName].use)
-    .every(use => !use);
-
-  if (nothingUse) {
+  if (!validateUse()) {
     alert('使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。');
     return;
   }
@@ -149,14 +153,18 @@ function setSettings(settings: RikoImageSettingEntityResponse[]) {
   currentSetting.value = rikoImageSettings.value.View;
 }
 
-async function submitUpdate(rikoImageId: number) {
+async function submitUpdate(rikoImageId: number): Promise<boolean | string> {
+  if (!validateUse()) {
+    return '使用するRikordモードが未選択です。<br/>少なくとも1つを選択してください。';
+  }
+
   const settingsDto: UpsertRikoImageSettingDto[] = [];
   const { View, Solo, Multi } = rikoImageSettings.value;
   View.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.View, isFavorite: View.favorite });
   Solo.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.Solo, isFavorite: Solo.favorite });
   Multi.use && settingsDto.push({ rikoImageId, rikordModeId: RIKORD_MODE_VALUES.Multi, isFavorite: Multi.favorite });
 
-  await upsertRikoImageSettingsApi({ settings: settingsDto });
+  return await upsertRikoImageSettingsApi({ settings: settingsDto }).catch(() => false);
 }
 
 export const useRikoLibraryImageUploadForm = () => {
