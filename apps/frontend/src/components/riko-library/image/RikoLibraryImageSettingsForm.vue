@@ -22,10 +22,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="q-mx-sm q-mb-lg">
+  <div class="q-mx-sm">
     <UISectionLabel class="q-mb-md" label="Rikordモード別設定" />
 
-    <q-card bordered flat>
+    <q-card bordered class="q-mb-lg" flat>
       <q-card-section class="q-pb-none">
         <RikoLibraryRikordModeToggleButton @toggle="toggleSettingRikordMode" />
       </q-card-section>
@@ -40,6 +40,16 @@ onUnmounted(() => {
         <q-toggle v-model="currentSetting.favorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
       </q-card-section>
     </q-card>
+
+    <!-- 削除ボタン -->
+    <div class="text-center">
+      <q-btn
+        class="q-ml-sm" color="red-6" padding="sm xl" :ripple="{ color: 'pink' }" size="md" unelevated
+      >
+        <q-icon left name="mdi-alert" />
+        削除する
+      </q-btn>
+    </div>
   </div>
 </template>
 
