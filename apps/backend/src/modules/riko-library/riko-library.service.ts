@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { RikoImage, RikoImageSettingEntity } from '@repo/db/dist';
 
@@ -10,20 +9,15 @@ import { CreateRikoImageSettingDto, UpsertRikoImageSettingsDto } from './dto/rik
 
 @Injectable()
 export class RikoLibraryService {
+  private readonly logger = new Logger(RikoLibraryService.name);
+
   constructor(
     private prisma: PrismaService,
     private supabaseService: SupabaseService,
-    private configService: ConfigService,
   ) {}
 
   async createRikoImageWithSettings(file: Express.Multer.File, settings: CreateRikoImageSettingDto[]): Promise<RikoImage> {
-    const supabaseStorage = this.configService.get<string>('SUPABASE_STORAGE');
-    if (!supabaseStorage) {
-      throw new Error('Supabase用の環境変数が設定されていません。'
-        + '<SUPABASE_STORAGE>を確認してください。');
-    }
-
-    const imageUrl = await this.uploadImage(supabaseStorage, file);
+    const imageUrl = await this.uploadImage(file);
 
     return this.prisma.$transaction(async (prisma) => {
       const rikoImage = await prisma.rikoImage.create({
@@ -45,11 +39,10 @@ export class RikoLibraryService {
     });
   }
 
-  async uploadImage(supabaseStorage: string, file: Express.Multer.File): Promise<string> {
+  async uploadImage(file: Express.Multer.File): Promise<string> {
     // アップロード処理
     const { data: pathData, error: uploadError } = await this.supabaseService
-      .getClient()
-      .storage.from(supabaseStorage)
+      .getStorage()
       .upload(`${Date.now()}_${file.originalname}`, file.buffer, {
         contentType: file.mimetype,
       });
@@ -60,8 +53,7 @@ export class RikoLibraryService {
 
     // アップロードしたパスからURLを取得
     const { data: urlData } = this.supabaseService
-      .getClient()
-      .storage.from(supabaseStorage)
+      .getStorage()
       .getPublicUrl(pathData.path);
 
     return urlData.publicUrl;
@@ -112,5 +104,39 @@ export class RikoLibraryService {
       // 全ての処理を並列で実行
       await Promise.all([...upsertPromises, deletePromise]);
     });
+  }
+
+  async deleteRikoImage(rikoImageId: number): Promise<void> {
+    this.prisma.$transaction(async (tx) => {
+      const deletedImage = await tx.rikoImage.delete({
+        where: {
+          id: rikoImageId,
+        },
+      });
+
+      const deleteImagePath = this.extractSupabaseStoragePathFromUrl(deletedImage.url);
+
+      const { data, error } = await this.supabaseService
+        .getStorage()
+        .remove([deleteImagePath]);
+
+      if (error) {
+        this.logger.error('うわっ！画像の削除で問題発生😱', error);
+        throw error;
+      }
+
+      this.logger.log('やったー！画像削除成功🎉', data);
+    });
+  }
+
+  /**
+   * Supabase storageの画像URLからファイルパスを抽出する
+   * @param url Supabase storageの画像URL
+   * @returns ファイルパス
+   */
+  private extractSupabaseStoragePathFromUrl(url: string): string {
+    const urlObj = new URL(url);
+    // 最後のスラッシュ以降の部分（ファイル名）だけを取得
+    return urlObj.pathname.split('/').pop() || '';
   }
 }

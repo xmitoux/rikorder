@@ -38,6 +38,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@supabase/storage-js':
+        specifier: ^2.6.0
+        version: 2.6.0
       '@supabase/supabase-js':
         specifier: ^2.44.3
         version: 2.44.3
