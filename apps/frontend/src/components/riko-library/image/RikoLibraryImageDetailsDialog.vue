@@ -34,19 +34,21 @@ const componentRef = ref<DynamicComponentInstance | undefined>();
 type DynamicComponents = {
   component: DynamicComponent;
   props: RikoLibraryImageSettingsFormProps;
+  events: object;
 };
 const currentComponent = computed<DynamicComponents>(() => ({
   component: isDetails.value ? ImageDetails : ImageSettings,
   // TODO: 画像詳細コンポーネントのpropsも指定する
   props: { settings: rikoImageSettings.value },
+  events: isDetails.value ? {} : { delete: submitDeleteRikoImage },
 }));
 
 const $q = useQuasar();
 const { dialogConfig } = useQuasarDialog();
 const { notifyConfig } = useQuasarNotify();
 const loading = ref(false);
+// 動的コンポーネント(画像設定)内の更新処理を実行する
 async function submitUpdate() {
-  // 動的コンポーネント(画像設定)内の更新処理を実行する
   if (componentRef.value && 'submitUpdate' in componentRef.value) {
     loading.value = true;
 
@@ -67,6 +69,20 @@ async function submitUpdate() {
     $q.notify(notifyConfig('positive', { message: '画像設定を更新しました！' }));
     show.value = false;
   }
+}
+
+// 動的コンポーネント(画像設定)内の画像削除処理を実行する
+async function submitDeleteRikoImage() {
+  const result = await deleteRikoImageApi(props.rikoImage.id)
+    .finally(() => loading.value = false);
+
+  if (!result) {
+    $q.notify(notifyConfig('negative', { message: 'エラーが発生しました。' }));
+    return;
+  }
+
+  $q.notify(notifyConfig('positive', { message: '画像を削除しました！' }));
+  show.value = false;
 }
 
 function onHide() {
@@ -103,7 +119,10 @@ function onHide() {
         </div>
       </div>
 
-      <component :is="currentComponent.component" v-bind="currentComponent.props" ref="componentRef" />
+      <component
+        :is="currentComponent.component"
+        v-bind="currentComponent.props" ref="componentRef" v-on="currentComponent.events"
+      />
 
       <template #footer>
         <UIButtonCancel class="q-mr-sm" label="戻る" @click="show = false" />

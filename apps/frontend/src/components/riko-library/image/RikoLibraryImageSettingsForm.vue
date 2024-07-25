@@ -7,6 +7,10 @@ export type RikoLibraryImageSettingsFormProps = {
 };
 const props = defineProps<RikoLibraryImageSettingsFormProps>();
 
+const emit = defineEmits<{
+  delete: [];
+}>();
+
 const { currentSetting, toggleSettingRikordMode, setSettings, submitUpdate, resetForm } = useRikoLibraryImageUploadForm();
 
 // 親から実行できるように更新処理を公開
@@ -17,6 +21,18 @@ watchEffect(() => {
   // 渡された画像設定をフォームにセット
   setSettings(props.settings);
 });
+
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+function onClickDelete() {
+  $q.dialog(dialogConfig({
+    title: '<span class="text-red text-weight-bold">⚠削除確認⚠</span>',
+    message: '画像を削除すると紐付くRikordが全て失われます！<br>'
+    + '<span class="text-red text-weight-bold">本当に削除しますか？</span>',
+    cancel: true,
+  }))
+    .onOk(() => emit('delete'));
+}
 
 onUnmounted(() => {
   // 画像登録フォームとデータが共有されてしまうのでアンマウント時にリセットする
@@ -48,6 +64,7 @@ onUnmounted(() => {
     <div class="text-center">
       <q-btn
         class="q-ml-sm" color="red-6" padding="sm xl" :ripple="{ color: 'pink' }" size="md" unelevated
+        @click="onClickDelete"
       >
         <q-icon left name="mdi-alert" />
         削除する
