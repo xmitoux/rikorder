@@ -25,3 +25,14 @@ export async function upsertRikoImageSettingsApi(body: UpsertRikoImageSettingsDt
 
   return true;
 }
+
+export async function deleteRikoImageApi(id: number) {
+  await $fetch(`/api/riko-library/riko-images/${id}`, { method: 'DELETE' })
+    .catch((error) => {
+      console.error('deleteRikoImageApi:', { error });
+      handleError(error);
+      throw error;
+    });
+
+  return true;
+}

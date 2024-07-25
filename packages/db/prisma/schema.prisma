@@ -31,7 +31,7 @@ model RikordMode {
 model RikoImageSetting {
   id           Int        @id @default(autoincrement())
   rikoImageId  Int        @map("riko_image_id")
-  rikoImage    RikoImage  @relation(fields: [rikoImageId], references: [id])
+  rikoImage    RikoImage  @relation(fields: [rikoImageId], references: [id], onDelete: Cascade)
   rikordModeId Int        @map("rikord_mode_id")
   rikordMode   RikordMode @relation(fields: [rikordModeId], references: [id])
   isFavorite   Boolean    @map("is_favorite")
@@ -43,7 +43,7 @@ model RikoImageSetting {
 model Rikord {
   id           Int        @id @default(autoincrement())
   rikoImageId  Int        @map("riko_image_id")
-  rikoImage    RikoImage  @relation(fields: [rikoImageId], references: [id])
+  rikoImage    RikoImage  @relation(fields: [rikoImageId], references: [id], onDelete: Cascade)
   rikordModeId Int        @map("rikord_mode_id")
   rikordMode   RikordMode @relation(fields: [rikordModeId], references: [id])
   startedAt    DateTime   @map("started_at")

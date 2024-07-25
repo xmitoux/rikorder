@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 
@@ -30,5 +30,10 @@ export class RikoLibraryController {
   @Post('/image-settings')
   async upsertRikoImageSettings(@Body() dto: UpsertRikoImageSettingsDto) {
     return this.rikoLibraryService.upsert(dto);
+  }
+
+  @Delete('/riko-images/:id')
+  async deleteRikoImage(@Param() { id: rikoImageId }: IdParam) {
+    return this.rikoLibraryService.deleteRikoImage(rikoImageId);
   }
 }
