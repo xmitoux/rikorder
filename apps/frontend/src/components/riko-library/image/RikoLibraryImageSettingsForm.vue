@@ -12,8 +12,11 @@ const { currentSetting, toggleSettingRikordMode, setSettings, submitUpdate, rese
 // 親から実行できるように更新処理を公開
 defineExpose({ submitUpdate });
 
-// 渡された画像設定をフォームにセット
-setSettings(props.settings);
+// APIのデータが渡されるまで時間があるのでwatchで監視する
+watchEffect(() => {
+  // 渡された画像設定をフォームにセット
+  setSettings(props.settings);
+});
 
 onUnmounted(() => {
   // 画像登録フォームとデータが共有されてしまうのでアンマウント時にリセットする

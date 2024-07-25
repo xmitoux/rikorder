@@ -20,6 +20,7 @@ const isDetails = computed(() => toggle.value === '詳細');
 
 const rikoImageSettings = ref<RikoImageSettingEntityResponse[]>([]);
 async function onShow() {
+  // MEMO: 本番環境だとAPI実行完了に時間がかかり、設定タブに切り替えたあと時間差で反映される
   // TODO: 画像詳細も一緒にAPIから取得
   const fetchSettings = findRikoImageSettingsByRikoImageIdApi(props.rikoImage.id);
   const [settingsResult] = await Promise.all([fetchSettings]);
