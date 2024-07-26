@@ -3,6 +3,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // モードを全削除
+  await prisma.rikordMode.deleteMany();
+
   await prisma.rikordMode.createMany({
     data: [
       { id: 1, modeName: 'View', monthlyGoal: 0 },
