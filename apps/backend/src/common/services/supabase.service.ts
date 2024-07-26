@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import StorageFileApi from '@supabase/storage-js/dist/module/packages/StorageFileApi';
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 
 @Injectable()
@@ -33,7 +34,7 @@ export class SupabaseService {
     return this.supabase;
   }
 
-  getStorage() {
+  getStorage(): StorageFileApi {
     return this.getClient().storage.from(this.storage);
   }
 }
