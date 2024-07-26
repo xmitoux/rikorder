@@ -44,6 +44,9 @@ export class RikordsService {
     const endDateOfMonth = new Date(year, month, 0);
 
     return this.prisma.rikord.findMany({
+      include: {
+        rikoImage: true,
+      },
       where: {
         startedAt: {
           gte: startDateOfMonth,

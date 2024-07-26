@@ -1,5 +1,7 @@
 import type { Rikord } from '@prisma/client';
 
+import type { RikoImageEntity } from '../riko_image/riko_image.entity';
+
 export type RikordEntity = Pick<Rikord,
   'id'
   | 'rikoImageId'
@@ -7,9 +9,13 @@ export type RikordEntity = Pick<Rikord,
   | 'startedAt'
   | 'finishedAt'
   | 'duration'
+  // 以下はレスポンスに不要だが、nestでexcludeするため定義は残しておく
   | 'createdAt'
   | 'updatedAt'
-  >;
+  > & {
+    // リレーションのtypeを追加
+    rikoImage: RikoImageEntity;
+  };
 
 export type RikordEntityResponse = Omit<RikordEntity,
   'startedAt'
