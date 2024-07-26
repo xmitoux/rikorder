@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-import { CreateRikordDto } from './dto/rikord.dto';
+import { CreateRikordDto, SearchRikordsDto } from './dto/rikord.dto';
 import { RikordEntity } from './entities/rikord.entity';
 import { RikordsService } from './rikords.service';
 
@@ -11,5 +11,12 @@ export class RikordsController {
   @Post()
   async create(@Body() createRikordDto: CreateRikordDto): Promise<RikordEntity> {
     return new RikordEntity(await this.rikordsService.create(createRikordDto));
+  }
+
+  @Post('search')
+  @HttpCode(HttpStatus.OK) // POSTだと201になるので200にする
+  async searchRikords(@Body() searchDto: SearchRikordsDto): Promise<RikordEntity[]> {
+    const rikords = await this.rikordsService.searchRikords(searchDto);
+    return rikords.map(data => new RikordEntity(data));
   }
 }
