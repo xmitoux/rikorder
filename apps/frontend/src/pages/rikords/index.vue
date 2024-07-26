@@ -1,3 +1,4 @@
+<!-- 📋️Rikord一覧画面 -->
 <script setup lang="ts">
 import type { RikordEntityResponse, SearchRikordsDto } from '@repo/db';
 
@@ -20,6 +21,7 @@ watchEffect(async () => {
 <template>
   <div>
     <UISelectYearMonth v-model:year-month="yearMonth" />
+    <RikordsTimeline :rikords="rikords" />
   </div>
 </template>
 
