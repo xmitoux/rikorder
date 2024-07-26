@@ -6,3 +6,8 @@ export type CreateRikordDto = Pick<Prisma.RikordCreateManyInput,
   | 'startedAt'
   | 'finishedAt'
 >;
+
+export type SearchRikordsDto = {
+  year: number;
+  month: number;
+};

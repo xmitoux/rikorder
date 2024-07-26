@@ -1,6 +1,6 @@
 import { IsISO8601, IsNotEmpty, IsNumber } from 'class-validator';
 
-import type { CreateRikordDto as Dto } from '@repo/db';
+import type { CreateRikordDto as Dto, SearchRikordsDto as SearchDto } from '@repo/db';
 
 export class CreateRikordDto implements Dto {
   @IsNotEmpty()
@@ -18,4 +18,14 @@ export class CreateRikordDto implements Dto {
   @IsNotEmpty()
   @IsISO8601({ strict: true, strictSeparator: true })
   finishedAt: string;
+}
+
+export class SearchRikordsDto implements SearchDto {
+  @IsNotEmpty()
+  @IsNumber()
+  year: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  month: number;
 }
