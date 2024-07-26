@@ -16,12 +16,18 @@ watchEffect(async () => {
     return [];
   });
 });
+
+const store = useRikordModeStore();
+const { currentRikordMode } = storeToRefs(store);
+
+const rikordsFilterdByMode = computed(() =>
+  rikords.value.filter(rikord => rikord.rikordModeId === currentRikordMode.value.id));
 </script>
 
 <template>
   <div>
     <UISelectYearMonth v-model:year-month="yearMonth" />
-    <RikordsTimeline :rikords="rikords" />
+    <RikordsTimeline :rikords="rikordsFilterdByMode" />
   </div>
 </template>
 
