@@ -13,5 +13,5 @@
       ]
     }
   },
-  "postCreateCommand": "pnpm install && pnpm -F db db:mg"
+  "postCreateCommand": "pnpm install && pnpm -F db build && pnpm -F db db:seed"
 }
