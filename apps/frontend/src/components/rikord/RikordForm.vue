@@ -54,7 +54,7 @@ function selectRikoImage(selectedImage: RikoImageEntityResponse) {
 const $q = useQuasar();
 const { dialogConfig } = useQuasarDialog();
 function confirmCancel() {
-  $q.dialog(dialogConfig({ title: '終了確認', message: '記録せずにホーム画面へ戻ります。<br>よろしいですか？', cancel: true }))
+  $q.dialog(dialogConfig({ title: '終了確認', message: '記録せずに終了します。<br>よろしいですか？', cancel: true }))
     .onOk(() => cancelRikord());
 }
 
@@ -90,7 +90,7 @@ async function submitRikord() {
   <q-dialog maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left" @show="onShow">
     <NuxtLayout name="custom">
       <template #header>
-        {{ headerTitle }}
+        {{ headerTitle }}({{ store.currentRikordMode.modeName }}モード)
       </template>
 
       <!-- 画像選択 -->
