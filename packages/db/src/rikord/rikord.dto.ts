@@ -7,6 +7,13 @@ export type CreateRikordDto = Pick<Prisma.RikordCreateManyInput,
   | 'finishedAt'
 >;
 
+export type UpdateRikordDto = Required<Pick<Prisma.RikordCreateManyInput,
+  'id'
+  | 'rikoImageId'
+  | 'startedAt'
+  | 'finishedAt'
+>>;
+
 export type SearchRikordsDto = {
   year: number;
   month: number;

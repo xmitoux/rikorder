@@ -4,7 +4,7 @@ import { Rikord } from '@repo/db/dist';
 
 import { PrismaService } from '~/common/services/prisma.service';
 
-import { CreateRikordDto, SearchRikordsDto } from './dto/rikord.dto';
+import { CreateRikordDto, SearchRikordsDto, UpdateRikordDto } from './dto/rikord.dto';
 
 @Injectable()
 export class RikordsService {
@@ -55,6 +55,20 @@ export class RikordsService {
       },
       orderBy: {
         startedAt: 'desc',
+      },
+    });
+  }
+
+  updateRikord({ id, ...data }: UpdateRikordDto): Promise<Rikord> {
+    const duration = this.calculateDurationInSeconds(data.startedAt, data.finishedAt);
+
+    return this.prisma.rikord.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+        duration,
       },
     });
   }

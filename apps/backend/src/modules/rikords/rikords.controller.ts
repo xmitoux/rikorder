@@ -1,6 +1,6 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
 
-import { CreateRikordDto, SearchRikordsDto } from './dto/rikord.dto';
+import { CreateRikordDto, SearchRikordsDto, UpdateRikordDto } from './dto/rikord.dto';
 import { RikordEntity } from './entities/rikord.entity';
 import { RikordsService } from './rikords.service';
 
@@ -18,5 +18,10 @@ export class RikordsController {
   async searchRikords(@Body() searchDto: SearchRikordsDto): Promise<RikordEntity[]> {
     const rikords = await this.rikordsService.searchRikords(searchDto);
     return rikords.map(data => new RikordEntity(data));
+  }
+
+  @Patch()
+  async updateRikord(@Body() dto: UpdateRikordDto): Promise<RikordEntity> {
+    return new RikordEntity(await this.rikordsService.updateRikord(dto));
   }
 }
