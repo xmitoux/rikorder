@@ -47,8 +47,8 @@ function onImageLoad() {
     v-model="showViewer" maximized persistent transition-hide="jump-right" transition-show="jump-left"
     @show="startTimer = true"
   >
-    <div ref="image" class="bg-white  overflow-hidden-y hide-scrollbar">
-      <img class="full-height" :class="{ 'fade-in': isImageLoaded }" :src="rikoImage.url" @click="showTimer = true" @load="onImageLoad">
+    <div ref="image" v-touch-hold.mouse class="bg-white  overflow-hidden-y hide-scrollbar">
+      <img class="full-height" :class="{ 'fade-in': isImageLoaded }" :src="rikoImage.url" @click="showTimer = true" @load="onImageLoad" @mousedown.stop @touchstart.stop>
     </div>
 
     <!-- タイマーの表示状態切替のためのダイアログ -->
