@@ -31,6 +31,12 @@ const rikordsFilterdByMode = computed(() =>
   rikords.value.filter(rikord => rikord.rikordModeId === currentRikordMode.value.id));
 
 const showForm = ref(false);
+
+const editRikord = ref<RikordEntityResponse | undefined>();
+function onEditClick(selectedRikord: RikordEntityResponse) {
+  editRikord.value = selectedRikord;
+  showForm.value = true;
+}
 </script>
 
 <template>
@@ -52,11 +58,11 @@ const showForm = ref(false);
     <!-- UIヘッダーの分だけスペースを取る -->
     <div style="height: 30px;" />
 
-    <RikordsTimeline :rikords="rikordsFilterdByMode" />
+    <RikordsTimeline :rikords="rikordsFilterdByMode" @edit="onEditClick($event)" />
 
     <RikordForm
       v-model:show="showForm"
-      header-title="手動記録" :riko-images="rikoImages"
+      :edit-rikord="editRikord" header-title="手動記録" :riko-images="rikoImages"
       @cancel="showForm = false" @ok="showForm = false"
     />
   </div>

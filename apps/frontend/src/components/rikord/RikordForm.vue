@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { date } from 'quasar';
 
-import type { RikoImageEntityResponse } from '@repo/db';
+import type { RikoImageEntityResponse, RikordEntityResponse } from '@repo/db';
 
 import type { RikordTimerResult } from '~/types/rikord';
 
@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<{
   rikordTimerResult?: RikordTimerResult;
   rikoImages?: RikoImageEntityResponse[];
   initRikoImage?: RikoImageEntityResponse;
+  editRikord?: RikordEntityResponse;
 }>(),
 {
   headerTitle: 'Rikord記録',
@@ -25,24 +26,35 @@ const emit = defineEmits(['ok', 'cancel']);
 
 const {
   selectedRikoImage, startDatetime, endDatetime,
-  validate, createRikord, createLoading,
+  validate, createRikord, submitLoading,
   resetForm,
 } = useRikordForm();
 
 function onShow() {
   // 初期選択画像があれば設定する
-  selectedRikoImage.value = props.initRikoImage;
+  selectedRikoImage.value = props.initRikoImage || props.editRikord?.rikoImage;
 }
 
 // inputに表示する日時を取得するためprops.resultを監視する
 watchEffect(() => {
-  startDatetime.value = props.rikordTimerResult?.startDatetime
-    ? date.formatDate(props.rikordTimerResult?.startDatetime, 'YYYY-MM-DD HH:mm:ss')
-    : '';
+  if (props.editRikord) {
+    startDatetime.value = props.editRikord.startedAt
+      ? date.formatDate(props.editRikord.startedAt, 'YYYY-MM-DD HH:mm:ss')
+      : '';
 
-  endDatetime.value = props.rikordTimerResult?.endDatetime
-    ? date.formatDate(props.rikordTimerResult?.endDatetime, 'YYYY-MM-DD HH:mm:ss')
-    : '';
+    endDatetime.value = props.editRikord.finishedAt
+      ? date.formatDate(props.editRikord.finishedAt, 'YYYY-MM-DD HH:mm:ss')
+      : '';
+  }
+  else {
+    startDatetime.value = props.rikordTimerResult?.startDatetime
+      ? date.formatDate(props.rikordTimerResult?.startDatetime, 'YYYY-MM-DD HH:mm:ss')
+      : '';
+
+    endDatetime.value = props.rikordTimerResult?.endDatetime
+      ? date.formatDate(props.rikordTimerResult?.endDatetime, 'YYYY-MM-DD HH:mm:ss')
+      : '';
+  }
 });
 
 const showImageSelector = ref(false);
@@ -129,7 +141,7 @@ async function submitRikord() {
       <template #footer>
         <UIButtonCancel class="q-mr-sm" label="戻る" @click="confirmCancel" />
 
-        <UIButtonOk class="q-mr-sm" :label="submitButtonLabel" :loading="createLoading" @click="submitRikord">
+        <UIButtonOk class="q-mr-sm" :label="submitButtonLabel" :loading="submitLoading" @click="submitRikord">
           <q-spinner-radio color="white" size="xs" />
         </UIButtonOk>
       </template>

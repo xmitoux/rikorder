@@ -6,6 +6,10 @@ defineProps<{
   rikords: RikordEntityResponse[];
 }>();
 
+const emit = defineEmits<{
+  edit: [selectedRikord: RikordEntityResponse];
+}>();
+
 const { formatDate, formatDuration } = dateUtils();
 
 function formatStartFinishedTime({ startedAt, finishedAt, duration }: RikordEntityResponse): string {
@@ -28,10 +32,12 @@ function formatStartFinishedTime({ startedAt, finishedAt, duration }: RikordEnti
             <q-list>
               <q-item class="q-px-xs" clickable>
                 <q-item-section>
-                  <q-btn flat icon="mdi-pencil" label="編集" padding="0" />
+                  <!-- 編集メニュー -->
+                  <q-btn flat icon="mdi-pencil" label="編集" padding="0" @click="emit('edit', rikord)" />
                 </q-item-section>
               </q-item>
               <q-item class="q-px-xs" clickable>
+                <!-- 削除メニュー -->
                 <q-btn class="text-red-6" flat icon="mdi-delete" label="削除" />
               </q-item>
             </q-list>
