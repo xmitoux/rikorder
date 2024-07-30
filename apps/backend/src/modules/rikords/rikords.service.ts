@@ -40,8 +40,8 @@ export class RikordsService {
     /* 年月条件(started_atを月の初日〜最終日で抽出する) */
     // 月の初日(Dateの月は0-11なので渡された引数から1引く)
     const startDateOfMonth = new Date(year, month - 1, 1);
-    // 月の最終日(翌月0日を指定すると前月最終日となる)
-    const endDateOfMonth = new Date(year, month, 0);
+    // 月の最終日23:59:59 (翌月0日を指定すると前月最終日となる)
+    const endDateOfMonth = new Date(year, month, 0, 23, 59, 59);
 
     return this.prisma.rikord.findMany({
       include: {
