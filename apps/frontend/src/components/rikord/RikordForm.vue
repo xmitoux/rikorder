@@ -26,7 +26,7 @@ const emit = defineEmits(['ok', 'cancel']);
 
 const {
   selectedRikoImage, startDatetime, endDatetime,
-  validate, createRikord, submitLoading,
+  validate, createRikord, updateRikord, submitLoading,
   resetForm,
 } = useRikordForm();
 
@@ -85,7 +85,9 @@ async function submitRikord() {
     return;
   }
 
-  const result = await createRikord(store.currentRikordMode.id);
+  const result = props.editRikord
+    ? await updateRikord(props.editRikord.id)
+    : await createRikord(store.currentRikordMode.id);
   if (!result) {
     $q.dialog(dialogConfig({ title: '記録失敗', message: 'エラーが発生しました。' }));
     return;

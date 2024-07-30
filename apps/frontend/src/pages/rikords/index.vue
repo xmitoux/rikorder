@@ -37,6 +37,11 @@ function onEditClick(selectedRikord: RikordEntityResponse) {
   editRikord.value = selectedRikord;
   showForm.value = true;
 }
+
+function closeForm() {
+  editRikord.value = undefined;
+  showForm.value = false;
+}
 </script>
 
 <template>
@@ -62,8 +67,9 @@ function onEditClick(selectedRikord: RikordEntityResponse) {
 
     <RikordForm
       v-model:show="showForm"
-      :edit-rikord="editRikord" header-title="手動記録" :riko-images="rikoImages"
-      @cancel="showForm = false" @ok="showForm = false"
+      :edit-rikord="editRikord" :header-title="editRikord ? 'Rikord編集' : '手動記録'"
+      :riko-images="rikoImages" :submit-button-label="editRikord ? '更新する' : '記録する'"
+      @cancel="closeForm" @ok="closeForm"
     />
   </div>
 </template>
