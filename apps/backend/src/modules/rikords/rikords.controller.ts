@@ -1,4 +1,6 @@
-import { Body, Controller, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+
+import { IdParam } from '~/common/dto/id-param';
 
 import { CreateRikordDto, SearchRikordsDto, UpdateRikordDto } from './dto/rikord.dto';
 import { RikordEntity } from './entities/rikord.entity';
@@ -23,5 +25,10 @@ export class RikordsController {
   @Patch()
   async updateRikord(@Body() dto: UpdateRikordDto): Promise<RikordEntity> {
     return new RikordEntity(await this.rikordsService.updateRikord(dto));
+  }
+
+  @Delete('/:id')
+  async deleteRikoImage(@Param() { id }: IdParam) {
+    return this.rikordsService.deleteRikord(id);
   }
 }

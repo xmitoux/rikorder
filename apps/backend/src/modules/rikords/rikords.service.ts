@@ -72,4 +72,10 @@ export class RikordsService {
       },
     });
   }
+
+  deleteRikord(id: number): Promise<Rikord> {
+    return this.prisma.rikord.delete({
+      where: { id },
+    });
+  }
 }
