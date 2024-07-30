@@ -7,8 +7,7 @@ export const createRikoImageWithSettingsApi = (body: FormData) => {
 export async function findRikoImageSettingsByRikoImageIdApi(rikordImageId: number): Promise<RikoImageSettingEntityResponse[]> {
   const result = await $fetch<RikoImageSettingEntityResponse[]>(`/api/riko-library/${rikordImageId}`, { method: 'get' })
     .catch((error) => {
-      console.error('findRikoImageSettingsByRikoImageIdApi:', { error });
-      handleError(error);
+      handleApiError(error, 'findRikoImageSettingsByRikoImageIdApi');
       throw error;
     });
 
@@ -18,8 +17,7 @@ export async function findRikoImageSettingsByRikoImageIdApi(rikordImageId: numbe
 export async function upsertRikoImageSettingsApi(body: UpsertRikoImageSettingsDto) {
   await $fetch('/api/riko-library/image-settings', { body, method: 'post' })
     .catch((error) => {
-      console.error('upsertRikoImageSettingsApi:', { error });
-      handleError(error);
+      handleApiError(error, 'upsertRikoImageSettingsApi');
       throw error;
     });
 
@@ -29,10 +27,7 @@ export async function upsertRikoImageSettingsApi(body: UpsertRikoImageSettingsDt
 export async function deleteRikoImageApi(id: number) {
   await $fetch(`/api/riko-library/riko-images/${id}`, { method: 'DELETE' })
     .catch((error) => {
-      console.error('deleteRikoImageApi:', { error });
-      handleError(error);
+      handleApiError(error, 'deleteRikoImageApi');
       throw error;
     });
-
-  return true;
 }

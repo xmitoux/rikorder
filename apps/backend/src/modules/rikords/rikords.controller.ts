@@ -1,6 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 
-import { CreateRikordDto, SearchRikordsDto } from './dto/rikord.dto';
+import { IdParam } from '~/common/dto/id-param';
+
+import { CreateRikordDto, SearchRikordsDto, UpdateRikordDto } from './dto/rikord.dto';
 import { RikordEntity } from './entities/rikord.entity';
 import { RikordsService } from './rikords.service';
 
@@ -18,5 +20,15 @@ export class RikordsController {
   async searchRikords(@Body() searchDto: SearchRikordsDto): Promise<RikordEntity[]> {
     const rikords = await this.rikordsService.searchRikords(searchDto);
     return rikords.map(data => new RikordEntity(data));
+  }
+
+  @Patch()
+  async updateRikord(@Body() dto: UpdateRikordDto): Promise<RikordEntity> {
+    return new RikordEntity(await this.rikordsService.updateRikord(dto));
+  }
+
+  @Delete('/:id')
+  async deleteRikoImage(@Param() { id }: IdParam) {
+    return this.rikordsService.deleteRikord(id);
   }
 }

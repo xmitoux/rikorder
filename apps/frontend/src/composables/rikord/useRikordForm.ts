@@ -1,6 +1,4 @@
-import { FetchError } from 'ofetch';
-
-import type { CreateRikordDto, RikoImageEntityResponse, RikordEntityResponse } from '@repo/db';
+import type { CreateRikordDto, RikoImageEntityResponse, UpdateRikordDto } from '@repo/db';
 
 import type { RikordModeIdValue } from '~/types/rikord-mode';
 
@@ -9,8 +7,9 @@ type UseRikordForm = {
   startDatetime: Ref<string>;
   endDatetime: Ref<string>;
   validate: () => true | string;
-  createRikord: (rikordModeId: RikordModeIdValue) => Promise<RikordEntityResponse | boolean>;
-  createLoading: Ref<boolean>;
+  createRikord: (rikordModeId: RikordModeIdValue) => Promise<boolean>;
+  updateRikord: (rikordId: number) => Promise<boolean>;
+  submitLoading: Ref<boolean>;
   resetForm: () => void;
 };
 
@@ -29,9 +28,9 @@ function validate(): true | string {
   return true;
 }
 
-const createLoading = ref(false);
-const createRikord = async (rikordModeId: RikordModeIdValue): Promise<RikordEntityResponse | boolean> => {
-  createLoading.value = true;
+const submitLoading = ref(false);
+const createRikord = async (rikordModeId: RikordModeIdValue): Promise<boolean> => {
+  submitLoading.value = true;
 
   const dto: CreateRikordDto = {
     rikoImageId: selectedRikoImage.value!.id,
@@ -40,19 +39,40 @@ const createRikord = async (rikordModeId: RikordModeIdValue): Promise<RikordEnti
     finishedAt: new Date(endDatetime.value),
   };
 
-  const result = await createRikordApi(dto)
-    .catch((error) => {
-      console.error('createRikordApi:', { error });
+  try {
+    await createRikordApi(dto);
+  }
+  catch {
+    return false;
+  }
+  finally {
+    submitLoading.value = false;
+  }
 
-      if (error instanceof FetchError && error.response?._data?.data?.message) {
-        console.error({ errorMessage: error.response?._data?.data?.message });
-      }
+  return true;
+};
 
-      return false;
-    })
-    .finally(() => createLoading.value = false);
+const updateRikord = async (rikordId: number): Promise<boolean> => {
+  submitLoading.value = true;
 
-  return result;
+  const dto: UpdateRikordDto = {
+    id: rikordId,
+    rikoImageId: selectedRikoImage.value!.id,
+    startedAt: new Date(startDatetime.value),
+    finishedAt: new Date(endDatetime.value),
+  };
+
+  try {
+    await udpateRikordApi(dto);
+  }
+  catch {
+    return false;
+  }
+  finally {
+    submitLoading.value = false;
+  }
+
+  return true;
 };
 
 function resetForm() {
@@ -64,7 +84,7 @@ function resetForm() {
 export const useRikordForm = (): UseRikordForm => {
   return {
     selectedRikoImage, startDatetime, endDatetime,
-    validate, createRikord, createLoading,
+    validate, createRikord, updateRikord, submitLoading,
     resetForm,
   };
 };

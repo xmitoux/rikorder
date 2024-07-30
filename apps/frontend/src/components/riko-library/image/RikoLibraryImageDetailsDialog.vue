@@ -11,6 +11,10 @@ const props = defineProps<{
   rikoImage: RikoImageEntityResponse;
 }>();
 
+const emit = defineEmits<{
+  delete: [rikoImageId: number];
+}>();
+
 type ButtonToggleLabel = '詳細' | '設定';
 const label1: ButtonToggleLabel = '詳細';
 const label2: ButtonToggleLabel = '設定';
@@ -60,7 +64,7 @@ async function submitUpdate() {
         $q.dialog(dialogConfig({ title: '更新失敗', message: result }));
       }
       else {
-        $q.notify(notifyConfig('negative', { message: 'エラーが発生しました。' }));
+        $q.dialog(dialogConfig({ title: '更新失敗', message: '画像設定更新処理に失敗しました。' }));
       }
 
       return;
@@ -73,16 +77,18 @@ async function submitUpdate() {
 
 // 動的コンポーネント(画像設定)内の画像削除処理を実行する
 async function submitDeleteRikoImage() {
-  const result = await deleteRikoImageApi(props.rikoImage.id)
-    .finally(() => loading.value = false);
-
-  if (!result) {
+  // TODO: 削除ボタンローディング
+  try {
+    await deleteRikoImageApi(props.rikoImage.id);
+  }
+  catch {
     $q.notify(notifyConfig('negative', { message: 'エラーが発生しました。' }));
     return;
   }
 
   $q.notify(notifyConfig('positive', { message: '画像を削除しました！' }));
   show.value = false;
+  emit('delete', props.rikoImage.id);
 }
 
 function onHide() {

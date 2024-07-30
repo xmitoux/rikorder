@@ -7,7 +7,19 @@ const label1: ButtonToggleLabel = '画像';
 const label2: ButtonToggleLabel = 'タグ';
 const toggle = ref<ButtonToggleLabel>('画像');
 
-const { data: rikoImages, status } = findRikoImagesApi();
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+
+const rikoImages = ref<RikoImageEntityResponse[]>([]);
+async function fetchRikoImages() {
+  try {
+    rikoImages.value = await findRikoImagesApi();
+  }
+  catch {
+    $q.dialog(dialogConfig({ title: '取得失敗', message: '画像一覧取得に失敗しました。' }));
+  }
+}
+await fetchRikoImages();
 
 const showCreateForm = ref(false);
 
@@ -16,6 +28,17 @@ const showDetails = ref(false);
 function openDetail(rikoImage: RikoImageEntityResponse) {
   selectedRikoImage.value = rikoImage;
   showDetails.value = true;
+}
+
+// 登録後に一覧を取得し直す
+function onSubmitFinish() {
+  showCreateForm.value = false;
+  fetchRikoImages();
+}
+
+// 削除後に一覧を更新(なんか取得API再実行だとうまくいかなかったのでこうする)
+function onSubmitDeleteFinish(deleteImageId: number) {
+  rikoImages.value = rikoImages.value.filter(iamge => iamge.id !== deleteImageId);
 }
 </script>
 
@@ -39,10 +62,10 @@ function openDetail(rikoImage: RikoImageEntityResponse) {
       </div>
     </div>
 
-    <RikoLibraryImageList v-if="status === 'success'" :images="rikoImages!" @click="openDetail" />
-    <RikoLibraryImageUploadForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="showCreateForm = false" />
+    <RikoLibraryImageList v-if="rikoImages.length > 0" :images="rikoImages!" @click="openDetail" />
+    <RikoLibraryImageUploadForm :show="showCreateForm" @cancel="showCreateForm = false" @ok="onSubmitFinish" />
 
-    <RikoLibraryImageDetailsDialog v-model:show="showDetails" :riko-image="selectedRikoImage!" />
+    <RikoLibraryImageDetailsDialog v-model:show="showDetails" :riko-image="selectedRikoImage!" @delete="onSubmitDeleteFinish" />
   </div>
 </template>
 

@@ -115,6 +115,7 @@ export default defineNuxtConfig({
     plugins: [
       'Dialog',
       'Notify',
+      'Loading',
     ],
     extras: {
       fontIcons: [

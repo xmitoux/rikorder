@@ -5,17 +5,20 @@ import type { RikoImageEntityResponse } from '@repo/db';
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+
 const rikoImages = ref<RikoImageEntityResponse[] | null>([]);
 const favoriteRikoImages = ref<RikoImageEntityResponse[]>([]);
 
 watchEffect(async () => {
   const fetchRikoImages = findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
-    console.error('画像選択画面用の画像取得に失敗しました。');
+    $q.dialog(dialogConfig({ title: '画像取得失敗', message: '画像一覧取得に失敗しました。' }));
     return [];
   });
 
   const fetchFavoriteRikoImages = findFavoriteRikoImagesApi(currentRikordMode.value.id).catch(() => {
-    console.error('お気に入り画像取得に失敗しました。');
+    $q.dialog(dialogConfig({ title: 'お気に入り取得失敗', message: 'お気に入り画像取得に失敗しました。' }));
     return [];
   });
 

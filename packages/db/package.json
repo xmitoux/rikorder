@@ -11,7 +11,7 @@
     "build:backend": "prisma migrate deploy && prisma generate && tsc",
     "build:frontend": "prisma generate && tsc",
     "prisma:dev": "dotenv -e ../../.env -- prisma",
-    "db:generate": "prisma generate",
+    "db:generate": "prisma generate && tsc",
     "db:push": "prisma db push --skip-generate",
     "db:mg": "prisma migrate dev",
     "db:seed": "prisma db seed",
