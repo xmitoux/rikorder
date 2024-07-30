@@ -39,10 +39,17 @@ const createRikord = async (rikordModeId: RikordModeIdValue): Promise<boolean> =
     finishedAt: new Date(endDatetime.value),
   };
 
-  const result = await createRikordApi(dto)
-    .finally(() => submitLoading.value = false);
+  try {
+    await createRikordApi(dto);
+  }
+  catch {
+    return false;
+  }
+  finally {
+    submitLoading.value = false;
+  }
 
-  return result;
+  return true;
 };
 
 const updateRikord = async (rikordId: number): Promise<boolean> => {
@@ -55,10 +62,17 @@ const updateRikord = async (rikordId: number): Promise<boolean> => {
     finishedAt: new Date(endDatetime.value),
   };
 
-  const result = await udpateRikordApi(dto)
-    .finally(() => submitLoading.value = false);
+  try {
+    await udpateRikordApi(dto);
+  }
+  catch {
+    return false;
+  }
+  finally {
+    submitLoading.value = false;
+  }
 
-  return result;
+  return true;
 };
 
 function resetForm() {

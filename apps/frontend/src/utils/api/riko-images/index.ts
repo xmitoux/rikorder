@@ -9,8 +9,7 @@ export const findRikoImagesApi = () => {
 export const findRikoImagesByRikordModeIdApi = async (rikordModeId: RikordModeIdValue): Promise<RikoImageEntityResponse[]> => {
   const result = await $fetch<RikoImageEntityResponse[]>(`/api/riko-images/find-by-rikord-mode/${rikordModeId}`, { method: 'get' })
     .catch((error) => {
-      console.error('findRikoImagesByRikordModeIdApi:', { error });
-      handleError(error);
+      handleApiError(error, 'findRikoImagesByRikordModeIdApi');
       throw error;
     });
 
@@ -20,8 +19,7 @@ export const findRikoImagesByRikordModeIdApi = async (rikordModeId: RikordModeId
 export const findFavoriteRikoImagesApi = async (rikordModeId: RikordModeIdValue): Promise<RikoImageEntityResponse[]> => {
   const result = await $fetch<RikoImageEntityResponse[]>(`/api/riko-images/find-favorites/${rikordModeId}`, { method: 'get' })
     .catch((error) => {
-      console.error('findFavoriteRikoImagesApi:', { error });
-      handleError(error);
+      handleApiError(error, 'findFavoriteRikoImagesApi');
       throw error;
     });
 

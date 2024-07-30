@@ -60,7 +60,7 @@ async function submitUpdate() {
         $q.dialog(dialogConfig({ title: '更新失敗', message: result }));
       }
       else {
-        $q.notify(notifyConfig('negative', { message: 'エラーが発生しました。' }));
+        $q.dialog(dialogConfig({ title: '更新失敗', message: '画像設定更新処理に失敗しました。' }));
       }
 
       return;
@@ -73,10 +73,11 @@ async function submitUpdate() {
 
 // 動的コンポーネント(画像設定)内の画像削除処理を実行する
 async function submitDeleteRikoImage() {
-  const result = await deleteRikoImageApi(props.rikoImage.id)
-    .finally(() => loading.value = false);
-
-  if (!result) {
+  // TODO: 削除ボタンローディング
+  try {
+    await deleteRikoImageApi(props.rikoImage.id);
+  }
+  catch {
     $q.notify(notifyConfig('negative', { message: 'エラーが発生しました。' }));
     return;
   }

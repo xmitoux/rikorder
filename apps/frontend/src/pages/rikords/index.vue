@@ -11,18 +11,24 @@ const yearMonth = ref<SearchRikordsDto>({
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+const { notifyConfig } = useQuasarNotify();
+
 const rikords = ref<RikordEntityResponse[]>([]);
 watchEffect(async () => {
-  rikords.value = await searchRikordsApi(yearMonth.value).catch(() => {
-    console.error('Rikord一覧取得に失敗しました。');
-    return [];
-  });
+  try {
+    rikords.value = await searchRikordsApi(yearMonth.value);
+  }
+  catch {
+    $q.dialog(dialogConfig({ title: '取得失敗', message: 'Rikord一覧取得に失敗しました。' }));
+  }
 });
 
 const rikoImages = ref<RikoImageEntityResponse[]>([]);
 watchEffect(async () => {
   rikoImages.value = await findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
-    console.error('画像選択画面用の画像取得に失敗しました。');
+    $q.dialog(dialogConfig({ title: '画像取得失敗', message: '画像一覧取得に失敗しました。' }));
     return [];
   });
 });
@@ -38,12 +44,10 @@ function onClickEdit(selectedRikord: RikordEntityResponse) {
   showForm.value = true;
 }
 
-const $q = useQuasar();
-const { dialogConfig } = useQuasarDialog();
-const { notifyConfig } = useQuasarNotify();
 async function onClickDelete(deleteRikordId: number) {
+  $q.loading.show();
+
   try {
-    $q.loading.show();
     await deleteRikordApi(deleteRikordId);
   }
   catch {
