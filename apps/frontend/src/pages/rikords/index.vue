@@ -16,14 +16,15 @@ const { dialogConfig } = useQuasarDialog();
 const { notifyConfig } = useQuasarNotify();
 
 const rikords = ref<RikordEntityResponse[]>([]);
-watchEffect(async () => {
+watchEffect(() => fetchRikords());
+async function fetchRikords() {
   try {
     rikords.value = await searchRikordsApi(yearMonth.value);
   }
   catch {
     $q.dialog(dialogConfig({ title: '取得失敗', message: 'Rikord一覧取得に失敗しました。' }));
   }
-});
+}
 
 const rikoImages = ref<RikoImageEntityResponse[]>([]);
 watchEffect(async () => {
@@ -58,9 +59,16 @@ async function onClickDelete(deleteRikordId: number) {
     $q.loading.hide();
   }
 
+  // 削除を一覧に反映(API再実行よりコストが低いのでこうする)
   rikords.value = rikords.value.filter(rikord => rikord.id !== deleteRikordId);
 
   $q.notify(notifyConfig('positive', { message: 'Rikordを削除しました！' }));
+}
+
+// 登録・更新後に一覧を取得し直す
+function onSubmitFinish() {
+  closeForm();
+  fetchRikords();
 }
 
 function closeForm() {
@@ -94,7 +102,7 @@ function closeForm() {
       v-model:show="showForm"
       :edit-rikord="editRikord" :header-title="editRikord ? 'Rikord編集' : '手動記録'"
       :riko-images="rikoImages" :submit-button-label="editRikord ? '更新する' : '記録する'"
-      @cancel="closeForm" @ok="closeForm"
+      @cancel="closeForm" @ok="onSubmitFinish"
     />
   </div>
 </template>

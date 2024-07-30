@@ -11,6 +11,10 @@ const props = defineProps<{
   rikoImage: RikoImageEntityResponse;
 }>();
 
+const emit = defineEmits<{
+  delete: [rikoImageId: number];
+}>();
+
 type ButtonToggleLabel = '詳細' | '設定';
 const label1: ButtonToggleLabel = '詳細';
 const label2: ButtonToggleLabel = '設定';
@@ -84,6 +88,7 @@ async function submitDeleteRikoImage() {
 
   $q.notify(notifyConfig('positive', { message: '画像を削除しました！' }));
   show.value = false;
+  emit('delete', props.rikoImage.id);
 }
 
 function onHide() {
