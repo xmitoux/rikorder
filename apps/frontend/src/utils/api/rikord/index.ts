@@ -25,3 +25,12 @@ export const udpateRikordApi = async (body: UpdateRikordDto) => {
 
   return true;
 };
+
+export const deleteRikordApi = async (rikordId: number) => {
+  await $fetch<RikordEntityResponse>(`/api/rikords/${rikordId}`, { method: 'DELETE' })
+    .catch((error) => {
+      console.error('deleteRikordApi:', { error });
+      handleError(error);
+      throw error;
+    });
+};

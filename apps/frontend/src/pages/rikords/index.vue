@@ -33,9 +33,30 @@ const rikordsFilterdByMode = computed(() =>
 const showForm = ref(false);
 
 const editRikord = ref<RikordEntityResponse | undefined>();
-function onEditClick(selectedRikord: RikordEntityResponse) {
+function onClickEdit(selectedRikord: RikordEntityResponse) {
   editRikord.value = selectedRikord;
   showForm.value = true;
+}
+
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+const { notifyConfig } = useQuasarNotify();
+async function onClickDelete(deleteRikordId: number) {
+  try {
+    $q.loading.show();
+    await deleteRikordApi(deleteRikordId);
+  }
+  catch {
+    $q.dialog(dialogConfig({ title: '削除失敗', message: 'Rikord削除に失敗しました。' }));
+    return;
+  }
+  finally {
+    $q.loading.hide();
+  }
+
+  rikords.value = rikords.value.filter(rikord => rikord.id !== deleteRikordId);
+
+  $q.notify(notifyConfig('positive', { message: 'Rikordを削除しました！' }));
 }
 
 function closeForm() {
@@ -63,7 +84,7 @@ function closeForm() {
     <!-- UIヘッダーの分だけスペースを取る -->
     <div style="height: 30px;" />
 
-    <RikordsTimeline :rikords="rikordsFilterdByMode" @edit="onEditClick($event)" />
+    <RikordsTimeline :rikords="rikordsFilterdByMode" @delete="onClickDelete($event)" @edit="onClickEdit($event)" />
 
     <RikordForm
       v-model:show="showForm"

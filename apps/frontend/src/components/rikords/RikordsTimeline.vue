@@ -8,6 +8,7 @@ defineProps<{
 
 const emit = defineEmits<{
   edit: [selectedRikord: RikordEntityResponse];
+  delete: [rikordId: number];
 }>();
 
 const { formatDate, formatDuration } = dateUtils();
@@ -38,7 +39,7 @@ function formatStartFinishedTime({ startedAt, finishedAt, duration }: RikordEnti
               </q-item>
               <q-item class="q-px-xs" clickable>
                 <!-- 削除メニュー -->
-                <q-btn class="text-red-6" flat icon="mdi-delete" label="削除" />
+                <q-btn class="text-red-6" flat icon="mdi-delete" label="削除" @click="emit('delete', rikord.id)" />
               </q-item>
             </q-list>
           </q-menu>
