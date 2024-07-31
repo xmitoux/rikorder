@@ -1,6 +1,9 @@
 <!-- 🏠️ホーム画面 -->
 <script setup lang="ts">
-import type { RikoImageEntityResponse } from '@repo/db';
+import type { RikoImageEntityResponse, RikordInfoEntityResponse } from '@repo/db';
+
+import type { RikordInfoPanelProps } from '~/components/rikord/RikordInfoPanel.vue';
+import type { RikordModeIdValue } from '~/types/rikord-mode';
 
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
@@ -27,6 +30,28 @@ watchEffect(async () => {
   favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
+const panelInfo = ref<RikordInfoEntityResponse>();
+const panelInfoProps = computed<RikordInfoPanelProps>(() => {
+  return {
+    rikordMode: currentRikordMode.value.modeName,
+    lastDatetime: panelInfo.value?.lastDatetime ?? '',
+    count: panelInfo.value?.totalCount ?? 0,
+    duration: panelInfo.value?.totalDuration ?? 0,
+    goal: panelInfo.value?.monthlyGoal ?? 0,
+  };
+});
+
+async function getRikordInfo(rikordModeId: RikordModeIdValue) {
+  try {
+    panelInfo.value = await getRikordInfoApi(rikordModeId);
+  }
+  catch {
+    $q.dialog(dialogConfig({ title: 'エラー', message: '情報取得に失敗しました。' }));
+  }
+}
+
+watchEffect(() => getRikordInfo(currentRikordMode.value.id));
+
 const favoriteStart = ref(false);
 const selectedFavoriteImage = ref<RikoImageEntityResponse | undefined>();
 function selectFavoriteImage(selectedImage: RikoImageEntityResponse) {
@@ -36,53 +61,18 @@ function selectFavoriteImage(selectedImage: RikoImageEntityResponse) {
 
 const quickStart = ref(false);
 const selectionStart = ref(false);
+
+function onFinishedRikord() {
+  getRikordInfo(currentRikordMode.value.id);
+}
 </script>
 
 <template>
   <div>
     <!-- 情報エリア -->
-    <!-- TODO: コンポーネント化 -->
     <div class="q-ml-sm">
       <UISectionLabel class="q-mb-md" label="情報" />
-
-      <!-- q-cardのborder-radius変更用にdivで囲む -->
-      <div class="q-mb-md card-border-radius">
-        <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
-          <q-card-section horizontal>
-            <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-              <UILabelChip label="前回日時/目標" />
-
-              <div class="q-mb-xs text-h6">
-                9/19(木) 9:19
-              </div>
-
-              <div>
-                9時間19分 経過
-              </div>
-            </q-card-section>
-
-            <q-separator inset vertical />
-
-            <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-              <UILabelChip label="今月回数" />
-
-              <div class="q-mt-sm text-h6">
-                19回
-              </div>
-            </q-card-section>
-          </q-card-section>
-
-          <q-separator inset />
-
-          <q-card-section class="q-px-sm q-py-sm text-center">
-            <UILabelChip label="今月の記録/目標" />
-
-            <div class="text-h6">
-              19回 / 919回
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
+      <RikordInfoPanel v-bind="panelInfoProps" class="q-mb-md" />
     </div>
 
     <!-- お気に入り -->
@@ -97,14 +87,11 @@ const selectionStart = ref(false);
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
-    <RikordDialogFavoriteStart v-if="selectedFavoriteImage" v-model:show="favoriteStart" :riko-image="selectedFavoriteImage!" />
-    <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" />
-    <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" />
+    <RikordDialogFavoriteStart v-if="selectedFavoriteImage" v-model:show="favoriteStart" :riko-image="selectedFavoriteImage!" @finish="onFinishedRikord" />
+    <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" @finish="onFinishedRikord" />
+    <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" @finish="onFinishedRikord" />
   </div>
 </template>
 
 <style scoped lang="scss">
-.card-border-radius {
-  border-radius: 10px;
-}
 </style>

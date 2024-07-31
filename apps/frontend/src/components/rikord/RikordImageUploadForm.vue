@@ -1,6 +1,8 @@
-<!-- 🖼️梨子ちゃんライブラリ 画像登録画面 -->
+<!-- Rikord記録画面用画像登録 -->
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
+
+import type { RikoImageEntityResponse } from '@repo/db';
 
 defineProps<{
   show: boolean;
@@ -13,6 +15,15 @@ const {
   currentSetting, toggleSettingRikordMode,
   uploading, onClickOk, onClickCancel,
 } = useRikoLibraryImageUploadForm();
+
+const store = useRikordModeStore();
+const { currentRikordMode } = storeToRefs(store);
+
+onMounted(() => {
+  // 現在のモードのみ「使用する」で固定
+  toggleSettingRikordMode(currentRikordMode.value.modeName);
+  currentSetting.value.use = true;
+});
 
 const $q = useQuasar();
 
@@ -43,7 +54,7 @@ const success = (message: string) => {
 
 const onClickSubmit = () => {
   onClickOk(
-    () => emit('ok'),
+    (uploadedImage: RikoImageEntityResponse) => emit('ok', uploadedImage),
     alert,
     success,
   );
@@ -51,45 +62,41 @@ const onClickSubmit = () => {
 </script>
 
 <template>
-  <q-dialog maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left">
+  <!-- ダイアログを開くとすぐに画像選択を開く -->
+  <q-dialog
+    maximized :model-value="show" persistent transition-hide="jump-right" transition-show="jump-left"
+    @show="selectFile()"
+  >
     <NuxtLayout name="custom">
       <template #header>
-        画像登録
+        画像登録{{ `(${currentRikordMode.modeName}モード)` }}
       </template>
 
       <!-- 画像選択 -->
       <div class="q-ml-sm q-mb-lg">
         <UISectionLabel class="q-mb-md" label="画像" />
 
-        <q-btn
-          class="q-ml-sm" color="pink-2" label="選択" :ripple="{ color: 'pink' }" size="md" text-color="dark" unelevated
-          @click="selectFile"
-        />
-        <input ref="fileInput" class="hidden" type="file" @change="onFileSelected">
-
-        <div class="q-px-sm q-mt-sm">
-          <q-img v-if="imagePreview" fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="imagePreview" />
+        <!-- サムネ -->
+        <div v-if="imagePreview" class="q-px-sm q-mt-sm">
+          <q-img
+            fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="imagePreview"
+            @click="imagePreview && selectFile()"
+          />
         </div>
+        <!-- 隠し画像選択input -->
+        <input ref="fileInput" class="hidden" type="file" @change="onFileSelected">
       </div>
 
+      <!-- 使用する(固定ON) -->
       <div class="q-mx-sm q-mb-lg">
-        <UISectionLabel class="q-mb-md" label="Rikordモード別設定" />
+        <UISectionLabel class="q-mb-md" label="使用する" />
+        <q-toggle checked-icon="mdi-check" color="pink-2" disabled keep-color :model-value="true" size="lg" />
+      </div>
 
-        <q-card bordered flat>
-          <q-card-section class="q-pb-none">
-            <RikoLibraryRikordModeToggleButton @toggle="toggleSettingRikordMode" />
-          </q-card-section>
-
-          <q-card-section class="q-pb-none">
-            <UISectionLabel class="q-mb-sm" label="使用する" />
-            <q-toggle v-model="currentSetting.use" checked-icon="mdi-check" color="pink-2" keep-color size="lg" />
-          </q-card-section>
-
-          <q-card-section>
-            <UISectionLabel class="q-mb-sm" label="お気に入り" />
-            <q-toggle v-model="currentSetting.favorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
-          </q-card-section>
-        </q-card>
+      <!-- お気に入り -->
+      <div class="q-mx-sm q-mb-lg">
+        <UISectionLabel class="q-mb-sm" label="お気に入り" />
+        <q-toggle v-model="currentSetting.favorite" checked-icon="mdi-star" color="pink-2" keep-color size="lg" />
       </div>
 
       <template #footer>

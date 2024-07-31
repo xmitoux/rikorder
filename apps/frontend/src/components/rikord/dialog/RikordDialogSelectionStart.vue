@@ -7,6 +7,7 @@ import type { RikordTimerResult } from '~/types/rikord';
 const showImageSelector = defineModel<boolean>('show', { required: true });
 
 defineProps<{ rikoImages: RikoImageEntityResponse[] }>();
+const emit = defineEmits(['finish']);
 
 const showViewer = ref(false);
 const selectedViewImage = ref<RikoImageEntityResponse | undefined>();
@@ -26,6 +27,7 @@ function onSaveTimerResult(result: RikordTimerResult) {
 const showForm = ref(false);
 function finishRikord() {
   showForm.value = false;
+  emit('finish');
 }
 </script>
 
@@ -46,7 +48,7 @@ function finishRikord() {
     <!-- 記録ダイアログ -->
     <RikordForm
       v-model:show="showForm" :init-riko-image="selectedViewImage" :rikord-timer-result="timerResult"
-      @cancel="finishRikord" @ok="finishRikord"
+      @cancel="showForm = false" @ok="finishRikord"
     />
   </div>
 </template>
