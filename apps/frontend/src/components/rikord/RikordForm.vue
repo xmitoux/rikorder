@@ -98,6 +98,8 @@ async function submitRikord() {
   resetForm();
   emit('ok');
 }
+
+const showUploadForm = ref(false);
 </script>
 
 <template>
@@ -126,7 +128,12 @@ async function submitRikord() {
           @click="showImageSelector = true"
         />
 
-        <!-- TODO: 画像登録(フォームを開く) -->
+        <!-- 画像登録ボタン -->
+        <q-btn
+          v-if="!selectedRikoImage"
+          class="q-ml-sm" color="pink-2" label="登録" :ripple="{ color: 'pink' }" size="md" text-color="dark" unelevated
+          @click="showUploadForm = true"
+        />
       </div>
 
       <!-- 日時入力 -->
@@ -150,6 +157,7 @@ async function submitRikord() {
     </NuxtLayout>
 
     <RikordImageSelector :riko-images="rikoImages" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
+    <RikordImageUploadForm :show="showUploadForm" @cancel="showUploadForm = false" @ok="showUploadForm = false" />
   </q-dialog>
 </template>
 
