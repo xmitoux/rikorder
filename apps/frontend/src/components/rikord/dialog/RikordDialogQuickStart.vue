@@ -7,6 +7,7 @@ import type { RikordTimerResult } from '~/types/rikord';
 const showDialog = defineModel<boolean>('show', { required: true });
 
 defineProps<{ rikoImages: RikoImageEntityResponse[] }>();
+const emit = defineEmits(['finish']);
 
 const startTimer = ref(false);
 const rikordTimerResult = ref<RikordTimerResult>({ startDatetime: undefined, endDatetime: undefined });
@@ -24,16 +25,17 @@ function openForm(result: RikordTimerResult) {
   rikordTimerResult.value = result;
   showForm.value = true;
 }
-function finishRikord() {
+function finishRikord(ok: boolean = true) {
   showForm.value = false;
   showDialog.value = false;
+  ok && emit('finish');
 }
 </script>
 
 <template>
   <q-dialog v-model="showDialog" backdrop-filter="blur(4px)" persistent @show="startTimer = true">
     <RikordTimer :start="startTimer" @cancel="cancelTimer" @save="saveTimerResult" />
-    <RikordForm v-model:show="showForm" :riko-images="rikoImages" :rikord-timer-result="rikordTimerResult" @cancel="finishRikord" @ok="finishRikord" />
+    <RikordForm v-model:show="showForm" :riko-images="rikoImages" :rikord-timer-result="rikordTimerResult" @cancel="finishRikord(false)" @ok="finishRikord" />
   </q-dialog>
 </template>
 

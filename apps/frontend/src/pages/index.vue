@@ -1,8 +1,9 @@
 <!-- 🏠️ホーム画面 -->
 <script setup lang="ts">
-import type { RikoImageEntityResponse } from '@repo/db';
+import type { RikoImageEntityResponse, RikordInfoEntityResponse } from '@repo/db';
 
 import type { RikordInfoPanelProps } from '~/components/rikord/RikordInfoPanel.vue';
+import type { RikordModeIdValue } from '~/types/rikord-mode';
 
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
@@ -29,15 +30,27 @@ watchEffect(async () => {
   favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
-const panelInfo = computed<RikordInfoPanelProps>(() => {
+const panelInfo = ref<RikordInfoEntityResponse>();
+const panelInfoProps = computed<RikordInfoPanelProps>(() => {
   return {
     rikordMode: currentRikordMode.value.modeName,
-    lastDatetime: '2024-07-31T14:18:19Z',
-    count: 19,
-    duration: 919,
-    goal: 919,
+    lastDatetime: panelInfo.value?.lastDatetime ?? '',
+    count: panelInfo.value?.totalCount ?? 0,
+    duration: panelInfo.value?.totalDuration ?? 0,
+    goal: panelInfo.value?.monthlyGoal ?? 0,
   };
 });
+
+async function getRikordInfo(rikordModeId: RikordModeIdValue) {
+  try {
+    panelInfo.value = await getRikordInfoApi(rikordModeId);
+  }
+  catch {
+    $q.dialog(dialogConfig({ title: 'エラー', message: '情報取得に失敗しました。' }));
+  }
+}
+
+watchEffect(() => getRikordInfo(currentRikordMode.value.id));
 
 const favoriteStart = ref(false);
 const selectedFavoriteImage = ref<RikoImageEntityResponse | undefined>();
@@ -48,6 +61,10 @@ function selectFavoriteImage(selectedImage: RikoImageEntityResponse) {
 
 const quickStart = ref(false);
 const selectionStart = ref(false);
+
+function onFinishedRikord() {
+  getRikordInfo(currentRikordMode.value.id);
+}
 </script>
 
 <template>
@@ -55,7 +72,7 @@ const selectionStart = ref(false);
     <!-- 情報エリア -->
     <div class="q-ml-sm">
       <UISectionLabel class="q-mb-md" label="情報" />
-      <RikordInfoPanel v-bind="panelInfo" class="q-mb-md" />
+      <RikordInfoPanel v-bind="panelInfoProps" class="q-mb-md" />
     </div>
 
     <!-- お気に入り -->
@@ -70,9 +87,9 @@ const selectionStart = ref(false);
       <UIButtonOk class="q-my-sm" label="ランダム" />
     </div>
 
-    <RikordDialogFavoriteStart v-if="selectedFavoriteImage" v-model:show="favoriteStart" :riko-image="selectedFavoriteImage!" />
-    <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" />
-    <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" />
+    <RikordDialogFavoriteStart v-if="selectedFavoriteImage" v-model:show="favoriteStart" :riko-image="selectedFavoriteImage!" @finish="onFinishedRikord" />
+    <RikordDialogQuickStart v-if="rikoImages" v-model:show="quickStart" :riko-images="rikoImages!" @finish="onFinishedRikord" />
+    <RikordDialogSelectionStart v-if="rikoImages" v-model:show="selectionStart" :riko-images="rikoImages!" @finish="onFinishedRikord" />
   </div>
 </template>
 
