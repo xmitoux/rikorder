@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import type { RikoImageEntityResponse } from '@repo/db';
 
+import type { RikordInfoPanelProps } from '~/components/rikord/RikordInfoPanel.vue';
+
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
@@ -27,6 +29,16 @@ watchEffect(async () => {
   favoriteRikoImages.value = favoriteRikoImagesResult;
 });
 
+const panelInfo = computed<RikordInfoPanelProps>(() => {
+  return {
+    rikordMode: currentRikordMode.value.modeName,
+    lastDatetime: '2024-07-31T14:18:19Z',
+    count: 19,
+    duration: 919,
+    goal: 919,
+  };
+});
+
 const favoriteStart = ref(false);
 const selectedFavoriteImage = ref<RikoImageEntityResponse | undefined>();
 function selectFavoriteImage(selectedImage: RikoImageEntityResponse) {
@@ -41,48 +53,9 @@ const selectionStart = ref(false);
 <template>
   <div>
     <!-- 情報エリア -->
-    <!-- TODO: コンポーネント化 -->
     <div class="q-ml-sm">
       <UISectionLabel class="q-mb-md" label="情報" />
-
-      <!-- q-cardのborder-radius変更用にdivで囲む -->
-      <div class="q-mb-md card-border-radius">
-        <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
-          <q-card-section horizontal>
-            <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-              <UILabelChip label="前回日時/目標" />
-
-              <div class="q-mb-xs text-h6">
-                9/19(木) 9:19
-              </div>
-
-              <div>
-                9時間19分 経過
-              </div>
-            </q-card-section>
-
-            <q-separator inset vertical />
-
-            <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-              <UILabelChip label="今月回数" />
-
-              <div class="q-mt-sm text-h6">
-                19回
-              </div>
-            </q-card-section>
-          </q-card-section>
-
-          <q-separator inset />
-
-          <q-card-section class="q-px-sm q-py-sm text-center">
-            <UILabelChip label="今月の記録/目標" />
-
-            <div class="text-h6">
-              19回 / 919回
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
+      <RikordInfoPanel v-bind="panelInfo" class="q-mb-md" />
     </div>
 
     <!-- お気に入り -->
@@ -104,7 +77,4 @@ const selectionStart = ref(false);
 </template>
 
 <style scoped lang="scss">
-.card-border-radius {
-  border-radius: 10px;
-}
 </style>
