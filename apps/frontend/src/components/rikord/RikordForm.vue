@@ -100,6 +100,16 @@ async function submitRikord() {
 }
 
 const showUploadForm = ref(false);
+
+const uploadedImages = ref<RikoImageEntityResponse[]>([]);
+function onUploadFinished(uploadedImage: RikoImageEntityResponse) {
+  // 登録した画像を選択状態にする
+  selectedRikoImage.value = uploadedImage;
+  // 登録した画像を一覧に含める
+  uploadedImages.value.push(uploadedImage);
+  showUploadForm.value = false;
+}
+const rikoImagesWithUploads = computed<RikoImageEntityResponse[]>(() => [...props.rikoImages, ...uploadedImages.value]);
 </script>
 
 <template>
@@ -113,11 +123,11 @@ const showUploadForm = ref(false);
       <div class="q-ml-sm q-mb-lg">
         <UISectionLabel class="q-mb-md" label="画像" />
 
-        <!-- 画像選択時はサムネ表示 -->
+        <!-- 画像選択時はサムネ表示(初期画像があるとき(選んで始める・編集)は変更不可) -->
         <div v-if="selectedRikoImage" class="q-px-sm q-mt-sm">
           <q-img
             fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="selectedRikoImage.url"
-            @click="showImageSelector = initRikoImage ? false : true"
+            @click="showImageSelector = initRikoImage || editRikord?.rikoImage ? false : true"
           />
         </div>
 
@@ -156,8 +166,8 @@ const showUploadForm = ref(false);
       </template>
     </NuxtLayout>
 
-    <RikordImageSelector :riko-images="rikoImages" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
-    <RikordImageUploadForm :show="showUploadForm" @cancel="showUploadForm = false" @ok="showUploadForm = false" />
+    <RikordImageSelector :riko-images="rikoImagesWithUploads" :show="showImageSelector" @cancel="showImageSelector = false" @select="selectRikoImage" />
+    <RikordImageUploadForm :show="showUploadForm" @cancel="showUploadForm = false" @ok="onUploadFinished" />
   </q-dialog>
 </template>
 

@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 
+import type { RikoImageEntityResponse } from '@repo/db';
+
 defineProps<{
   show: boolean;
 }>();
@@ -40,18 +42,6 @@ const alert = (message: string) => {
   });
 };
 
-const notifyErrors = (errors: string[]) => {
-  for (const error of errors) {
-    $q.notify({
-      type: 'negative',
-      message: error,
-      position: 'top',
-      timeout: 0,
-      actions: [{ icon: 'mdi-close', color: 'white', round: true }],
-    });
-  }
-};
-
 const success = (message: string) => {
   $q.notify({
     type: 'positive',
@@ -64,9 +54,8 @@ const success = (message: string) => {
 
 const onClickSubmit = () => {
   onClickOk(
-    () => emit('ok'),
+    (uploadedImage: RikoImageEntityResponse) => emit('ok', uploadedImage),
     alert,
-    notifyErrors,
     success,
   );
 };

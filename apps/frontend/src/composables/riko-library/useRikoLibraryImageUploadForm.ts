@@ -1,8 +1,6 @@
-import { FetchError } from 'ofetch';
-
 import { RIKORD_MODE_VALUES, RIKORD_MODES } from '~/constants/rikord-mode';
 
-import type { CreateRikoImageSettingDto, RikoImageSettingEntityResponse, UpsertRikoImageSettingDto } from '@repo/db';
+import type { CreateRikoImageSettingDto, RikoImageEntityResponse, RikoImageSettingEntityResponse, UpsertRikoImageSettingDto } from '@repo/db';
 
 import type { RikordModeName } from '~/types/rikord-mode';
 
@@ -59,9 +57,8 @@ function validateUse(): boolean {
 }
 
 const onClickOk = async (
-  emit: () => void,
+  emit: (uploadedImage: RikoImageEntityResponse) => void,
   alert: (message: string) => void,
-  notifyErrors: (errors: string[]) => void,
   success: (message: string) => void,
 ) => {
   if (!selectedFile.value) {
@@ -74,20 +71,28 @@ const onClickOk = async (
     return;
   }
 
-  const result = await submitForm();
-  if (result !== true) {
-    notifyErrors(result);
+  uploading.value = true;
+  let uploadedImage: RikoImageEntityResponse;
+
+  try {
+    uploadedImage = await submitForm();
+  }
+  catch {
+    alert('画像登録に失敗しました。');
     return;
+  }
+  finally {
+    uploading.value = false;
   }
 
   success('画像を登録しました。');
   resetForm();
-  emit();
+  emit(uploadedImage);
 };
 
 const uploading = ref(false);
 
-const submitForm = async (): Promise<true | string[]> => {
+const submitForm = async (): Promise<RikoImageEntityResponse> => {
   const settingsFormData: CreateRikoImageSettingDto[] = [];
   const { View, Solo, Multi } = rikoImageSettings.value;
   View.use && settingsFormData.push({ rikordModeId: 1, isFavorite: View.favorite });
@@ -98,29 +103,7 @@ const submitForm = async (): Promise<true | string[]> => {
   formData.append('settings', JSON.stringify(settingsFormData));
   formData.append('file', selectedFile.value!);
 
-  uploading.value = true;
-
-  try {
-    await createRikoImageWithSettingsApi(formData);
-  }
-  catch (error) {
-    console.error('createRikoImageWithSettingsApi:', { error });
-
-    if (error instanceof FetchError) {
-      if (error.response?._data?.data) {
-        const errorMessages = JSON.parse(error.response._data.data.messages);
-        return errorMessages;
-      }
-      else {
-        return ['予期せぬエラー'];
-      }
-    }
-  }
-  finally {
-    uploading.value = false;
-  }
-
-  return true;
+  return createRikoImageWithSettingsApi(formData);
 };
 
 const onClickCancel = (emit: () => void) => {

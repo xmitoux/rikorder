@@ -31,18 +31,6 @@ const alert = (message: string) => {
   });
 };
 
-const notifyErrors = (errors: string[]) => {
-  for (const error of errors) {
-    $q.notify({
-      type: 'negative',
-      message: error,
-      position: 'top',
-      timeout: 0,
-      actions: [{ icon: 'mdi-close', color: 'white', round: true }],
-    });
-  }
-};
-
 const success = (message: string) => {
   $q.notify({
     type: 'positive',
@@ -57,7 +45,6 @@ const onClickSubmit = () => {
   onClickOk(
     () => emit('ok'),
     alert,
-    notifyErrors,
     success,
   );
 };
