@@ -27,3 +27,12 @@ export type RikordEntityResponse = Omit<RikordEntity,
     startedAt: string;
     finishedAt: string;
   };
+
+export type RikordInfoEntity = {
+  lastDatetime: string;
+  totalCount: number;
+  totalDuration: number;
+  monthlyGoal: number;
+};
+
+export type RikordInfoEntityResponse = RikordInfoEntity;

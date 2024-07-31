@@ -3,8 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Rikord } from '@repo/db/dist';
 
 import { PrismaService } from '~/common/services/prisma.service';
+import { dateUtils } from '~/utils/dateUtils';
 
 import { CreateRikordDto, SearchRikordsDto, UpdateRikordDto } from './dto/rikord.dto';
+import { RikordInfoEntity } from './entities/rikord.entity';
+
+const { getStartAndEndDateOfMonth } = dateUtils();
 
 @Injectable()
 export class RikordsService {
@@ -36,12 +40,7 @@ export class RikordsService {
 
   async searchRikords(searchDto: SearchRikordsDto): Promise<Rikord[]> {
     const { year, month } = searchDto;
-
-    /* 年月条件(started_atを月の初日〜最終日で抽出する) */
-    // 月の初日(Dateの月は0-11なので渡された引数から1引く)
-    const startDateOfMonth = new Date(year, month - 1, 1);
-    // 月の最終日23:59:59 (翌月0日を指定すると前月最終日となる)
-    const endDateOfMonth = new Date(year, month, 0, 23, 59, 59);
+    const { startDateOfMonth, endDateOfMonth } = getStartAndEndDateOfMonth(new Date(year, month - 1));
 
     return this.prisma.rikord.findMany({
       include: {
@@ -57,6 +56,44 @@ export class RikordsService {
         startedAt: 'desc',
       },
     });
+  }
+
+  async getRikordInfo(rikordModeId: number): Promise<RikordInfoEntity> {
+    // 前回Rikord日時
+    const latestRikord = await this.prisma.rikord.findFirst({
+      where: {
+        rikordModeId,
+      },
+      orderBy: {
+        finishedAt: 'desc',
+      },
+    });
+
+    // 当月回数・duraiton集計
+    const { startDateOfMonth, endDateOfMonth } = getStartAndEndDateOfMonth(new Date());
+    const result = await this.prisma.rikord.aggregate({
+      where: {
+        rikordModeId,
+        startedAt: {
+          gte: startDateOfMonth,
+          lte: endDateOfMonth,
+        },
+      },
+      _count: {
+        duration: true,
+      },
+      _sum: {
+        duration: true,
+      },
+    });
+
+    return {
+      lastDatetime: latestRikord?.finishedAt.toISOString() ?? '',
+      totalCount: result._count.duration,
+      totalDuration: result._sum.duration ?? 0,
+      // TODO: 目標を取得
+      monthlyGoal: 919,
+    };
   }
 
   updateRikord({ id, ...data }: UpdateRikordDto): Promise<Rikord> {

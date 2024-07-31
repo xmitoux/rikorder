@@ -2,7 +2,7 @@ import { Exclude } from 'class-transformer';
 
 import { RikoImageEntity } from '~/modules/riko-library/entities/riko-library.entity';
 
-import type { RikordEntity as Rikord } from '@repo/db';
+import type { RikordEntity as Rikord, RikordInfoEntity as RikordInfo } from '@repo/db';
 
 export class RikordEntity implements Rikord {
   id: number;
@@ -25,5 +25,16 @@ export class RikordEntity implements Rikord {
     if (rikoImage) {
       this.rikoImage = new RikoImageEntity(rikoImage);
     }
+  }
+}
+
+export class RikordInfoEntity implements RikordInfo {
+  lastDatetime: string;
+  totalCount: number;
+  totalDuration: number;
+  monthlyGoal: number;
+
+  constructor({ ...data }: Partial<RikordInfoEntity>) {
+    Object.assign(this, data);
   }
 }
