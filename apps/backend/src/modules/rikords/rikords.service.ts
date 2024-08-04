@@ -8,8 +8,6 @@ import { dateUtils } from '~/utils/dateUtils';
 import { CreateRikordDto, SearchRikordsDto, UpdateRikordDto } from './dto/rikord.dto';
 import { RikordInfoEntity } from './entities/rikord.entity';
 
-const { getStartAndEndDateOfMonth } = dateUtils();
-
 @Injectable()
 export class RikordsService {
   constructor(private prisma: PrismaService) {}
@@ -40,7 +38,7 @@ export class RikordsService {
 
   async searchRikords(searchDto: SearchRikordsDto): Promise<Rikord[]> {
     const { year, month } = searchDto;
-    const { startDateOfMonth, endDateOfMonth } = getStartAndEndDateOfMonth(new Date(year, month - 1));
+    const { startDateOfMonth, endDateOfMonth } = dateUtils.getStartAndEndDateOfMonth(new Date(year, month - 1));
 
     return this.prisma.rikord.findMany({
       include: {
@@ -70,7 +68,7 @@ export class RikordsService {
     });
 
     // 当月回数・duraiton集計
-    const { startDateOfMonth, endDateOfMonth } = getStartAndEndDateOfMonth(new Date());
+    const { startDateOfMonth, endDateOfMonth } = dateUtils.getStartAndEndDateOfMonth(new Date());
     const result = await this.prisma.rikord.aggregate({
       where: {
         rikordModeId,
