@@ -1,19 +1,30 @@
 <!-- 👑ランキング画面 -->
 <script setup lang="ts">
+import type { RankingEntityResponse } from '@repo/db';
+
 const store = useRikordModeStore();
 const { currentRikordMode } = storeToRefs(store);
 
-const rankingList = ref([]);
-rankingList.value = [
-  { rank: 1, rankValue: 1_366_500, rikoImage: { url: 'https://bibjqyafzulueizuahxw.supabase.co/storage/v1/object/public/riko-images-dev/1721315402017_30Sakurauchi-Riko-Water-Symphony-UR-hZpU4Z.jpg' } },
-  { rank: 2, rankValue: 4320, rikoImage: { url: 'https://bibjqyafzulueizuahxw.supabase.co/storage/v1/object/public/riko-images-dev/1721315402017_30Sakurauchi-Riko-Water-Symphony-UR-hZpU4Z.jpg' } },
-  { rank: 3, rankValue: 610, rikoImage: { url: 'https://bibjqyafzulueizuahxw.supabase.co/storage/v1/object/public/riko-images-dev/1721315402017_30Sakurauchi-Riko-Water-Symphony-UR-hZpU4Z.jpg' } },
-  { rank: 4, rankValue: 61, rikoImage: { url: 'https://bibjqyafzulueizuahxw.supabase.co/storage/v1/object/public/riko-images-dev/1721315402017_30Sakurauchi-Riko-Water-Symphony-UR-hZpU4Z.jpg' } },
-];
+const $q = useQuasar();
+const { dialogConfig } = useQuasarDialog();
+
+const rankingList = ref<RankingEntityResponse[]>([]);
+watchEffect(async () => {
+  const rikordModeId = currentRikordMode.value.id;
+
+  try {
+    rankingList.value = currentRikordMode.value.modeName === 'View'
+      ? await getRankingByDurationApi({ rikordModeId })
+      : await getRankingByCountApi({ rikordModeId });
+  }
+  catch {
+    $q.dialog(dialogConfig({ title: '取得失敗', message: 'ランキング一覧取得に失敗しました。' }));
+  }
+});
 </script>
 
 <template>
-  <div>
+  <div class="q-mx-sm" style="margin-top:-20px;">
     <RankingList :items="rankingList" :rikord-mode="currentRikordMode.modeName" />
   </div>
 </template>
