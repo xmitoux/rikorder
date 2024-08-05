@@ -28,6 +28,12 @@ export async function getRikoImageDetailsApi(rikoImageId: number) {
     });
 }
 
+export async function useGetRikoImageDetailsApi(rikoImageId: number) {
+  return useFetch<RikoImageDetailsEntityResponse>(`/api/riko-library/details/${rikoImageId}`, {
+    method: 'GET',
+  });
+}
+
 export async function upsertRikoImageSettingsApi(body: UpsertRikoImageSettingsDto) {
   await $fetch('/api/riko-library/image-settings', { body, method: 'post' })
     .catch((error) => {

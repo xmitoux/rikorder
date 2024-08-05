@@ -26,7 +26,14 @@ const moveMenu = (selectedMenu: Menu) => {
 };
 
 // メニュー選択時にヘッダータイトルとメニューアイコンの外観を変更する
+const router = useRouter();
 const updateSelectedMenu = (path: string) => {
+  if (!menus.value.map(menu => menu.path).includes(path)) {
+    // 子画面から戻ったとき用
+    // (引数のpathには子画面のパスが入るので、戻ってきたページのpathを設定する)
+    path = router.currentRoute.value.path;
+  }
+
   for (const menu of menus.value) {
     menu.selected = menu.path === path;
 
