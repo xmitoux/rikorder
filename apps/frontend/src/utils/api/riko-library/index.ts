@@ -1,4 +1,4 @@
-import type { RikoImageEntityResponse, RikoImageSettingEntityResponse, UpsertRikoImageSettingsDto } from '@repo/db';
+import type { RikoImageDetailsEntityResponse, RikoImageEntityResponse, RikoImageSettingEntityResponse, UpsertRikoImageSettingsDto } from '@repo/db';
 
 export async function createRikoImageWithSettingsApi(body: FormData) {
   const result = await $fetch<RikoImageEntityResponse>('/api/riko-library/riko-images', { body, method: 'post' })
@@ -18,6 +18,14 @@ export async function findRikoImageSettingsByRikoImageIdApi(rikordImageId: numbe
     });
 
   return result;
+}
+
+export async function getRikoImageDetailsApi(rikoImageId: number) {
+  return $fetch<RikoImageDetailsEntityResponse>(`/api/riko-library/details/${rikoImageId}`, { method: 'GET' })
+    .catch((error) => {
+      handleApiError(error, 'getRikoImageDetailsApi');
+      throw error;
+    });
 }
 
 export async function upsertRikoImageSettingsApi(body: UpsertRikoImageSettingsDto) {

@@ -1,9 +1,9 @@
 <!-- 🖼️梨子ちゃんライブラリ 画像詳細/詳細画面ダイアログ -->
 <script setup lang="ts">
-import ImageDetails from '~/components/riko-library/image/RikoLibraryImageDetails.vue';
+import ImageDetails, { type RikorImageDetailsProps } from '~/components/riko-library/image/RikoLibraryImageDetails.vue';
 import ImageSettings, { type RikoLibraryImageSettingsFormProps } from '~/components/riko-library/image/RikoLibraryImageSettingsForm.vue';
 
-import type { RikoImageEntityResponse, RikoImageSettingEntityResponse } from '@repo/db';
+import type { RikoImageDetailsEntityResponse, RikoImageEntityResponse, RikoImageSettingEntityResponse } from '@repo/db';
 
 const show = defineModel<boolean>('show', { required: true });
 
@@ -22,12 +22,14 @@ const toggle = ref<ButtonToggleLabel>('詳細');
 
 const isDetails = computed(() => toggle.value === '詳細');
 
+const rikoImageDetails = ref<RikoImageDetailsEntityResponse>();
 const rikoImageSettings = ref<RikoImageSettingEntityResponse[]>([]);
 async function onShow() {
   // MEMO: 本番環境だとAPI実行完了に時間がかかり、設定タブに切り替えたあと時間差で反映される
-  // TODO: 画像詳細も一緒にAPIから取得
+  const fetchDetails = getRikoImageDetailsApi(props.rikoImage.id);
   const fetchSettings = findRikoImageSettingsByRikoImageIdApi(props.rikoImage.id);
-  const [settingsResult] = await Promise.all([fetchSettings]);
+  const [detailsResult, settingsResult] = await Promise.all([fetchDetails, fetchSettings]);
+  rikoImageDetails.value = detailsResult;
   rikoImageSettings.value = settingsResult;
 }
 
@@ -37,13 +39,13 @@ const componentRef = ref<DynamicComponentInstance | undefined>();
 
 type DynamicComponents = {
   component: DynamicComponent;
-  props: RikoLibraryImageSettingsFormProps;
+  props: RikoLibraryImageSettingsFormProps | RikorImageDetailsProps;
   events: object;
 };
 const currentComponent = computed<DynamicComponents>(() => ({
   component: isDetails.value ? ImageDetails : ImageSettings,
   // TODO: 画像詳細コンポーネントのpropsも指定する
-  props: { settings: rikoImageSettings.value },
+  props: isDetails.value ? { imageDetails: rikoImageDetails.value } : { settings: rikoImageSettings.value },
   events: isDetails.value ? {} : { delete: submitDeleteRikoImage },
 }));
 
