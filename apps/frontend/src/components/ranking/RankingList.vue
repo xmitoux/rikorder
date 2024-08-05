@@ -60,6 +60,7 @@ function rankIcon(rank: number): string {
         <q-img
           fit="contain"
           :ratio="16/9"
+          spinner-color="pink-2"
           :src="item.rikoImage.url"
         />
       </div>
