@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, HttpStatus, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { Prisma } from '@repo/db';
 
@@ -24,21 +24,22 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
     const message = this.defaultExceptionMessage(exception);
 
     const exceptionCode = exception.code;
 
-    if (Object.keys(this.prismaErrorCodes).includes(exceptionCode)) {
-      const statusCode = this.prismaErrorCodes[exceptionCode as keyof typeof this.prismaErrorCodes];
+    const statusCode = Object.keys(this.prismaErrorCodes).includes(exceptionCode)
+      ? this.prismaErrorCodes[exceptionCode as keyof typeof this.prismaErrorCodes]
+      : HttpStatus.INTERNAL_SERVER_ERROR;
 
-      response.status(statusCode).json({
+    response
+      .status(statusCode)
+      .json({
         message,
         statusCode,
+        timestamp: new Date().toLocaleString('ja-JP'),
+        path: request.url,
       });
-    }
-    else {
-      // default 500 error code
-      super.catch(exception, host);
-    }
   }
 }

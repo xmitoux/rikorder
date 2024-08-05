@@ -4,7 +4,10 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { RankingModule } from './modules/ranking/ranking.module';
 import { RikoImagesModule } from './modules/riko_images/riko_images.module';
+import { RikoLibraryModule } from './modules/riko-library/riko-library.module';
+import { RikordsModule } from './modules/rikords/rikords.module';
 
 const pinoHttp = {
   level: process.env.PINO_LOG_LEVEL || 'trace',
@@ -19,9 +22,12 @@ const pinoHttp = {
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule.forRoot({ pinoHttp }),
     RikoImagesModule,
+    RikoLibraryModule,
+    RikordsModule,
+    RankingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

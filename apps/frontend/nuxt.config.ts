@@ -10,6 +10,7 @@ const prodModules = process.env.NODE_ENV === 'production'
 
 const modules = [
   'nuxt-quasar-ui',
+  '@pinia/nuxt',
   ...devModules,
   ...prodModules,
 ];
@@ -81,6 +82,7 @@ export default defineNuxtConfig({
       dir: '../../.vercel/output',
     },
   },
+  srcDir: 'src/',
   app: {
     head: {
       link: [
@@ -93,16 +95,34 @@ export default defineNuxtConfig({
         // PWAの表示領域より上の部分の色
         { content: '#F8BBD0', name: 'theme-color' },
       ],
+
     },
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
+  components: [
+    '~/components',
+    { path: '~/components/ui-parts', prefix: 'UI' },
+  ],
+  imports: {
+    dirs: [
+      'composables',
+      'composables/**',
+    ],
   },
   // @ts-ignore
   pwa,
   quasar: {
+    plugins: [
+      'Dialog',
+      'Notify',
+      'Loading',
+    ],
     extras: {
       fontIcons: [
         'mdi-v7',
       ],
     },
     iconSet: 'mdi-v7',
+    sassVariables: true,
   },
 });

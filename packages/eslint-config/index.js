@@ -13,11 +13,14 @@ export const customEslintRules = {
     'array-callback-return': ['error', { checkForEach: true }],
     'curly': 'error',
     'import/order': 'off',
-    'no-console': 'error',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'object-shorthand': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-extraneous-class': 'off',
     'vue/max-attributes-per-line': 'off',
-    'vue/attributes-order': ["error", { alphabetical: true }],
+    'vue/attributes-order': ['error', { alphabetical: true }],
+    'vue/multi-word-component-names': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
   },
 };
 
@@ -37,6 +40,7 @@ const customUnicornRules = {
     'unicorn/prefer-module': 'off',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-null': 'off',
+    'unicorn/no-single-promise-in-promise-methods': 'off',
   },
 };
 
@@ -49,44 +53,38 @@ const configPerfectionist = {
   },
   rules: {
     'perfectionist/sort-exports': 'error',
-    'perfectionist/sort-imports': [
-      'error',
-      {
-        type: 'natural',
-        order: 'asc',
-        'custom-groups': {
-          value: {
-            repo: '@repo/**',
-          },
-        },
-        groups: [
-          'builtin',
-          'external',
-          'repo',
-          'internal',
-          'parent',
-          'sibling',
-          'side-effect',
-          'side-effect-style',
-          'index',
-          'object',
-          'style',
-          'type',
-          'builtin-type',
-          'external-type',
-          'internal-type',
-          'parent-type',
-          'sibling-type',
-          'index-type',
-          'unknown',
-        ],
-        'newlines-between': 'always',
-        'internal-pattern': [
-          '@/**',
-          '~/**'
-        ],
-      },
-    ],
+    'perfectionist/sort-imports': ['error', {
+      type: 'natural',
+      'custom-groups': { value: { repo: '@repo/**' }},
+      groups: [
+        'builtin',
+        'external',
+        'repo',
+        'internal',
+        'parent',
+        'sibling',
+        'side-effect',
+        'side-effect-style',
+        'index',
+        'object',
+        'style',
+        'type',
+        'builtin-type',
+        'external-type',
+        'internal-type',
+        'parent-type',
+        'sibling-type',
+        'index-type',
+        'unknown',
+      ],
+      'newlines-between': 'always',
+      'internal-pattern': [
+        '@/**',
+        '~/**'
+      ],
+    }],
+    'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
+    'perfectionist/sort-named-exports': ['error', { type: 'natural' }],
   },
 };
 
@@ -105,18 +103,19 @@ const configStylistic = stylistic.configs.customize({
  */
 const customStylisticRules = {
   rules: {
-    '@stylistic/array-bracket-newline': ["error", "consistent"],
-    '@stylistic/array-element-newline': ["error", "consistent"],
-    '@stylistic/function-call-argument-newline': ["error", "consistent"],
-    '@stylistic/function-call-spacing': ["error", "never"],
-    '@stylistic/function-paren-newline': ["error", "consistent"],
-    '@stylistic/no-extra-semi': "error",
-    '@stylistic/no-mixed-operators': "error",
-    '@stylistic/nonblock-statement-body-position': ["error", "below"],
-    '@stylistic/object-curly-newline': ["error", { consistent: true }],
-    '@stylistic/object-curly-spacing': ["error", "always"],
-    '@stylistic/semi-style': ["error", "last"],
-    '@stylistic/switch-colon-spacing': "error",
+    '@stylistic/array-bracket-newline': ['error', 'consistent'],
+    '@stylistic/array-element-newline': ['error', 'consistent'],
+    '@stylistic/function-call-argument-newline': ['error', 'consistent'],
+    '@stylistic/function-call-spacing': ['error', 'never'],
+    '@stylistic/function-paren-newline': ['error', 'consistent'],
+    '@stylistic/indent': 'error',
+    '@stylistic/no-extra-semi': 'error',
+    '@stylistic/no-mixed-operators': 'error',
+    '@stylistic/nonblock-statement-body-position': ['error', 'below'],
+    '@stylistic/object-curly-newline': ['error', { consistent: true }],
+    '@stylistic/object-curly-spacing': ['error', 'always'],
+    '@stylistic/semi-style': ['error', 'last'],
+    '@stylistic/switch-colon-spacing': 'error',
   }
 }
 
