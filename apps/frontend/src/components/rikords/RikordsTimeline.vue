@@ -50,7 +50,9 @@ function formatStartFinishedTime({ startedAt, finishedAt, duration }: RikordEnti
         <q-img
           fit="contain"
           :ratio="16/9"
+          spinner-color="pink-2"
           :src="rikord.rikoImage.url"
+          @click="navigateTo(`/riko-library/${rikord.rikoImageId}`)"
         />
       </div>
     </q-timeline-entry>

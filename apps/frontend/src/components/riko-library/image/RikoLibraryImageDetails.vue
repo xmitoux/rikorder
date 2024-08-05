@@ -1,49 +1,48 @@
+<!-- 画像詳細コンポーネント -->
 <script setup lang="ts">
+import { RIKORD_MODES } from '~/constants/rikord-mode';
 
+import type { RikoImageDetailEntityResponse, RikoImageDetailsEntityResponse } from '@repo/db';
+
+import type { RikordModeName } from '~/types/rikord-mode';
+
+export type RikorImageDetailsProps = {
+  imageDetails?: RikoImageDetailsEntityResponse;
+};
+
+const props = defineProps<RikorImageDetailsProps>();
+
+const currentRikordModeTab = ref<RikordModeName>('View');
+
+const imageDetail = computed<RikoImageDetailEntityResponse | undefined>(() => {
+  const currentRikordMode = RIKORD_MODES[currentRikordModeTab.value];
+  return props.imageDetails?.details.find(detail => detail.rikordModeId === currentRikordMode.id);
+});
 </script>
 
 <template>
-  <div>
-    <!-- 情報エリア -->
-    <!-- TODO: コンポーネント化 -->
-    <div class="q-ml-sm">
-      <UISectionLabel class="q-mb-md" label="情報" />
+  <div class="q-mx-sm">
+    <UISectionLabel class="q-mb-md" label="Rikordモード別情報" />
 
-      <!-- q-cardのborder-radius変更用にdivで囲む -->
-      <div class="q-mb-md card-border-radius">
-        <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
-          <q-card-section horizontal>
-            <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-              <UILabelChip label="合計時間" />
+    <q-card bordered class="q-mb-lg" flat>
+      <q-card-section class="q-pb-none">
+        <RikoLibraryRikordModeToggleButton @toggle="currentRikordModeTab = $event" />
+      </q-card-section>
 
-              <div class="text-subtitle1">
-                9時間19分19秒
-              </div>
-            </q-card-section>
+      <q-card-section class="q-pb-none">
+        <RikoLibraryImageDetailInfoPanel class="q-mb-md" :image-detail="imageDetail" />
+      </q-card-section>
 
-            <q-separator inset vertical />
+      <q-card-section>
+        <!-- TODO: 年別データ -->
+        <UISectionLabel class="q-mb-sm" label="年別データ" />
+      </q-card-section>
 
-            <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-              <UILabelChip label="合計回数" />
-
-              <div class="text-subtitle1">
-                919回
-              </div>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
-
-    <!-- TODO: 年別データ -->
-    <div class="q-ml-sm">
-      <UISectionLabel class="q-mb-md" label="年別データ" />
-    </div>
-
-    <!-- TODO: 月別データ -->
-    <div class="q-ml-sm">
-      <UISectionLabel class="q-mb-md" label="月別データ" />
-    </div>
+      <q-card-section>
+        <!-- TODO: 月別データ -->
+        <UISectionLabel class="q-mb-sm" label="月別データ" />
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 

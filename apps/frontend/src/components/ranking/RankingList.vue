@@ -60,7 +60,9 @@ function rankIcon(rank: number): string {
         <q-img
           fit="contain"
           :ratio="16/9"
+          spinner-color="pink-2"
           :src="item.rikoImage.url"
+          @click="navigateTo(`/riko-library/${item.rikoImage.id}`)"
         />
       </div>
     </q-timeline-entry>
