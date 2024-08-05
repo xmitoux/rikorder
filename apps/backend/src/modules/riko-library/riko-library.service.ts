@@ -6,6 +6,7 @@ import { PrismaService } from '~/common/services/prisma.service';
 import { SupabaseService } from '~/common/services/supabase.service';
 
 import { CreateRikoImageSettingDto, UpsertRikoImageSettingsDto } from './dto/riko-library.dto';
+import { RikoImageDetailsEntity } from './entities/riko-library.entity';
 
 @Injectable()
 export class RikoLibraryService {
@@ -65,6 +66,41 @@ export class RikoLibraryService {
         rikoImageId: id,
       },
     });
+  }
+
+  async getRikoImageDetails(rikoImageId: number): Promise<RikoImageDetailsEntity> {
+    const detailsResult = await this.prisma.rikord.groupBy({
+      by: ['rikoImageId', 'rikordModeId'],
+      where: {
+        rikoImageId,
+      },
+      _count: {
+        id: true,
+      },
+      _sum: {
+        duration: true,
+      },
+    });
+
+    return {
+      rikoImage: await this.prisma.rikoImage.findUniqueOrThrow({ where: { id: rikoImageId } }),
+      details: detailsResult.map((detail) => {
+        return {
+          rikordModeId: detail.rikordModeId,
+          count: detail._count.id ?? 0,
+          duration: detail._sum.duration ?? 0,
+        };
+      }),
+    };
+
+    // return detailsResult.map((detail) => {
+    //   return {
+    //     rikoImage: this.prisma.rikoImage.findUniqueOrThrow({ where: { id: rikoImageId } }),
+    //     details:
+    //     count: detail._count.id ?? 0,
+    //     duration: detail._sum.duration ?? 0,
+    //   };
+    // });
   }
 
   async upsert({ settings }: UpsertRikoImageSettingsDto) {
