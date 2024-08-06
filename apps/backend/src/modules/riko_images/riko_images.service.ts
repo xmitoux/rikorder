@@ -17,6 +17,9 @@ export class RikoImagesService {
           },
         },
       },
+      orderBy: {
+        id: 'asc',
+      },
     });
   }
 
