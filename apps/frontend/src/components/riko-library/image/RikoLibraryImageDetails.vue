@@ -22,15 +22,15 @@ const imageDetail = computed<RikoImageDetailEntityResponse | undefined>(() => {
 
 <template>
   <div class="q-mx-sm">
-    <UISectionLabel class="q-mb-md" label="Rikordモード別情報" />
+    <UISectionLabel class="q-mb-sm" label="Rikordモード別情報" />
 
-    <q-card bordered class="q-mb-lg" flat>
+    <q-card bordered flat>
       <q-card-section class="q-pb-none">
         <RikoLibraryRikordModeToggleButton @toggle="currentRikordModeTab = $event" />
       </q-card-section>
 
       <q-card-section class="q-pb-none">
-        <RikoLibraryImageDetailInfoPanel class="q-mb-md" :image-detail="imageDetail" />
+        <RikoLibraryImageDetailInfoPanel class="q-mb-xs" :image-detail="imageDetail" />
       </q-card-section>
 
       <q-card-section>
