@@ -16,13 +16,19 @@ const { dialogConfig } = useQuasarDialog();
 const { notifyConfig } = useQuasarNotify();
 
 const rikords = ref<RikordEntityResponse[]>([]);
+const loadingRankingList = ref(false);
 watchEffect(() => fetchRikords());
 async function fetchRikords() {
+  loadingRankingList.value = true;
+
   try {
     rikords.value = await searchRikordsApi(yearMonth.value);
   }
   catch {
     $q.dialog(dialogConfig({ title: '取得失敗', message: 'Rikord一覧取得に失敗しました。' }));
+  }
+  finally {
+    loadingRankingList.value = false;
   }
 }
 
@@ -96,7 +102,10 @@ function closeForm() {
     <!-- UIヘッダーの分だけスペースを取る -->
     <div style="height: 30px;" />
 
-    <RikordsTimeline :rikords="rikordsFilterdByMode" @delete="onClickDelete($event)" @edit="onClickEdit($event)" />
+    <RikordsTimeline
+      :loading="loadingRankingList" :rikords="rikordsFilterdByMode"
+      @delete="onClickDelete($event)" @edit="onClickEdit($event)"
+    />
 
     <RikordForm
       v-model:show="showForm"

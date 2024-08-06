@@ -16,7 +16,7 @@ const { formatDurationDatetime } = dateUtils();
 <template>
   <!-- q-cardのborder-radius変更用にdivで囲む -->
   <div class="card-border-radius">
-    <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
+    <q-card bordered class="q-py-xs bg-pink-1 no-border border-radius-inherit" flat>
       <q-card-section horizontal>
         <div v-if="!imageDetail" class="fit text-center">
           データがありません

@@ -26,13 +26,14 @@ watchEffect(() => {
         画像詳細
       </template>
 
-      <div class="q-ml-sm q-mb-lg">
+      <div class="q-ml-sm q-mb-md">
         <div class="q-px-sm q-mt-sm">
           <q-img
             fit="contain" height="20vh" ratio="16/9" spinner-color="pink-2" :src="imageDetails?.rikoImage.url"
           />
         </div>
       </div>
+
       <RikoLibraryImageDetails :image-details="imageDetails ?? undefined" />
 
       <template #footer>
