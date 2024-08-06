@@ -4,6 +4,7 @@ import type { RikoImageEntityResponse } from '@repo/db';
 
 const props = defineProps<{
   rikoImages: RikoImageEntityResponse[];
+  loading: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -40,11 +41,23 @@ function selectImage(selectedImage: RikoImageEntityResponse) {
   >
     <q-carousel-slide v-for="(chunk, index) in chunkedImages" :key="index" class="column no-wrap" :name="index + 1">
       <div class="row justify-center no-wrap">
-        <q-img
-          v-for="image in chunk" :key="image.id"
-          class="col-4 q-mx-sm rounded-borders" :ratio="1" spinner-color="pink-2" :src="image.url" width="90px"
-          @click="selectImage(image)"
-        />
+        <!-- データロード中のスケルトン -->
+        <template v-if="loading">
+          <q-skeleton v-for="i in 3" :key="i" class="col-4 q-mx-sm" size="90px" />
+        </template>
+
+        <template v-else>
+          <q-img
+            v-for="image in chunk" :key="image.id"
+            class="col-4 q-mx-sm rounded-borders" no-spinner :ratio="1" spinner-color="pink-2" :src="image.url" width="90px"
+            @click="selectImage(image)"
+          >
+            <!-- 取得した画像のロード中もスピナーではなくスケルトンを表示 -->
+            <template #loading>
+              <q-skeleton size="90px" />
+            </template>
+          </q-img>
+        </template>
       </div>
     </q-carousel-slide>
   </q-carousel>

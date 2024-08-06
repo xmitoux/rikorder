@@ -12,25 +12,35 @@ const $q = useQuasar();
 const { dialogConfig } = useQuasarDialog();
 
 const rikoImages = ref<RikoImageEntityResponse[] | null>([]);
+
 const favoriteRikoImages = ref<RikoImageEntityResponse[]>([]);
-
-watchEffect(async () => {
-  const fetchRikoImages = findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).catch(() => {
-    $q.dialog(dialogConfig({ title: '画像取得失敗', message: '画像一覧取得に失敗しました。' }));
-    return [];
-  });
-
-  const fetchFavoriteRikoImages = findFavoriteRikoImagesApi(currentRikordMode.value.id).catch(() => {
-    $q.dialog(dialogConfig({ title: 'お気に入り取得失敗', message: 'お気に入り画像取得に失敗しました。' }));
-    return [];
-  });
-
-  const [rikoImagesResult, favoriteRikoImagesResult] = await Promise.all([fetchRikoImages, fetchFavoriteRikoImages]);
-  rikoImages.value = rikoImagesResult;
-  favoriteRikoImages.value = favoriteRikoImagesResult;
-});
+const loadingFavoriteImages = ref(false);
 
 const panelInfo = ref<RikordInfoEntityResponse>();
+const loadingPanelInfo = ref(false);
+
+watchEffect(() => {
+  findRikoImagesByRikordModeIdApi(currentRikordMode.value.id).then((result) => {
+    rikoImages.value = result;
+  })
+    .catch(() => {
+      $q.dialog(dialogConfig({ title: '画像取得失敗', message: '画像一覧取得に失敗しました。' }));
+      return [];
+    });
+
+  loadingFavoriteImages.value = true;
+  findFavoriteRikoImagesApi(currentRikordMode.value.id).then((result) => {
+    favoriteRikoImages.value = result;
+  })
+    .catch(() => {
+      $q.dialog(dialogConfig({ title: 'お気に入り取得失敗', message: 'お気に入り画像取得に失敗しました。' }));
+      return [];
+    })
+    .finally(() => loadingFavoriteImages.value = false);
+
+  getRikordInfo(currentRikordMode.value.id);
+});
+
 const panelInfoProps = computed<RikordInfoPanelProps>(() => {
   return {
     rikordMode: currentRikordMode.value.modeName,
@@ -38,19 +48,23 @@ const panelInfoProps = computed<RikordInfoPanelProps>(() => {
     count: panelInfo.value?.totalCount ?? 0,
     duration: panelInfo.value?.totalDuration ?? 0,
     goal: panelInfo.value?.monthlyGoal ?? 0,
+    loading: loadingPanelInfo.value,
   };
 });
 
 async function getRikordInfo(rikordModeId: RikordModeIdValue) {
+  loadingPanelInfo.value = true;
+
   try {
     panelInfo.value = await getRikordInfoApi(rikordModeId);
   }
   catch {
     $q.dialog(dialogConfig({ title: 'エラー', message: '情報取得に失敗しました。' }));
   }
+  finally {
+    loadingPanelInfo.value = false;
+  }
 }
-
-watchEffect(() => getRikordInfo(currentRikordMode.value.id));
 
 const favoriteStart = ref(false);
 const selectedFavoriteImage = ref<RikoImageEntityResponse | undefined>();
@@ -72,13 +86,13 @@ function onFinishedRikord() {
     <!-- 情報エリア -->
     <div class="q-ml-sm">
       <UISectionLabel class="q-mb-md" label="情報" />
-      <RikordInfoPanel v-bind="panelInfoProps" class="q-mb-md" />
+      <RikordInfoPanel v-bind="panelInfoProps" class="q-mb-md" :loading="loadingPanelInfo" />
     </div>
 
     <!-- お気に入り -->
     <div class="q-ml-sm q-mb-md">
       <UISectionLabel class="q-mb-md" label="お気に入りで始める" />
-      <RikordFavoriteSelector v-if="favoriteRikoImages" :riko-images="favoriteRikoImages" @select="selectFavoriteImage" />
+      <RikordFavoriteSelector v-if="favoriteRikoImages" :loading="loadingFavoriteImages" :riko-images="favoriteRikoImages" @select="selectFavoriteImage" />
     </div>
 
     <div class="column q-px-xl">
