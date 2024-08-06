@@ -84,7 +84,7 @@ function rankIcon(rank: number): string {
           >
             <!-- 取得した画像のロード中もスピナーではなくスケルトンを表示 -->
             <template #loading>
-              <q-skeleton size="90px" />
+              <q-skeleton size="150px" />
             </template>
           </q-img>
         </div>
