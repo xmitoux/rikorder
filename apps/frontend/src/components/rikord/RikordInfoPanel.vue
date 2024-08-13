@@ -28,55 +28,57 @@ const rightInfoValue = computed(() => isViewMode.value ? durationMinutes.value :
 
 <template>
   <!-- q-cardのborder-radius変更用にdivで囲む -->
-  <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
-    <!-- 上段 -->
-    <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-      <UILabelChip label="前回日時" />
-
-      <div class="q-mb-xs text-h6">
-        {{ loading
-          ? '--/-- --:--(-)'
-          : formatDate(lastDatetime, 'MM/DD HH:mm(ddd)')
-        }}
-      </div>
-
-      <!-- ロード中のブランク -->
-      <div v-if="loading" style="height: 21px" />
-
-      <div v-else>
-        {{ getDurationDatetimeString(lastDatetime) }} 経過
-      </div>
-    </q-card-section>
-
-    <q-separator inset />
-
-    <!-- 下段 -->
-    <q-card-section horizontal>
+  <div class="card-border-radius">
+    <q-card bordered class="q-py-sm bg-pink-1 no-border border-radius-inherit" flat>
+      <!-- 上段 -->
       <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-        <UILabelChip :label="`今月${leftChipLabel}`" />
+        <UILabelChip label="前回日時" />
 
-        <div class="text-h6">
+        <div class="q-mb-xs text-h6">
           {{ loading
-            ? '--'
-            : `${leftInfoValue}${leftInfoLabel}`
+            ? '--/-- --:--(-)'
+            : formatDate(lastDatetime, 'MM/DD HH:mm(ddd)')
           }}
+        </div>
+
+        <!-- ロード中のブランク -->
+        <div v-if="loading" style="height: 21px" />
+
+        <div v-else>
+          {{ getDurationDatetimeString(lastDatetime) }} 経過
         </div>
       </q-card-section>
 
-      <q-separator inset vertical />
+      <q-separator inset />
 
-      <q-card-section class="col-6 q-px-sm q-py-sm text-center">
-        <UILabelChip label="今月記録/目標" />
+      <!-- 下段 -->
+      <q-card-section horizontal>
+        <q-card-section class="col-6 q-px-sm q-py-sm text-center">
+          <UILabelChip :label="`今月${leftChipLabel}`" />
 
-        <div class="text-h6">
-          {{ loading
-            ? '-- / --'
-            : `${rightInfoValue}${rightInfoLabel} / ${goal}${rightInfoLabel}`
-          }}
-        </div>
+          <div class="text-h6">
+            {{ loading
+              ? '--'
+              : `${leftInfoValue}${leftInfoLabel}`
+            }}
+          </div>
+        </q-card-section>
+
+        <q-separator inset vertical />
+
+        <q-card-section class="col-6 q-px-sm q-py-sm text-center">
+          <UILabelChip label="今月記録/目標" />
+
+          <div class="text-h6">
+            {{ loading
+              ? '-- / --'
+              : `${rightInfoValue}${rightInfoLabel} / ${goal}${rightInfoLabel}`
+            }}
+          </div>
+        </q-card-section>
       </q-card-section>
-    </q-card-section>
-  </q-card>
+    </q-card>
+  </div>
 </template>
 
 <style scoped lang="scss">
