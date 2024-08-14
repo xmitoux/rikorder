@@ -19,12 +19,6 @@ const imageDetail = computed<RikoImageDetailEntityResponse | undefined>(() => {
   return props.imageDetails?.details.find(detail => detail.rikordModeId === currentRikordMode.id);
 });
 
-// TODO: こっちは RikoImageDetailEntityResponse で一緒に取得
-const yearDataList = [
-  { year: 2024, count: 520, duration: 700 * 60 },
-  { year: 2023, count: 30, duration: 200 * 60 },
-];
-
 // TODO: こっちは 別APIのデータ 年別のチェックを変更するたびに取得
 const monthDataList = [
   { month: 1, count: 0, duration: 0 },
@@ -54,8 +48,9 @@ const maxMonthCount = computed<number>(() => currentRikordModeTab.value === 'Vie
     <RikoLibraryImageDetailInfoPanel class="q-mb-md" :image-detail="imageDetail" />
     <!-- 年月データ -->
     <ChartYearMonth
+      v-if="imageDetail?.yearDataList"
       :max-month-count="maxMonthCount" :max-month-duration="maxMonthDuration"
-      :month-data-list="monthDataList" :year-data-list="yearDataList"
+      :month-data-list="monthDataList" :year-data-list="imageDetail.yearDataList"
     />
   </div>
 </template>

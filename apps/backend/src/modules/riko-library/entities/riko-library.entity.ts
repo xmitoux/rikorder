@@ -5,6 +5,7 @@ import type {
   RikoImageDetailEntity as RikoImageDetail,
   RikoImageDetailsEntity as RikoImageDetails,
   RikoImageSettingEntity as RikoImageSetting,
+  YearChartDataEntity as YearChartData,
 } from '@repo/db';
 
 export class RikoImageEntity implements RikoImage {
@@ -30,13 +31,26 @@ export class RikoImageSettingEntity implements RikoImageSetting {
   }
 }
 
+export class YearChartDataEntity implements YearChartData {
+  year: number;
+  count: number;
+  duration: number;
+
+  constructor({ ...data }: Partial<RikoImageDetailEntity>) { Object.assign(this, data); }
+}
+
 export class RikoImageDetailEntity implements RikoImageDetail {
   rikordModeId: number;
   count: number;
   duration: number;
+  yearDataList: YearChartData[];
 
-  constructor({ ...data }: Partial<RikoImageDetailEntity>) {
+  constructor({ yearDataList, ...data }: Partial<RikoImageDetailEntity>) {
     Object.assign(this, data);
+
+    if (yearDataList) {
+      this.yearDataList = yearDataList.map(data => new YearChartDataEntity(data));
+    }
   }
 }
 

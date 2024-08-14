@@ -6,7 +6,7 @@ import { PrismaService } from '~/common/services/prisma.service';
 import { SupabaseService } from '~/common/services/supabase.service';
 
 import { CreateRikoImageSettingDto, UpsertRikoImageSettingsDto } from './dto/riko-library.dto';
-import { RikoImageDetailsEntity } from './entities/riko-library.entity';
+import { RikoImageDetailsEntity, YearChartDataEntity } from './entities/riko-library.entity';
 
 @Injectable()
 export class RikoLibraryService {
@@ -82,25 +82,42 @@ export class RikoLibraryService {
       },
     });
 
+    const currentYear = new Date().getFullYear();
+    const startYear = 2024;
+
+    // 年別データ集計
+    const yearChartData = await this.prisma.$queryRaw<(YearChartDataEntity & { rikord_mode_id: number })[]>`
+      SELECT 
+        rikord_mode_id,
+        EXTRACT(YEAR FROM started_at)::int AS year,
+        SUM(duration)::int AS duration,
+        COUNT(*)::int AS count
+      FROM rikords
+      WHERE
+        riko_image_id = ${rikoImageId}
+        AND EXTRACT(YEAR FROM started_at) BETWEEN ${startYear} AND ${currentYear}
+      GROUP BY
+        EXTRACT(YEAR FROM started_at),
+        rikord_mode_id
+      ORDER BY year DESC
+    `;
+
     return {
       rikoImage: await this.prisma.rikoImage.findUniqueOrThrow({ where: { id: rikoImageId } }),
       details: detailsResult.map((detail) => {
+        // モードごとの年別データをくっつける
+        const yearChartDataByMode = yearChartData
+          .filter(data => data.rikord_mode_id === detail.rikordModeId)
+          .map(({ rikord_mode_id, ...data }) => data);
+
         return {
           rikordModeId: detail.rikordModeId,
           count: detail._count.id ?? 0,
           duration: detail._sum.duration ?? 0,
+          yearDataList: yearChartDataByMode,
         };
       }),
     };
-
-    // return detailsResult.map((detail) => {
-    //   return {
-    //     rikoImage: this.prisma.rikoImage.findUniqueOrThrow({ where: { id: rikoImageId } }),
-    //     details:
-    //     count: detail._count.id ?? 0,
-    //     duration: detail._sum.duration ?? 0,
-    //   };
-    // });
   }
 
   async upsert({ settings }: UpsertRikoImageSettingsDto) {

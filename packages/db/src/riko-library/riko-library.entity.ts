@@ -10,11 +10,18 @@ export type RikoImageSettingEntityResponse = Pick<RikoImageSetting,
   | 'isFavorite'
 >;
 
+export type YearChartDataEntity = {
+  year: number;
+  count: number;
+  duration: number;
+};
+
 export type RikoImageDetailEntity = Pick<RikoImageSetting,
   'rikordModeId'
 > & {
   count: number;
   duration: number;
+  yearDataList: YearChartDataEntity[];
 };
 
 export type RikoImageDetailEntityResponse = RikoImageDetailEntity;

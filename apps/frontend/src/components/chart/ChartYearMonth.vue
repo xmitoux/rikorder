@@ -1,12 +1,13 @@
 <!-- 年月チャートコンポーネント -->
 <script setup lang="ts">
+import type { YearChartDataEntity } from '@repo/db';
+
 import type { ToggleYearMonth } from '~/components/ui-parts/button/ButtonToggleYearMonth.vue';
 
-type YearChartData = { year: number; count: number; duration: number };
 type MonthChartData = { month: number; count: number; duration: number };
 
 export type ChartYearMonthProps = {
-  yearDataList: YearChartData[];
+  yearDataList: YearChartDataEntity[];
   monthDataList: MonthChartData[];
   maxMonthDuration: number;
   maxMonthCount: number;
