@@ -32,3 +32,17 @@ export type RikoImageDetailsEntity = {
 };
 
 export type RikoImageDetailsEntityResponse = RikoImageDetailsEntity;
+
+export type MonthChartDataEntity = {
+  month: number;
+  count: number;
+  duration: number;
+};
+
+export type MonthChartDataListEntity = Pick<RikoImageSetting,
+  'rikoImageId'
+  | 'rikordModeId'
+> & {
+  year: number;
+  monthDataList: MonthChartDataEntity[];
+};
